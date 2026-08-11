@@ -20,8 +20,8 @@ export const PORTALS = [
   {
     id: "game",
     name: "遊戲模式",
-    subtitle: "星辰冒險",
-    description: "探索六顆知識星球、馴養狐狸貓夥伴、參加競技場",
+    subtitle: "學習 × 娛樂",
+    description: "學習遊戲賺星幣、娛樂遊戲養寵物，與狐狸貓夥伴一起成長",
     icon: "Gamepad2",
     color: "from-amber-500 to-orange-600",
     glowColor: "rgba(255, 209, 102, 0.35)",
@@ -189,6 +189,92 @@ export const BACKPACK_ITEMS = [
   { id: 3, name: "口說能量石", description: "遠征時口說題加成", icon: "💎", count: 1 },
   { id: 4, name: "稀有羽飾", description: "夥伴外觀裝飾", icon: "🪶", count: 1 },
   { id: 5, name: "智慧頭環", description: "夥伴頭部裝飾", icon: "👑", count: 1 },
+] as const;
+
+/** PlayGO AI 寵物聊天連結 */
+export const PLAYGO_URL = "https://www.junyiacademy.org/playgo/home";
+
+/** 娛樂遊戲:寵物商店(用學習積分兌換) */
+export const PET_SHOP = [
+  {
+    id: "cookie",
+    name: "狐狸貓餅乾",
+    description: "餵食可增加親密度 +8、快樂度 +10",
+    price: 50,
+    icon: "🍪",
+    type: "food",
+  },
+  {
+    id: "star-milk",
+    name: "星雲牛奶",
+    description: "稀有餵食,親密度 +20、獲得心情「開心」狀態 24 小時",
+    price: 150,
+    icon: "🥛",
+    type: "food",
+  },
+  {
+    id: "collar",
+    name: "星光項圈",
+    description: "裝備後戰鬥力 +15,外觀加成",
+    price: 300,
+    icon: "🌟",
+    type: "gear",
+  },
+  {
+    id: "cape",
+    name: "語音學士披風",
+    description: "裝備後戰鬥力 +30,口說題防禦加成",
+    price: 550,
+    icon: "🦸",
+    type: "gear",
+  },
+  {
+    id: "crown",
+    name: "智慧頭冠",
+    description: "裝備後戰鬥力 +50,稀有收藏品",
+    price: 900,
+    icon: "👑",
+    type: "gear",
+  },
+  {
+    id: "potion",
+    name: "能量藥水",
+    description: "恢復冒險體力 100%",
+    price: 80,
+    icon: "🧪",
+    type: "item",
+  },
+] as const;
+
+/** 娛樂遊戲:冒險戰場 */
+export const ADVENTURES = [
+  {
+    id: 1,
+    name: "單字森林偵察",
+    description: "派出夥伴巡查單字森林,考驗基本戰鬥力",
+    powerNeeded: 30,
+    duration: "30 秒",
+    reward: "+80 冒險經驗",
+    color: "#5CE0B8",
+  },
+  {
+    id: 2,
+    name: "語音峽谷探險",
+    description: "穿越語音峽谷,發音不準的怪獸會阻擋去路",
+    powerNeeded: 60,
+    duration: "60 秒",
+    reward: "+160 冒險經驗、稀有星塵",
+    color: "#FFD166",
+  },
+  {
+    id: 3,
+    name: "文法城堡攻防",
+    description: "挑戰文法城堡守衛,需要高戰鬥力",
+    powerNeeded: 100,
+    duration: "90 秒",
+    reward: "+300 冒險經驗、文法徽章",
+    color: "#A977F4",
+  },
 ] as const;
 
 /** 資源分類連結 */

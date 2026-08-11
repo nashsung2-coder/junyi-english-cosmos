@@ -1,24 +1,138 @@
 import { useState } from "react";
 import { Link } from "wouter";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ArrowLeft, Home, Map, Swords, Heart, Package, Zap, Star, Sparkles, ExternalLink } from "lucide-react";
-import { STARS, EXPEDITIONS, BACKPACK_ITEMS } from "@/const";
+import {
+  ArrowLeft,
+  Map,
+  Swords,
+  ExternalLink,
+  Heart,
+  MessageCircleHeart,
+  ShoppingBag,
+  Sparkles,
+  Zap,
+  Star,
+  Coins,
+  Trophy,
+  TrendingUp,
+  XOctagon,
+  Loader2,
+} from "lucide-react";
+import { STARS, EXPEDITIONS, PET_SHOP, ADVENTURES, PLAYGO_URL } from "@/const";
 
 /**
- * GamePage - 遊戲模式 (星辰冒險)
+ * GamePage - 遊戲模式(學習遊戲 × 娛樂遊戲)
  * 設計哲學:深空極簡主義
- * - 星際地圖:六顆知識星球、征服進度
- * - 知識遠征:關卡、戰鬥動畫、獎勵系統
- * - 寵物競技場:夥伴狀態與餵食
- * - 背包寶庫:道具管理
+ * - 學習遊戲:六顆知識星球 + 知識遠征(累積「學習星幣」的唯一來源)
+ * - 娛樂遊戲:純粹養寵物 —— 餵養、商店買裝備/食物、冒險戰鬥
+ *   * 寵物戰鬥力由裝備構成;戰敗時引導回學習遊戲賺星幣變強(學習動機)
+ *   * 「與寵物聊天」連結 PlayGO AI
  */
 
 const STARMAP_IMG = "/manus-storage/junyi-starmap_15034bfa.png";
 const MASCOT_IMG = "/manus-storage/junyi-mascot_75414d3f.png";
 
+/** 用戶狀態(本地示範值) */
+const INITIAL = {
+  starCoins: 320,
+  intimacy: 82,
+  happiness: 70,
+  power: 45, // 裝備戰鬥力(初始 0,用戶購買裝備提升)
+  ownedGears: [] as string[],
+  ownedItems: [] as string[],
+  adventureState: null as null | {
+    id: number;
+    name: string;
+    color: string;
+    reward: string;
+    phase: "fighting" | "win" | "lose";
+    powerNeeded: number;
+  },
+};
+
 export default function GamePage() {
-  const [activeTab, setActiveTab] = useState("map");
+  const [mode, setMode] = useState<"learn" | "play">("learn");
+  const [petTab, setPetTab] = useState("home");
+  const [s, setS] = useState(INITIAL);
+
+  const buy = (shop: (typeof PET_SHOP)[number]) => {
+    if (s.starCoins < shop.price) {
+      toast.error(`星幣不足!再去「學習遊戲」完成知識遠征賺星幣吧`, { duration: 4000 });
+      return;
+    }
+    if (shop.type === "gear" && s.ownedGears.includes(shop.id)) {
+      toast.info("已經擁有這件裝備了");
+      return;
+    }
+    if (shop.type === "food") {
+      const intimacyGain = shop.id === "star-milk" ? 20 : 8;
+      const happyGain = shop.id === "star-milk" ? 10 : 10;
+      setS((p) => ({
+        ...p,
+        starCoins: p.starCoins - shop.price,
+        intimacy: Math.min(100, p.intimacy + intimacyGain),
+        happiness: Math.min(100, p.happiness + happyGain),
+      }));
+      toast.success(`餵食成功!${shop.name} → 親密度 +${intimacyGain},狐狸貓好開心`);
+    } else if (shop.type === "item") {
+      setS((p) => ({ ...p, starCoins: p.starCoins - shop.price, ownedItems: [...p.ownedItems, shop.id] }));
+      toast.success(`獲得 ${shop.name}!`);
+    } else {
+      const bonus = shop.id === "collar" ? 15 : shop.id === "cape" ? 30 : 50;
+      setS((p) => ({
+        ...p,
+        starCoins: p.starCoins - shop.price,
+        ownedGears: [...p.ownedGears, shop.id],
+        power: p.power + bonus,
+      }));
+      toast.success(`裝備 ${shop.name}!戰鬥力 +${bonus}`);
+    }
+  };
+
+  const usePotion = () => {
+    if (!s.ownedItems.includes("potion")) {
+      toast.error("背包裡沒有能量藥水,去商店買一瓶吧");
+      return;
+    }
+    setS((p) => ({
+      ...p,
+      ownedItems: p.ownedItems.filter((id, i) => (i === p.ownedItems.indexOf("potion") ? false : true)),
+      happiness: Math.min(100, p.happiness + 30),
+    }));
+    toast.success("使用能量藥水!狐狸貓活力滿滿");
+  };
+
+  const startAdventure = (adv: (typeof ADVENTURES)[number]) => {
+    if (s.happiness < 20) {
+      toast.error("夥伴心情太低了,先餵食照顧牠吧!");
+      return;
+    }
+    setS((p) => ({
+      ...p,
+      adventureState: { id: adv.id, name: adv.name, color: adv.color, reward: adv.reward, phase: "fighting", powerNeeded: adv.powerNeeded },
+    }));
+    // 模擬戰鬥
+    setTimeout(() => {
+      setS((p) => {
+        if (!p.adventureState) return p;
+        const won = p.power + Math.floor(p.intimacy / 5) >= p.adventureState.powerNeeded;
+        return {
+          ...p,
+          adventureState: { ...p.adventureState, phase: won ? "win" : "lose" },
+        };
+      });
+    }, 2200);
+  };
+
+  const dismissAdventure = () => setS((p) => ({ ...p, adventureState: null }));
+
+  const goToLearn = () => {
+    dismissAdventure();
+    setMode("learn");
+    toast.info("去學習遊戲完成遠征,賺星幣強化夥伴!");
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -33,196 +147,401 @@ export default function GamePage() {
           </div>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1.5 text-muted-foreground">
-              <Zap className="w-4 h-4 text-amber-400" />
-              <span className="font-mono">2,450 經驗值</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-muted-foreground">
               <Star className="w-4 h-4 text-accent" />
               <span className="font-mono">Lv.12 冒險家</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-amber-300/90">
+              <Coins className="w-4 h-4" />
+              <span className="font-mono">{s.starCoins.toLocaleString()} 星幣</span>
             </div>
           </div>
         </div>
       </div>
 
       <div className="container py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="w-full bg-white/5 mb-6 grid grid-cols-4">
-            <TabsTrigger value="map" className="inline-flex items-center gap-2">
-              <Map className="w-4 h-4" /> 星際地圖
-            </TabsTrigger>
-            <TabsTrigger value="expedition" className="inline-flex items-center gap-2">
-              <Swords className="w-4 h-4" /> 知識遠征
-            </TabsTrigger>
-            <TabsTrigger value="pet" className="inline-flex items-center gap-2">
-              <Heart className="w-4 h-4" /> 夥伴
-            </TabsTrigger>
-            <TabsTrigger value="backpack" className="inline-flex items-center gap-2">
-              <Package className="w-4 h-4" /> 背包
-            </TabsTrigger>
-          </TabsList>
+        {/* 學習遊戲 / 娛樂遊戲 雙模式切換 */}
+        <div className="grid grid-cols-2 max-w-xl mx-auto mb-8 bg-white/5 rounded-xl p-1">
+          <button
+            onClick={() => setMode("learn")}
+            className={`rounded-lg py-3 text-sm font-semibold transition-all duration-300 inline-flex items-center justify-center gap-2 ${
+              mode === "learn"
+                ? "bg-gradient-to-r from-teal-500/20 to-emerald-500/20 text-accent shadow-[0_0_20px_rgba(78,205,196,0.15)]"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <TrendingUp className="w-4 h-4" /> 學習遊戲
+          </button>
+          <button
+            onClick={() => setMode("play")}
+            className={`rounded-lg py-3 text-sm font-semibold transition-all duration-300 inline-flex items-center justify-center gap-2 ${
+              mode === "play"
+                ? "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 shadow-[0_0_20px_rgba(255,209,102,0.15)]"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Sparkles className="w-4 h-4" /> 娛樂遊戲
+          </button>
+        </div>
 
-          {/* 星際地圖 */}
-          <TabsContent value="map">
-            <div className="glass-card p-6 mb-6">
-              <h2 className="text-lg font-semibold mb-4">六顆知識星球</h2>
-              <img
-                src={STARMAP_IMG}
-                alt="星際地圖"
-                className="w-full rounded-lg mb-6 opacity-90"
-              />
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {STARS.map((star) => (
-                  <div
-                    key={star.id}
-                    className="glass-card p-4 hover:border-opacity-40 transition-all group"
-                    style={{ borderColor: `${star.color}40` }}
-                  >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-lg shadow-lg"
-                        style={{
-                          background: `radial-gradient(circle at 30% 30%, ${star.color}, ${star.color}88)`,
-                          boxShadow: `0 0 20px ${star.color}55`,
-                        }}
-                      >
-                        ✦
-                      </div>
-                      <div>
-                        <div className="font-semibold text-sm">{star.name}</div>
-                        <div className="text-xs text-muted-foreground">{star.description}</div>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between text-xs mb-1.5">
-                      <span className="text-muted-foreground font-mono">{star.level}</span>
-                      <span className="font-mono" style={{ color: star.color }}>
-                        {star.progress}%
-                      </span>
-                    </div>
-                    <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                      <div
-                        className="h-full rounded-full transition-all duration-700"
-                        style={{ width: `${star.progress}%`, background: star.color }}
-                      />
-                    </div>
+        {/* ================= 學習遊戲 ================= */}
+        {mode === "learn" && (
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+            <div className="glass-card p-5 mb-6 border-accent/25">
+              <div className="flex flex-col md:flex-row md:items-center gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-accent/15 border border-accent/40 flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-accent" />
                   </div>
-                ))}
+                  <div>
+                    <h2 className="font-semibold text-accent">學習遊戲 · 星幣的來源</h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      完成知識遠征就能獲得「學習星幣」——去娛樂遊戲餵寵物、買裝備全靠它!
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-          </TabsContent>
 
-          {/* 知識遠征 */}
-          <TabsContent value="expedition">
-            <div className="space-y-4">
-              {EXPEDITIONS.map((exp) => (
-                <div key={exp.id} className="glass-card p-5 flex flex-col md:flex-row md:items-center gap-4 hover:bg-white/5 transition-all">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-amber-400/30 shrink-0">
-                    <Swords className="w-5 h-5 text-amber-300" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold">{exp.name}</h3>
-                      <span
-                        className={`badge-cosmic ${
-                          exp.difficulty === "新手"
-                            ? "bg-emerald-500/15 text-emerald-300"
-                            : exp.difficulty === "簡單"
-                              ? "bg-blue-500/15 text-blue-300"
-                              : exp.difficulty === "中等"
-                                ? "bg-amber-500/15 text-amber-300"
-                                : "bg-red-500/15 text-red-300"
-                        }`}
-                      >
-                        {exp.difficulty}
-                      </span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 六顆知識星球 */}
+              <div className="glass-card p-6">
+                <h2 className="text-lg font-semibold mb-4 inline-flex items-center gap-2">
+                  <Map className="w-5 h-5 text-accent" /> 六顆知識星球
+                </h2>
+                <img src={STARMAP_IMG} alt="星際地圖" className="w-full rounded-lg mb-5 opacity-90" />
+                <div className="space-y-3">
+                  {STARS.map((star) => (
+                    <div key={star.id} className="p-3 rounded-lg bg-white/4 border border-white/8 hover:border-white/20 transition-all">
+                      <div className="flex items-center justify-between mb-1.5">
+                        <div className="flex items-center gap-2">
+                          <div
+                            className="w-7 h-7 rounded-full flex items-center justify-center text-sm"
+                            style={{
+                              background: `radial-gradient(circle at 30% 30%, ${star.color}, ${star.color}88)`,
+                              boxShadow: `0 0 12px ${star.color}55`,
+                            }}
+                          >
+                            ✦
+                          </div>
+                          <div>
+                            <span className="font-semibold text-sm">{star.name}</span>
+                            <span className="text-xs text-muted-foreground ml-2">{star.description}</span>
+                          </div>
+                        </div>
+                        <span className="font-mono text-xs" style={{ color: star.color }}>
+                          {star.progress}%
+                        </span>
+                      </div>
+                      <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                        <div className="h-full rounded-full transition-all duration-700" style={{ width: `${star.progress}%`, background: star.color }} />
+                      </div>
                     </div>
-                    <p className="text-sm text-muted-foreground">{exp.description}</p>
-                    <div className="text-xs text-muted-foreground mt-2 space-x-4">
-                      <span className="font-mono">{exp.questions} 題</span>
-                      <span className="font-mono">{exp.time}</span>
-                      <span className="text-amber-300/80">{exp.reward}</span>
-                    </div>
-                  </div>
-                  <a
-                    href="https://www.junyiacademy.org/topics/junyi-english"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn-cosmic-primary inline-flex items-center gap-2 self-start md:self-auto"
-                  >
-                    出發遠征
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </TabsContent>
+              </div>
 
-          {/* 夥伴 */}
-          <TabsContent value="pet">
-            <div className="glass-card p-6">
+              {/* 知識遠征 */}
+              <div>
+                <h2 className="text-lg font-semibold mb-4 inline-flex items-center gap-2">
+                  <Swords className="w-5 h-5 text-amber-400" /> 知識遠征
+                </h2>
+                <div className="space-y-4">
+                  {EXPEDITIONS.map((exp) => (
+                    <div key={exp.id} className="glass-card p-5 flex flex-col gap-4 hover:bg-white/5 transition-all">
+                      <div className="flex items-start gap-3">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-amber-400/30 shrink-0">
+                          <Swords className="w-4 h-4 text-amber-300" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold">{exp.name}</h3>
+                            <span
+                              className={`badge-cosmic ${
+                                exp.difficulty === "新手"
+                                  ? "bg-emerald-500/15 text-emerald-300"
+                                  : exp.difficulty === "簡單"
+                                    ? "bg-blue-500/15 text-blue-300"
+                                    : exp.difficulty === "中等"
+                                      ? "bg-amber-500/15 text-amber-300"
+                                      : "bg-red-500/15 text-red-300"
+                              }`}
+                            >
+                              {exp.difficulty}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground">{exp.description}</p>
+                          <div className="text-xs text-muted-foreground mt-2 space-x-4">
+                            <span className="font-mono">{exp.questions} 題</span>
+                            <span className="font-mono">{exp.time}</span>
+                            <span className="text-amber-300/80">{exp.reward}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <a
+                        href="https://www.junyiacademy.org/topics/junyi-english"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="btn-cosmic-primary inline-flex items-center justify-center gap-2 text-sm"
+                      >
+                        出發遠征
+                        <ExternalLink className="w-4 h-4" />
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ================= 娛樂遊戲 ================= */}
+        {mode === "play" && (
+          <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+            {/* 戰鬥進行中浮層 */}
+            {s.adventureState && (
+              <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+                <div className="glass-card p-8 max-w-md w-full text-center">
+                  {s.adventureState.phase === "fighting" && (
+                    <>
+                      <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-amber-300" />
+                      <h3 className="text-xl font-bold mb-1">{s.adventureState.name} 戰鬥中!</h3>
+                      <p className="text-sm text-muted-foreground">夥伴全力出擊…</p>
+                    </>
+                  )}
+                  {s.adventureState.phase === "win" && (
+                    <>
+                      <Trophy className="w-14 h-14 mx-auto mb-4 text-amber-300" />
+                      <h3 className="text-xl font-bold mb-1">勝利!</h3>
+                      <p className="text-sm text-muted-foreground mb-1">{s.adventureState.reward}</p>
+                      <p className="text-xs text-accent/80 mb-5">夥伴的戰鬥力 + 親密度發揮了作用!</p>
+                      <Button onClick={dismissAdventure} className="bg-accent text-accent-foreground">
+                        太棒了!
+                      </Button>
+                    </>
+                  )}
+                  {s.adventureState.phase === "lose" && (
+                    <>
+                      <XOctagon className="w-14 h-14 mx-auto mb-4 text-red-300" />
+                      <h3 className="text-xl font-bold mb-1">戰鬥失敗…</h3>
+                      <p className="text-sm text-muted-foreground mb-1">
+                        夥伴的戰鬥力({s.power + Math.floor(s.intimacy / 5)})不足以征服
+                        「{s.adventureState.name}」(需要 {s.adventureState.powerNeeded})
+                      </p>
+                      <div className="glass-card p-4 my-5 text-left border-accent/30 bg-accent/5">
+                        <p className="text-sm text-accent font-semibold mb-1">
+                          別灰心!這正是變強的機會
+                        </p>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          夥伴的戰鬥力來自你買的裝備,而買裝備需要「學習星幣」——到學習遊戲完成知識遠征,
+                          賺星幣回來強化夥伴,下次一定能贏!
+                        </p>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <Button onClick={goToLearn} className="bg-gradient-to-r from-teal-500 to-emerald-500 text-black font-semibold">
+                          <TrendingUp className="w-4 h-4 mr-2" /> 去學習遊戲變強
+                        </Button>
+                        <Button variant="outline" onClick={dismissAdventure} className="border-white/20 text-muted-foreground">
+                          先休息
+                        </Button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* 寵物狀態總覽 */}
+            <div className="glass-card p-6 mb-6">
               <div className="flex flex-col md:flex-row items-center gap-8">
-                <img
-                  src={MASCOT_IMG}
-                  alt="狐狸貓夥伴"
-                  className="w-48 h-48 object-contain animate-float"
-                />
-                <div className="flex-1">
-                  <h2 className="text-xl font-semibold mb-1">狐狸貓 · 星塵</h2>
-                  <p className="text-sm text-muted-foreground mb-4">Lv.8 · 親密度 82/100 · 快樂度 高</p>
-                  <div className="space-y-3 mb-6">
+                <div className="relative">
+                  <img src={MASCOT_IMG} alt="狐狸貓夥伴" className="w-44 h-44 object-contain animate-float" />
+                  <div className="absolute -top-2 -right-2 text-2xl animate-bounce">
+                    {s.happiness > 60 ? "💛" : s.happiness > 30 ? "😐" : "🌧️"}
+                  </div>
+                </div>
+                <div className="flex-1 w-full">
+                  <div className="flex flex-wrap items-center gap-3 mb-1">
+                    <h2 className="text-xl font-semibold">狐狸貓 · 星塵</h2>
+                    <span className="badge-cosmic bg-amber-500/15 text-amber-300">Lv.8</span>
+                    <span className="badge-cosmic bg-rose-500/15 text-rose-300 inline-flex items-center gap-1">
+                      <Swords className="w-3 h-3" /> 戰鬥力 {s.power + Math.floor(s.intimacy / 5)}
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    夥伴的力量來自你的裝備,夥伴的快樂來自你的照顧
+                  </p>
+                  <div className="space-y-3 mb-5">
                     <div>
                       <div className="flex justify-between text-xs mb-1">
                         <span className="text-muted-foreground">親密度</span>
-                        <span className="font-mono text-accent">82/100</span>
+                        <span className="font-mono text-accent">{s.intimacy}/100</span>
                       </div>
                       <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                        <div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-400 w-[82%]" />
+                        <div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-400 transition-all duration-500" style={{ width: `${s.intimacy}%` }} />
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between text-xs mb-1">
-                        <span className="text-muted-foreground">口說能量</span>
-                        <span className="font-mono text-amber-300">45/60</span>
+                        <span className="text-muted-foreground">快樂度</span>
+                        <span className="font-mono text-amber-300">{s.happiness}/100</span>
                       </div>
                       <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                        <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 w-[75%]" />
+                        <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-500" style={{ width: `${s.happiness}%` }} />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-muted-foreground">戰鬥力(來自裝備)</span>
+                        <span className="font-mono text-rose-300">{s.power}</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                        <div className="h-full rounded-full bg-gradient-to-r from-rose-500 to-orange-400 transition-all duration-500" style={{ width: `${Math.min(100, s.power)}%` }} />
                       </div>
                     </div>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    <Button className="bg-accent text-accent-foreground hover:opacity-90">
-                      <Heart className="w-4 h-4 mr-2" /> 餵食餅乾(親密度 +5)
-                    </Button>
-                    <Button variant="outline" className="border-accent/40 text-accent hover:bg-accent/10">
-                      <Sparkles className="w-4 h-4 mr-2" /> 一起複習單字
-                    </Button>
+                    <a
+                      href={PLAYGO_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-cosmic-primary inline-flex items-center gap-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:opacity-90"
+                    >
+                      <MessageCircleHeart className="w-4 h-4" /> 與寵物聊天(PlayGO)
+                    </a>
+                    <button
+                      onClick={() =>
+                        setS((p) => ({ ...p, intimacy: Math.min(100, p.intimacy + 3), happiness: Math.min(100, p.happiness + 5) }))
+                      }
+                      className="rounded-lg px-4 py-2 text-sm border border-pink-400/40 text-pink-300 bg-pink-500/10 hover:bg-pink-500/20 transition-colors inline-flex items-center gap-2"
+                    >
+                      <Heart className="w-4 h-4" /> 撫摸夥伴
+                    </button>
+                    {s.ownedItems.includes("potion") && (
+                      <button
+                        onClick={usePotion}
+                        className="rounded-lg px-4 py-2 text-sm border border-cyan-400/40 text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 transition-colors inline-flex items-center gap-2"
+                      >
+                        🧪 使用能量藥水
+                      </button>
+                    )}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-4">
-                    完成英文學習任務即可獲得「狐狸貓餅乾」,餵食夥伴可增加親密度,親密度越高,遠征時獲得的獎勵加成越多。
-                  </p>
                 </div>
               </div>
             </div>
-          </TabsContent>
 
-          {/* 背包 */}
-          <TabsContent value="backpack">
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-              {BACKPACK_ITEMS.map((item) => (
-                <div key={item.id} className="glass-card p-4 text-center hover:bg-white/5 transition-all group">
-                  <div className="text-3xl mb-2">{item.icon}</div>
-                  <div className="text-sm font-semibold">{item.name}</div>
-                  <div className="text-xs text-muted-foreground mt-1 mb-2">{item.description}</div>
-                  <div className="text-xs font-mono text-accent">×{item.count}</div>
+            <Tabs value={petTab} onValueChange={setPetTab}>
+              <TabsList className="w-full bg-white/5 mb-6 grid grid-cols-2">
+                <TabsTrigger value="adventure" className="inline-flex items-center gap-2">
+                  <Swords className="w-4 h-4" /> 夥伴冒險
+                </TabsTrigger>
+                <TabsTrigger value="shop" className="inline-flex items-center gap-2">
+                  <ShoppingBag className="w-4 h-4" /> 星幣商店
+                </TabsTrigger>
+              </TabsList>
+
+              {/* 夥伴冒險 */}
+              <TabsContent value="adventure">
+                <div className="glass-card p-5 mb-4 border-accent/20 bg-accent/3">
+                  <p className="text-sm text-muted-foreground">
+                    派出夥伴去冒險吧!冒險需要足夠的<strong className="text-rose-300">戰鬥力</strong>(來自裝備)。
+                    戰力不足被打下場也沒關係——那正是你去學習遊戲賺星幣、變強的理由!
+                  </p>
                 </div>
-              ))}
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={`empty-${i}`} className="glass-card p-4 text-center opacity-40 flex items-center justify-center min-h-[160px]">
-                  <span className="text-xs text-muted-foreground">空欄位</span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {ADVENTURES.map((adv) => (
+                    <div key={adv.id} className="glass-card p-5 flex flex-col hover:border-opacity-40 transition-all" style={{ borderColor: `${adv.color}40` }}>
+                      <div className="flex items-center justify-between mb-2">
+                        <h3 className="font-semibold">{adv.name}</h3>
+                        <span className="badge-cosmic bg-rose-500/15 text-rose-300">需要戰力 {adv.powerNeeded}</span>
+                      </div>
+                      <p className="text-sm text-muted-foreground mb-3">{adv.description}</p>
+                      <div className="text-xs text-muted-foreground mb-4 space-y-1">
+                        <div className="font-mono">⏱ {adv.duration}</div>
+                        <div className="font-mono text-amber-300/80">🏆 {adv.reward}</div>
+                      </div>
+                      <div className="mt-auto">
+                        <button
+                          onClick={() => startAdventure(adv)}
+                          className="btn-cosmic-primary w-full inline-flex items-center justify-center gap-2 text-sm"
+                          style={{ background: `linear-gradient(135deg, ${adv.color}CC, ${adv.color}88)` }}
+                        >
+                          <Swords className="w-4 h-4" /> 派出夥伴
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </TabsContent>
-        </Tabs>
+                {s.ownedGears.length === 0 && (
+                  <p className="text-xs text-muted-foreground mt-4 text-center">
+                    💡 小提示:夥伴目前沒有任何裝備(戰鬥力 {s.power}),去「星幣商店」買第一件裝備,或先去學習遊戲賺星幣!
+                  </p>
+                )}
+              </TabsContent>
+
+              {/* 星幣商店 */}
+              <TabsContent value="shop">
+                <div className="glass-card p-5 mb-4 border-amber-400/20 bg-amber-500/3">
+                  <div className="flex items-center gap-3">
+                    <Coins className="w-6 h-6 text-amber-300" />
+                    <div>
+                      <h3 className="font-semibold text-amber-200">學習星幣:唯一的購物貨幣</h3>
+                      <p className="text-xs text-muted-foreground">
+                        星幣只能在「學習遊戲」中透過知識遠征獲得。餵食、買裝備、買藥水都用它——所以,愈努力學習英文,夥伴就愈強大。
+                      </p>
+                    </div>
+                  </div>
+                  <div className="mt-3 text-sm font-mono text-amber-300">目前持有:{s.starCoins.toLocaleString()} 星幣</div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {PET_SHOP.map((item) => {
+                    const owned = item.type === "gear" && s.ownedGears.includes(item.id);
+                    const affordable = s.starCoins >= item.price;
+                    return (
+                      <div key={item.id} className="glass-card p-5 flex flex-col hover:bg-white/5 transition-all">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-3xl">{item.icon}</span>
+                          <span
+                            className={`badge-cosmic text-xs ${
+                              item.type === "food"
+                                ? "bg-pink-500/15 text-pink-300"
+                                : item.type === "gear"
+                                  ? "bg-rose-500/15 text-rose-300"
+                                  : "bg-cyan-500/15 text-cyan-300"
+                            }`}
+                          >
+                            {item.type === "food" ? "食物" : item.type === "gear" ? "裝備" : "道具"}
+                          </span>
+                        </div>
+                        <h3 className="font-semibold mb-1">{item.name}</h3>
+                        <p className="text-xs text-muted-foreground mb-4 flex-1">{item.description}</p>
+                        <button
+                          onClick={() => buy(item)}
+                          disabled={owned}
+                          className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 ${
+                            owned
+                              ? "bg-white/8 text-muted-foreground cursor-not-allowed"
+                              : affordable
+                                ? "bg-gradient-to-r from-amber-500 to-orange-500 text-black hover:opacity-90"
+                                : "border border-amber-400/30 text-amber-300/70 hover:bg-amber-500/10"
+                          }`}
+                        >
+                          {owned ? "已擁有" : (
+                            <>
+                              <Coins className="w-4 h-4" /> {item.price} 星幣
+                            </>
+                          )}
+                        </button>
+                        {!affordable && !owned && (
+                          <span className="text-xs text-rose-300/70 mt-2 text-center">星幣不足,去學習遊戲賺星幣!</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        )}
       </div>
     </div>
   );
