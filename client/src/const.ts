@@ -71,6 +71,7 @@ export const STARS = [
     color: "#4ECDC4",
     level: "Pre A1",
     progress: 90,
+    url: "https://www.junyiacademy.org/topics/junyi-english-lettersandphonics",
   },
   {
     id: "vocab",
@@ -79,6 +80,7 @@ export const STARS = [
     color: "#FFD166",
     level: "A1",
     progress: 72,
+    url: "https://www.junyiacademy.org/topics/junyi-english-vocab",
   },
   {
     id: "listening",
@@ -87,6 +89,7 @@ export const STARS = [
     color: "#60A5FA",
     level: "A1",
     progress: 55,
+    url: "https://www.junyiacademy.org/topics/junyi-english-listening",
   },
   {
     id: "grammar",
@@ -95,6 +98,7 @@ export const STARS = [
     color: "#A977F4",
     level: "A2",
     progress: 38,
+    url: "https://www.junyiacademy.org/topics/junyi-english-grammar",
   },
   {
     id: "reading",
@@ -103,6 +107,7 @@ export const STARS = [
     color: "#5CE0B8",
     level: "A2",
     progress: 25,
+    url: "https://www.junyiacademy.org/topics/junyi-english-reading",
   },
   {
     id: "speaking",
@@ -111,6 +116,7 @@ export const STARS = [
     color: "#F07B6B",
     level: "B1",
     progress: 12,
+    url: "https://www.junyiacademy.org/topics/jutor#topic-page-anchor-jutor-speaking",
   },
 ] as const;
 
@@ -124,6 +130,7 @@ export const EXPEDITIONS = [
     time: "約 10 分鐘",
     reward: "+120 經驗值、狐狸貓餅乾 ×2",
     difficulty: "新手",
+    url: "https://www.junyiacademy.org/topics/junyi-english-lettersandphonics",
   },
   {
     id: 2,
@@ -133,6 +140,7 @@ export const EXPEDITIONS = [
     time: "約 15 分鐘",
     reward: "+180 經驗值、發光星塵 ×1",
     difficulty: "簡單",
+    url: "https://www.junyiacademy.org/topics/junyi-english-vocab",
   },
   {
     id: 3,
@@ -142,6 +150,7 @@ export const EXPEDITIONS = [
     time: "約 15 分鐘",
     reward: "+220 經驗值、口說能量石 ×1",
     difficulty: "中等",
+    url: "https://www.junyiacademy.org/topics/junyi-english-context",
   },
   {
     id: 4,
@@ -151,6 +160,7 @@ export const EXPEDITIONS = [
     time: "約 20 分鐘",
     reward: "+300 經驗值、稀有羽飾 ×1",
     difficulty: "困難",
+    url: "https://www.junyiacademy.org/topics/junyi-english-grammar#topic-page-anchor-junyi-english-grammar-tense",
   },
   {
     id: 5,
@@ -160,6 +170,7 @@ export const EXPEDITIONS = [
     time: "約 25 分鐘",
     reward: "+360 經驗值、智慧頭環 ×1",
     difficulty: "困難",
+    url: "https://www.junyiacademy.org/topics/junyi-english-reading",
   },
 ] as const;
 

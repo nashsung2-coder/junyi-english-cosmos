@@ -211,7 +211,13 @@ export default function GamePage() {
                 <img src={STARMAP_IMG} alt="星際地圖" className="w-full rounded-lg mb-5 opacity-90" />
                 <div className="space-y-3">
                   {STARS.map((star) => (
-                    <div key={star.id} className="p-3 rounded-lg bg-white/4 border border-white/8 hover:border-white/20 transition-all">
+                    <a
+                      key={star.id}
+                      href={star.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-3 rounded-lg bg-white/4 border border-white/8 hover:border-white/20 transition-all"
+                    >
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-2">
                           <div
@@ -235,7 +241,7 @@ export default function GamePage() {
                       <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
                         <div className="h-full rounded-full transition-all duration-700" style={{ width: `${star.progress}%`, background: star.color }} />
                       </div>
-                    </div>
+                    </a>
                   ))}
                 </div>
               </div>
@@ -278,7 +284,7 @@ export default function GamePage() {
                         </div>
                       </div>
                       <a
-                        href="https://www.junyiacademy.org/topics/junyi-english"
+                        href={exp.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="btn-cosmic-primary inline-flex items-center justify-center gap-2 text-sm"
