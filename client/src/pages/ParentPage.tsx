@@ -316,12 +316,12 @@ export default function ParentPage() {
         {/* 其他科目共學模擬區塊 */}
         <SubjectPlaceholder
           title="其他學科的親子共學艙"
-          subtitle="更多科目的家長陪伴資源正在準備中"
+          subtitle="選擇一門學科，和孩子一起完成可即時回饋的知識任務"
           items={[
-            { icon: "languages", name: "國文", tagline: "親子共讀與作文引導" },
-            { icon: "calculator", name: "數學", tagline: "生活中的數學小任務" },
-            { icon: "sprout", name: "自然", tagline: "戶外觀察與實驗記錄" },
-            { icon: "globe", name: "社會", tagline: "時事討論與地圖探索" },
+            { icon: "languages", name: "國文", tagline: "親子共讀：成語與語境理解", href: "/practice/101" },
+            { icon: "calculator", name: "數學", tagline: "生活數學：運算與規律小任務", href: "/practice/102" },
+            { icon: "sprout", name: "自然", tagline: "觀察實驗：自然現象探索", href: "/practice/103" },
+            { icon: "globe", name: "社會", tagline: "地圖探索：認識生活中的公共空間", href: "/practice/104" },
           ]}
         />
       </div>

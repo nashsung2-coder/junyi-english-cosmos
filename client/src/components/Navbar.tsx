@@ -32,7 +32,15 @@ const SUPPORT_LINKS = [
   { name: "教師區", description: "教學資源與班級觀察", href: "/teacher", icon: BookOpenCheck },
 ] as const;
 
-const SUBJECTS = ["國文", "英文", "數學", "自然", "社會", "生活", "藝術", "健康"] as const;
+const SUBJECTS = [
+  { name: "國文", href: "/practice/101" },
+  { name: "英文", href: "/practice/1" },
+  { name: "數學", href: "/practice/102" },
+  { name: "自然", href: "/practice/103" },
+  { name: "社會", href: "/practice/104" },
+  { name: "藝術", href: "/practice/105" },
+  { name: "健康", href: "/practice/106" },
+] as const;
 
 type OpenPanel = "learn" | "support" | "subjects" | null;
 
@@ -53,12 +61,8 @@ export default function Navbar() {
   const handleSubject = (subject: (typeof SUBJECTS)[number]) => {
     setOpenPanel(null);
     setMobileOpen(false);
-    if (subject === "英文") {
-      navigate("/specialty");
-      toast.success("英文學習航線已開啟", { description: "從專攻區選擇一個任務，開始累積你的星圖。" });
-      return;
-    }
-    toast("學科航線準備中", { description: `${subject}星圖正在校準，現階段可以先從英文任務啟程。` });
+    navigate(subject.href);
+    toast.success(`${subject.name}學習航線已開啟`, { description: "完成任務後會立即回饋作答結果，並累積你的學習進度。" });
   };
 
   const panelButtonClass = (active: boolean) =>
@@ -173,24 +177,24 @@ export default function Navbar() {
               <div className="mb-3 flex items-center justify-between px-1">
                 <div>
                   <p className="text-sm font-semibold text-white">探索學科星圖</p>
-                  <p className="mt-1 text-xs text-slate-400">英文航線已開放，其他學科正在定位。</p>
+                  <p className="mt-1 text-xs text-slate-400">七科互動航線均已開放，選擇一門學科立即開始作答。</p>
                 </div>
-                <span className="rounded-full bg-accent/10 px-2 py-1 text-[10px] font-semibold text-accent">8 科目</span>
+                <span className="rounded-full bg-accent/10 px-2 py-1 text-[10px] font-semibold text-accent">7 科目</span>
               </div>
               <div className="grid grid-cols-2 gap-1.5">
                 {SUBJECTS.map((subject) => (
                   <button
                     type="button"
-                    key={subject}
+                    key={subject.name}
                     onClick={() => handleSubject(subject)}
                     className={`rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
-                      subject === "英文"
+                      subject.name === "英文"
                         ? "border-accent/25 bg-accent/[0.08] text-accent hover:bg-accent/[0.14]"
                         : "border-white/[0.07] bg-white/[0.025] text-slate-300 hover:border-white/[0.16] hover:bg-white/[0.07]"
                     }`}
                   >
-                    <span className="block font-medium">{subject}</span>
-                    <span className="mt-0.5 block text-[10px] opacity-65">{subject === "英文" ? "開始學習" : "準備中"}</span>
+                    <span className="block font-medium">{subject.name}</span>
+                    <span className="mt-0.5 block text-[10px] opacity-65">開始任務</span>
                   </button>
                 ))}
               </div>
@@ -248,8 +252,8 @@ export default function Navbar() {
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {SUBJECTS.map((subject) => (
-                  <button key={subject} type="button" onClick={() => handleSubject(subject)} className="rounded-full border border-white/[0.09] px-2.5 py-1.5 text-xs text-slate-300 transition-colors hover:border-accent/35 hover:bg-accent/[0.08] hover:text-accent">
-                    {subject}{subject === "英文" ? " · 已開放" : ""}
+                  <button key={subject.name} type="button" onClick={() => handleSubject(subject)} className="rounded-full border border-white/[0.09] px-2.5 py-1.5 text-xs text-slate-300 transition-colors hover:border-accent/35 hover:bg-accent/[0.08] hover:text-accent">
+                    {subject.name}
                   </button>
                 ))}
               </div>

@@ -586,12 +586,12 @@ export default function GamePage() {
         {/* 其他科目遊戲模擬區塊 */}
         <SubjectPlaceholder
           title="其他學科的遊戲航線"
-          subtitle="更多科目的學習遊戲與娛樂遊戲正在開發中"
+          subtitle="選擇一條航線，立即開始可作答的跨學科知識遠征"
           items={[
-            { icon: "languages", name: "國文", tagline: "成語星際拼字與詩詞冒險" },
-            { icon: "calculator", name: "數學", tagline: "數字迷宮與幾何攻防" },
-            { icon: "sprout", name: "自然", tagline: "元素收集與生態探索" },
-            { icon: "globe", name: "社會", tagline: "文明建設與歷史遠征" },
+            { icon: "languages", name: "國文", tagline: "成語星橋：語境與修辭挑戰", href: "/practice/101" },
+            { icon: "calculator", name: "數學", tagline: "數字迷宮：運算與規律推理", href: "/practice/102" },
+            { icon: "sprout", name: "自然", tagline: "元素觀測站：自然現象探索", href: "/practice/103" },
+            { icon: "globe", name: "社會", tagline: "島嶼座標：地圖與生活理解", href: "/practice/104" },
           ]}
         />
       </div>

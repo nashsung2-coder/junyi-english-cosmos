@@ -370,12 +370,12 @@ export default function TeacherPage() {
       {/* 其他科目教學資源模擬區塊 */}
       <SubjectPlaceholder
         title="其他學科的教學資源庫"
-        subtitle="更多科目的班級戰情與套餐工坊正在開發中"
+        subtitle="使用可作答題組快速啟動跨學科診斷與課堂延伸"
         items={[
-          { icon: "languages", name: "國文", tagline: "閱讀理解與寫作評量" },
-          { icon: "calculator", name: "數學", tagline: "診斷性測驗與錯題追蹤" },
-          { icon: "sprout", name: "自然", tagline: "實驗紀錄與專題評量" },
-          { icon: "globe", name: "社會", tagline: "探究式學習與報告批閱" },
+          { icon: "languages", name: "國文", tagline: "語境理解：可作答的成語診斷", href: "/practice/101" },
+          { icon: "calculator", name: "數學", tagline: "規律推理：可作答的數感診斷", href: "/practice/102" },
+          { icon: "sprout", name: "自然", tagline: "科學觀察：可作答的現象探索", href: "/practice/103" },
+          { icon: "globe", name: "社會", tagline: "地圖素養：可作答的生活探究", href: "/practice/104" },
         ]}
       />
 

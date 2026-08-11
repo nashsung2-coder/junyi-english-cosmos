@@ -495,12 +495,12 @@ export default function SpecialtyPage() {
         {/* 其他科目模擬區塊 */}
         <SubjectPlaceholder
           title="其他學科的星辰航線"
-          subtitle="完成英文旅程後,即可解鎖更多學科的專攻區塊"
+          subtitle="以跨學科任務補強你的能力圖譜，每條航線都可立即作答"
           items={[
-            { icon: "languages", name: "國文", tagline: "古文與現代文的修辭星軌" },
-            { icon: "calculator", name: "數學", tagline: "數字與邏輯的幾何星雲" },
-            { icon: "sprout", name: "自然", tagline: "生命與科學的探索星圖" },
-            { icon: "globe", name: "社會", tagline: "歷史與地理的文明星座" },
+            { icon: "languages", name: "國文", tagline: "成語星橋：語境與修辭理解", href: "/practice/101" },
+            { icon: "calculator", name: "數學", tagline: "數字迷宮：運算與幾何推理", href: "/practice/102" },
+            { icon: "sprout", name: "自然", tagline: "元素觀測站：生命與科學探索", href: "/practice/103" },
+            { icon: "globe", name: "社會", tagline: "島嶼座標：地圖與生活理解", href: "/practice/104" },
           ]}
         />
       </main>
