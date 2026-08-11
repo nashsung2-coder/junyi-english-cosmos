@@ -339,3 +339,18 @@ export const RESOURCE_LINKS = [
     url: "https://www.junyiacademy.org/topics/jutor",
   },
 ] as const;
+
+/**
+ * Manus OAuth 登入工具(模板升級後 main.tsx 需此匯出)
+ * 建立一次性的 nonce cookie 並導向 OAuth 入口
+ */
+import { OAUTH_STATE_COOKIE } from "@shared/const";
+
+export const startLogin = () => {
+  const nonce = Math.random().toString(36).slice(2) + Date.now().toString(36);
+  const portalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL ?? "https://auth.manus.im";
+  const callback = `${window.location.origin}/api/oauth/callback`;
+  document.cookie = `${OAUTH_STATE_COOKIE}=${nonce}; Path=/; SameSite=Strict; Secure; Max-Age=600`;
+  const state = btoa(JSON.stringify({ redirectUri: callback, nonce }));
+  window.location.href = `${portalUrl}/oauth/authorize?state=${encodeURIComponent(state)}&client_id=${encodeURIComponent(import.meta.env.VITE_APP_ID ?? "")}`;
+};

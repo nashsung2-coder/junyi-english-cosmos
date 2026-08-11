@@ -21,6 +21,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { STARS, EXPEDITIONS, PET_SHOP, ADVENTURES, PLAYGO_URL } from "@/const";
+import Navbar from "@/components/Navbar";
+import SubjectPlaceholder from "@/components/SubjectPlaceholder";
+import { useLearningProgress } from "@/contexts/LearningProgressContext";
 
 /**
  * GamePage - 遊戲模式(學習遊戲 × 娛樂遊戲)
@@ -31,12 +34,11 @@ import { STARS, EXPEDITIONS, PET_SHOP, ADVENTURES, PLAYGO_URL } from "@/const";
  *   * 「與寵物聊天」連結 PlayGO AI
  */
 
-const STARMAP_IMG = "/manus-storage/junyi-starmap_15034bfa.png";
-const MASCOT_IMG = "/manus-storage/junyi-mascot_75414d3f.png";
+const STARMAP_IMG = "/assets/junyi-starmap.png";
+const MASCOT_IMG = "/assets/junyi-mascot.png";
 
 /** 用戶狀態(本地示範值) */
 const INITIAL = {
-  starCoins: 320,
   intimacy: 82,
   happiness: 70,
   power: 45, // 裝備戰鬥力(初始 0,用戶購買裝備提升)
@@ -56,9 +58,10 @@ export default function GamePage() {
   const [mode, setMode] = useState<"learn" | "play">("learn");
   const [petTab, setPetTab] = useState("home");
   const [s, setS] = useState(INITIAL);
+  const { state: learningState, spendStarCoins, missionCompleted } = useLearningProgress();
 
   const buy = (shop: (typeof PET_SHOP)[number]) => {
-    if (s.starCoins < shop.price) {
+    if (learningState.starCoins < shop.price) {
       toast.error(`星幣不足!再去「學習遊戲」完成知識遠征賺星幣吧`, { duration: 4000 });
       return;
     }
@@ -69,21 +72,22 @@ export default function GamePage() {
     if (shop.type === "food") {
       const intimacyGain = shop.id === "star-milk" ? 20 : 8;
       const happyGain = shop.id === "star-milk" ? 10 : 10;
+      spendStarCoins(shop.price);
       setS((p) => ({
         ...p,
-        starCoins: p.starCoins - shop.price,
         intimacy: Math.min(100, p.intimacy + intimacyGain),
         happiness: Math.min(100, p.happiness + happyGain),
       }));
       toast.success(`餵食成功!${shop.name} → 親密度 +${intimacyGain},狐狸貓好開心`);
     } else if (shop.type === "item") {
-      setS((p) => ({ ...p, starCoins: p.starCoins - shop.price, ownedItems: [...p.ownedItems, shop.id] }));
+      spendStarCoins(shop.price);
+      setS((p) => ({ ...p, ownedItems: [...p.ownedItems, shop.id] }));
       toast.success(`獲得 ${shop.name}!`);
     } else {
       const bonus = shop.id === "collar" ? 15 : shop.id === "cape" ? 30 : 50;
+      spendStarCoins(shop.price);
       setS((p) => ({
         ...p,
-        starCoins: p.starCoins - shop.price,
         ownedGears: [...p.ownedGears, shop.id],
         power: p.power + bonus,
       }));
@@ -135,15 +139,20 @@ export default function GamePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_62%_42%_at_74%_0%,rgba(245,158,11,0.14),transparent_68%),#061014] text-foreground">
+      {/* 全站導覽列 */}
+      <Navbar />
       {/* 頂部狀態列 */}
-      <div className="sticky top-0 z-40 border-b border-white/8 bg-background/80 backdrop-cosmic">
-        <div className="container py-4 flex items-center justify-between">
+      <div className="sticky top-[60px] z-30 border-b border-amber-300/10 bg-[#0b1113]/88 backdrop-cosmic">
+        <div className="container pt-5 pb-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/hall">
               <ArrowLeft className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
             </Link>
-            <h1 className="text-2xl font-bold">星辰冒險</h1>
+            <div>
+              <p className="mb-0.5 text-[10px] font-semibold tracking-[0.2em] text-amber-200/70">EXPEDITION DECK</p>
+              <h1 className="text-2xl font-bold">星辰冒險</h1>
+            </div>
           </div>
           <div className="flex items-center gap-4 text-sm">
             <div className="flex items-center gap-1.5 text-muted-foreground">
@@ -152,7 +161,7 @@ export default function GamePage() {
             </div>
             <div className="flex items-center gap-1.5 text-amber-300/90">
               <Coins className="w-4 h-4" />
-              <span className="font-mono">{s.starCoins.toLocaleString()} 星幣</span>
+              <span className="font-mono">{learningState.starCoins.toLocaleString()} 星幣</span>
             </div>
           </div>
         </div>
@@ -165,7 +174,7 @@ export default function GamePage() {
             onClick={() => setMode("learn")}
             className={`rounded-lg py-3 text-sm font-semibold transition-all duration-300 inline-flex items-center justify-center gap-2 ${
               mode === "learn"
-                ? "bg-gradient-to-r from-teal-500/20 to-emerald-500/20 text-accent shadow-[0_0_20px_rgba(78,205,196,0.15)]"
+                ? "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-200 shadow-[0_0_20px_rgba(251,191,36,0.15)]"
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
@@ -186,14 +195,14 @@ export default function GamePage() {
         {/* ================= 學習遊戲 ================= */}
         {mode === "learn" && (
           <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-            <div className="glass-card p-5 mb-6 border-accent/25">
+            <div className="glass-card mb-6 border-amber-300/25 bg-gradient-to-r from-amber-400/[0.07] to-transparent p-5">
               <div className="flex flex-col md:flex-row md:items-center gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-accent/15 border border-accent/40 flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-accent" />
+                  <div className="w-10 h-10 rounded-full border border-amber-300/40 bg-amber-300/10 flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-amber-200" />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-accent">學習遊戲 · 星幣的來源</h2>
+                    <h2 className="font-semibold text-amber-100">學習遊戲 · 星幣的來源</h2>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       完成知識遠征就能獲得「學習星幣」——去娛樂遊戲餵寵物、買裝備全靠它!
                     </p>
@@ -283,15 +292,16 @@ export default function GamePage() {
                           </div>
                         </div>
                       </div>
-                      <a
-                        href={exp.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn-cosmic-primary inline-flex items-center justify-center gap-2 text-sm"
-                      >
-                        出發遠征
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
+                      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                        <Link href={`/practice/${exp.id}`} className="btn-cosmic-primary inline-flex items-center justify-center gap-2 text-sm">
+                          {missionCompleted(exp.id) ? "再次遠征" : "開始測驗"}
+                          <Swords className="w-4 h-4" />
+                        </Link>
+                        <a href={exp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-white/30 hover:text-foreground">
+                          均一延伸
+                          <ExternalLink className="w-4 h-4" />
+                        </a>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -496,12 +506,12 @@ export default function GamePage() {
                       </p>
                     </div>
                   </div>
-                  <div className="mt-3 text-sm font-mono text-amber-300">目前持有:{s.starCoins.toLocaleString()} 星幣</div>
+                  <div className="mt-3 text-sm font-mono text-amber-300">目前持有:{learningState.starCoins.toLocaleString()} 星幣</div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {PET_SHOP.map((item) => {
                     const owned = item.type === "gear" && s.ownedGears.includes(item.id);
-                    const affordable = s.starCoins >= item.price;
+                    const affordable = learningState.starCoins >= item.price;
                     return (
                       <div key={item.id} className="glass-card p-5 flex flex-col hover:bg-white/5 transition-all">
                         <div className="flex items-center justify-between mb-3">
@@ -548,6 +558,18 @@ export default function GamePage() {
             </Tabs>
           </div>
         )}
+
+        {/* 其他科目遊戲模擬區塊 */}
+        <SubjectPlaceholder
+          title="其他學科的遊戲航線"
+          subtitle="更多科目的學習遊戲與娛樂遊戲正在開發中"
+          items={[
+            { icon: "languages", name: "國文", tagline: "成語星際拼字與詩詞冒險" },
+            { icon: "calculator", name: "數學", tagline: "數字迷宮與幾何攻防" },
+            { icon: "sprout", name: "自然", tagline: "元素收集與生態探索" },
+            { icon: "globe", name: "社會", tagline: "文明建設與歷史遠征" },
+          ]}
+        />
       </div>
     </div>
   );

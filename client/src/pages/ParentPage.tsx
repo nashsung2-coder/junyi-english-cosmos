@@ -3,6 +3,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Heart, TrendingUp, BookOpen, Users, Gift, MessageCircle, ChevronUp, ChevronDown, ExternalLink, Sparkles } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import SubjectPlaceholder from "@/components/SubjectPlaceholder";
 
 /**
  * ParentPage - 家長區 (親子星港)
@@ -11,8 +13,8 @@ import { ArrowLeft, Heart, TrendingUp, BookOpen, Users, Gift, MessageCircle, Che
  * - 成長摘要、能力風景、親子共學艙、成長相簿、加油小棧
  */
 
-const FAMILY_IMG = "/manus-storage/junyi-family_a659fea6.png";
-const MASCOT_IMG = "/manus-storage/junyi-mascot_75414d3f.png";
+const FAMILY_IMG = "/assets/junyi-family.png";
+const MASCOT_IMG = "/assets/junyi-mascot.png";
 
 const CHILDREN = [
   { id: 1, name: "星兒", grade: "國小四年級" },
@@ -60,9 +62,11 @@ export default function ParentPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* 全站導覽列 */}
+      <Navbar />
       {/* 頂部狀態列 */}
-      <div className="sticky top-0 z-40 border-b border-white/8 bg-background/80 backdrop-cosmic">
-        <div className="container py-4 flex items-center justify-between">
+      <div className="sticky top-[60px] z-30 border-b border-white/8 bg-background/80 backdrop-cosmic">
+        <div className="container pt-5 pb-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/hall">
               <ArrowLeft className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
@@ -292,6 +296,18 @@ export default function ParentPage() {
             </div>
           </TabsContent>
         </Tabs>
+
+        {/* 其他科目共學模擬區塊 */}
+        <SubjectPlaceholder
+          title="其他學科的親子共學艙"
+          subtitle="更多科目的家長陪伴資源正在準備中"
+          items={[
+            { icon: "languages", name: "國文", tagline: "親子共讀與作文引導" },
+            { icon: "calculator", name: "數學", tagline: "生活中的數學小任務" },
+            { icon: "sprout", name: "自然", tagline: "戶外觀察與實驗記錄" },
+            { icon: "globe", name: "社會", tagline: "時事討論與地圖探索" },
+          ]}
+        />
       </div>
     </div>
   );

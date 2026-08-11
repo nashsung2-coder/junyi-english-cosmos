@@ -21,6 +21,9 @@ import {
   Circle,
 } from "lucide-react";
 import { DIMENSIONS, TODAY_TASKS, ACHIEVEMENTS, RESOURCE_LINKS } from "@/const";
+import Navbar from "@/components/Navbar";
+import SubjectPlaceholder from "@/components/SubjectPlaceholder";
+import { useLearningProgress } from "@/contexts/LearningProgressContext";
 
 /**
  * SpecialtyPage - 專攻區 (學力之間)
@@ -30,7 +33,7 @@ import { DIMENSIONS, TODAY_TASKS, ACHIEVEMENTS, RESOURCE_LINKS } from "@/const";
  * - 五維能力雷達圖 + 玻璃擬態卡片
  */
 
-const LOGO = "/manus-storage/junyi-logo_3af43229.png";
+const LOGO = "/assets/junyi-logo.png";
 
 const dimIcons: Record<string, typeof Ear> = {
   listening: Ear,
@@ -86,12 +89,10 @@ const SKILLS: Record<string, Array<{ name: string; level: string; unlocked: bool
 };
 
 /** 五維能力雷達圖(SVG) */
-function RadarChart() {
+function RadarChart({ values }: { values: number[] }) {
   const size = 260;
   const center = size / 2;
   const radius = 85;
-  // listening, speaking, reading, writing, vocabulary (以文法作第五軸參考)
-  const values = [0.75, 0.65, 0.6, 0.5, 0.82];
   const labels = ["聽力", "口說", "閱讀", "寫作", "字彙"];
 
   const points = values.map((v, i) => {
@@ -151,16 +152,36 @@ function RadarChart() {
 export default function SpecialtyPage() {
   const [activeView, setActiveView] = useState<string>("dashboard");
   const [selectedDimension, setSelectedDimension] = useState<string>("listening");
-  const [tasks, setTasks] = useState<Array<{ id: number; name: string; category: string; minutes: number; done: boolean }>>([...TODAY_TASKS]);
-
-  const toggleTask = (id: number) => {
-    setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+  const { state, level, accuracy, missionCompleted } = useLearningProgress();
+  const taskMissionMap: Record<number, number | undefined> = { 2: 3, 3: 3, 4: 2, 5: 2 };
+  const resourceMissionMap: Record<string, number | undefined> = {
+    "字母與發音": 1,
+    "單字": 2,
+    "聽力": 3,
+    "生活情境應用": 3,
+    "文法": 4,
+    "閱讀": 5,
   };
+  const tasks = TODAY_TASKS.map((task) => {
+    const practiceId = taskMissionMap[task.id];
+    return {
+      ...task,
+      practiceId,
+      done: practiceId !== undefined ? missionCompleted(practiceId) : task.done,
+    };
+  });
+  const radarValues = [
+    Math.min(0.96, 0.38 + state.dimensionPoints.listening / 130),
+    Math.min(0.96, 0.38 + state.dimensionPoints.speaking / 130),
+    Math.min(0.96, 0.38 + state.dimensionPoints.reading / 130),
+    Math.min(0.96, 0.38 + state.dimensionPoints.grammar / 130),
+    Math.min(0.96, 0.38 + state.dimensionPoints.vocabulary / 130),
+  ];
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_75%_40%_at_70%_0%,rgba(59,130,246,0.13),transparent_70%),#061014] text-foreground flex">
       {/* 左側欄 */}
-      <aside className="w-20 border-r border-white/8 flex flex-col items-center py-6 gap-4 bg-background/60">
+      <aside className="w-20 border-r border-sky-300/10 flex flex-col items-center py-6 gap-4 bg-[#07131b]/80 backdrop-blur-xl">
         <Link href="/hall">
           <button className="p-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all mb-4" title="回大廳">
             <Home className="w-5 h-5" />
@@ -175,7 +196,7 @@ export default function SpecialtyPage() {
               onClick={() => setActiveView(item.id)}
               className={`p-3 rounded-lg transition-all duration-200 ${
                 isActive
-                  ? "bg-accent text-accent-foreground"
+                  ? "bg-sky-400 text-slate-950 shadow-[0_0_24px_rgba(56,189,248,0.28)]"
                   : "text-muted-foreground hover:text-foreground hover:bg-white/5"
               }`}
               title={item.label}
@@ -193,21 +214,26 @@ export default function SpecialtyPage() {
 
       {/* 主內容 */}
       <main className="flex-1 overflow-auto">
+        {/* 全站導覽列 */}
+        <Navbar />
         {/* 頂部狀態列 */}
-        <div className="sticky top-0 z-40 border-b border-white/8 bg-background/80 backdrop-cosmic">
-          <div className="container py-4 flex items-center justify-between">
+        <div className="sticky top-[60px] z-30 border-b border-sky-300/10 bg-[#07131b]/88 backdrop-cosmic">
+          <div className="container pt-5 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link href="/hall">
                 <ArrowLeft className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
               </Link>
-              <h1 className="text-2xl font-bold">
-                {activeView === "dashboard" && "戰力現狀"}
-                {activeView === "skills" && "技能樹"}
-                {activeView === "path" && "學習路徑"}
-                {activeView === "records" && "自我紀錄"}
-              </h1>
+              <div>
+                <p className="mb-0.5 text-[10px] font-semibold tracking-[0.2em] text-sky-300/75">LEARNING COMMAND</p>
+                <h1 className="text-2xl font-bold">
+                  {activeView === "dashboard" && "戰力現狀"}
+                  {activeView === "skills" && "技能樹"}
+                  {activeView === "path" && "學習路徑"}
+                  {activeView === "records" && "自我紀錄"}
+                </h1>
+              </div>
             </div>
-            <Button variant="outline" size="sm" className="border-accent/40 text-accent hover:bg-accent/10">
+            <Button variant="outline" size="sm" className="border-sky-300/40 text-sky-200 hover:bg-sky-300/10">
               近30天
             </Button>
           </div>
@@ -218,12 +244,12 @@ export default function SpecialtyPage() {
           {activeView === "dashboard" && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2">
-                <div className="glass-card p-6">
-                  <h2 className="text-xl font-semibold mb-6">五維能力評估</h2>
-                  <RadarChart />
+                <div className="glass-card border-sky-300/15 bg-gradient-to-br from-sky-500/[0.07] to-transparent p-6">
+                  <h2 className="mb-6 text-xl font-semibold">五維能力評估</h2>
+                  <RadarChart values={radarValues} />
                   <div className="mt-6 text-center">
-                    <div className="text-4xl font-bold text-accent font-mono">A1+</div>
-                    <div className="text-sm text-muted-foreground">綜合等級 · CEFR</div>
+                    <div className="font-mono text-4xl font-bold text-sky-300">Lv.{level}</div>
+                    <div className="text-sm text-muted-foreground">互動練習推估等級 · 累計正確率 {accuracy}%</div>
                   </div>
                 </div>
               </div>
@@ -244,15 +270,15 @@ export default function SpecialtyPage() {
 
                 <div className="glass-card p-4">
                   <div className="text-xs text-muted-foreground mb-1">累積學習時數</div>
-                  <div className="text-2xl font-bold font-mono">86 小時</div>
+                  <div className="text-2xl font-bold font-mono">{Math.round(state.totalQuestions * 1.5) / 10} 小時</div>
                 </div>
                 <div className="glass-card p-4">
                   <div className="text-xs text-muted-foreground mb-1">連續天數</div>
-                  <div className="text-2xl font-bold font-mono">14 天</div>
+                  <div className="text-2xl font-bold font-mono">{state.currentStreak} 次</div>
                 </div>
                 <div className="glass-card p-4">
                   <div className="text-xs text-muted-foreground mb-1">最近檢測</div>
-                  <div className="text-sm font-semibold font-mono">2026/08/05</div>
+                  <div className="text-sm font-semibold font-mono">{state.completedMissionIds.length ? "已完成遠征" : "尚未開始遠征"}</div>
                 </div>
               </div>
             </div>
@@ -341,9 +367,8 @@ export default function SpecialtyPage() {
                   <h3 className="text-lg font-semibold mb-4">今日任務</h3>
                   <div className="space-y-3">
                     {tasks.map((task) => (
-                      <button
+                      <div
                         key={task.id}
-                        onClick={() => toggleTask(task.id)}
                         className={`w-full flex items-center gap-3 rounded-lg border p-3 text-left transition-all ${
                           task.done
                             ? "border-accent/30 bg-accent/5"
@@ -363,7 +388,16 @@ export default function SpecialtyPage() {
                             {task.category} · 約 {task.minutes} 分鐘
                           </div>
                         </div>
-                      </button>
+                        {task.practiceId && !task.done && (
+                          <Link
+                            href={`/practice/${task.practiceId}`}
+                            className="shrink-0 rounded-lg border border-accent/35 px-3 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
+                          >
+                            開始練習
+                          </Link>
+                        )}
+                        {task.done && <span className="shrink-0 text-xs text-accent">已完成</span>}
+                      </div>
                     ))}
                   </div>
                   <div className="mt-4 pt-4 border-t border-white/8 text-xs text-muted-foreground">
@@ -376,7 +410,8 @@ export default function SpecialtyPage() {
                 <h3 className="text-lg font-semibold mb-4">學習熱力圖</h3>
                 <div className="grid grid-cols-7 gap-1.5">
                   {Array.from({ length: 35 }).map((_, i) => {
-                    const intensity = Math.floor(Math.random() * 5);
+                    const activityIndex = i - 28;
+                    const intensity = activityIndex >= 0 ? Math.min(4, state.recentActivity[activityIndex] ?? 0) : 0;
                     const colors = ["bg-white/5", "bg-teal-900/30", "bg-teal-700/40", "bg-teal-500/50", "bg-teal-400/70"];
                     return (
                       <div
@@ -388,7 +423,7 @@ export default function SpecialtyPage() {
                   })}
                 </div>
                 <div className="mt-4 text-xs text-muted-foreground">
-                  深淺代表每日學習量,本週共學習 <span className="text-accent font-mono">5</span> 天
+                  深淺代表每次遠征的作答表現；最近 7 次任務中已有 <span className="text-accent font-mono">{state.recentActivity.filter((value) => value > 0).length}</span> 次留下紀錄
                 </div>
               </div>
             </div>
@@ -422,27 +457,52 @@ export default function SpecialtyPage() {
 
                 <TabsContent value="resources" className="mt-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {RESOURCE_LINKS.map((res, idx) => (
-                      <a
-                        key={idx}
-                        href={res.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="glass-card-hover p-4 flex items-center justify-between group"
-                      >
-                        <div>
-                          <div className="text-sm font-semibold">{res.category}</div>
-                          <div className="text-xs text-muted-foreground mt-1">前往均一官網學習</div>
+                    {RESOURCE_LINKS.map((res, idx) => {
+                      const practiceId = resourceMissionMap[res.category];
+                      const completed = practiceId !== undefined && missionCompleted(practiceId);
+                      return (
+                        <div key={idx} className="glass-card-hover flex items-center justify-between gap-4 p-4">
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 text-sm font-semibold">
+                              <span>{res.category}</span>
+                              {completed && <span className="rounded-full border border-accent/30 bg-accent/10 px-2 py-0.5 text-[10px] font-medium text-accent">已完成練習</span>}
+                            </div>
+                            <div className="mt-1 text-xs text-muted-foreground">{practiceId ? "先完成星際題組，再延伸到均一課程" : "前往均一官網延伸學習"}</div>
+                          </div>
+                          <div className="flex shrink-0 items-center gap-2">
+                            {practiceId && (
+                              <Link
+                                href={`/practice/${practiceId}`}
+                                className="rounded-lg border border-accent/35 px-2.5 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
+                              >
+                                {completed ? "再練一次" : "開始練習"}
+                              </Link>
+                            )}
+                            <a href={res.url} target="_blank" rel="noopener noreferrer" aria-label={`前往均一 ${res.category} 課程`} className="rounded-lg border border-white/10 p-2 text-muted-foreground transition-colors hover:border-white/25 hover:text-accent">
+                              <ChevronRight className="h-4 w-4" />
+                            </a>
+                          </div>
                         </div>
-                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all" />
-                      </a>
-                    ))}
+                      );
+                    })}
                   </div>
                 </TabsContent>
               </Tabs>
             </div>
           )}
         </div>
+
+        {/* 其他科目模擬區塊 */}
+        <SubjectPlaceholder
+          title="其他學科的星辰航線"
+          subtitle="完成英文旅程後,即可解鎖更多學科的專攻區塊"
+          items={[
+            { icon: "languages", name: "國文", tagline: "古文與現代文的修辭星軌" },
+            { icon: "calculator", name: "數學", tagline: "數字與邏輯的幾何星雲" },
+            { icon: "sprout", name: "自然", tagline: "生命與科學的探索星圖" },
+            { icon: "globe", name: "社會", tagline: "歷史與地理的文明星座" },
+          ]}
+        />
       </main>
     </div>
   );

@@ -3,6 +3,8 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowDown, BarChart3, BookOpenCheck, Gamepad2, Users } from "lucide-react";
 import { PORTALS } from "@/const";
+import Navbar from "@/components/Navbar";
+import SubjectPlaceholder from "@/components/SubjectPlaceholder";
 
 /**
  * HallPage - 星辰啟航 (大廳)
@@ -12,8 +14,8 @@ import { PORTALS } from "@/const";
  * - 玻璃擬態卡片 + Canvas 粒子背景
  */
 
-const HERO_BG = "/manus-storage/junyi-hero-nebula_91cc74f8.png";
-const LOGO = "/manus-storage/junyi-logo_3af43229.png";
+const HERO_BG = "/assets/junyi-hero-nebula.png";
+const LOGO = "/assets/junyi-logo.png";
 
 export default function HallPage() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
@@ -30,19 +32,7 @@ export default function HallPage() {
       <ParticleBackground />
 
       {/* 導覽列 */}
-      <nav className="fixed top-0 left-0 right-0 z-50 backdrop-cosmic border-b border-white/8">
-        <div className="container flex items-center justify-between py-4">
-          <div className="flex items-center gap-2">
-            <img src={LOGO} alt="均一星辰宇宙" className="w-8 h-8" />
-            <span className="font-bold text-lg">均一星辰宇宙</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm" className="text-xs border-accent/40 text-accent hover:bg-accent/10">
-              登入均一
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero 區 */}
       <section
@@ -131,6 +121,24 @@ export default function HallPage() {
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* 其他科目模擬區塊 */}
+      <section className="px-4 pb-8">
+        <div className="container">
+          <SubjectPlaceholder
+            title="更多學科的星辰航線"
+            subtitle="除英文以外,各科目入口正在規劃中"
+            items={[
+              { icon: "languages", name: "國文", tagline: "古文與現代文的修辭星軌" },
+              { icon: "calculator", name: "數學", tagline: "數字與邏輯的幾何星雲" },
+              { icon: "sprout", name: "自然", tagline: "生命與科學的探索星圖" },
+              { icon: "globe", name: "社會", tagline: "歷史與地理的文明星座" },
+              { icon: "palette", name: "藝術", tagline: "色彩與創意的星光畫廊" },
+              { icon: "heartPulse", name: "健康", tagline: "體能與身心的活力軌道" },
+            ]}
+          />
         </div>
       </section>
 

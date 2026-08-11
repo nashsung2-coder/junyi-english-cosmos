@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Users, Package, UserCheck, Trophy, Bell, TrendingUp, ExternalLink, AlertCircle, CheckCircle2 } from "lucide-react";
+import Navbar from "@/components/Navbar";
+import SubjectPlaceholder from "@/components/SubjectPlaceholder";
 
 /**
  * TeacherPage - 教師區 (班級指揮艙)
@@ -59,8 +61,10 @@ export default function TeacherPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {/* 全站導覽列 */}
+      <Navbar />
       {/* 頂部狀態列 */}
-      <div className="sticky top-0 z-40 border-b border-white/8 bg-background/80 backdrop-cosmic">
+      <div className="sticky top-[60px] z-30 border-b border-white/8 bg-background/80 backdrop-cosmic">
         <div className="container py-4 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
             <Link href="/hall">
@@ -346,6 +350,18 @@ export default function TeacherPage() {
           </div>
         )}
       </div>
+
+      {/* 其他科目教學資源模擬區塊 */}
+      <SubjectPlaceholder
+        title="其他學科的教學資源庫"
+        subtitle="更多科目的班級戰情與套餐工坊正在開發中"
+        items={[
+          { icon: "languages", name: "國文", tagline: "閱讀理解與寫作評量" },
+          { icon: "calculator", name: "數學", tagline: "診斷性測驗與錯題追蹤" },
+          { icon: "sprout", name: "自然", tagline: "實驗紀錄與專題評量" },
+          { icon: "globe", name: "社會", tagline: "探究式學習與報告批閱" },
+        ]}
+      />
 
       {/* 通知浮鈕 */}
       <button className="fixed bottom-6 right-6 w-12 h-12 rounded-full bg-purple-500/90 text-white flex items-center justify-center shadow-lg hover:bg-purple-500 transition-colors">

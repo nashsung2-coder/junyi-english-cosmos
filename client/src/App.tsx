@@ -10,8 +10,12 @@ import SpecialtyPage from "./pages/SpecialtyPage";
 import GamePage from "./pages/GamePage";
 import ParentPage from "./pages/ParentPage";
 import TeacherPage from "./pages/TeacherPage";
-
+import JourneyPage from "./pages/JourneyPage";
+import ButlerPage from "./pages/ButlerPage";
+import PracticePage from "./pages/PracticePage";
+import { LearningProgressProvider } from "./contexts/LearningProgressContext";
 function Router() {
+  // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
@@ -20,6 +24,9 @@ function Router() {
       <Route path={"/game"} component={GamePage} />
       <Route path={"/parent"} component={ParentPage} />
       <Route path={"/teacher"} component={TeacherPage} />
+      <Route path={"/journey"} component={JourneyPage} />
+      <Route path={"/butler"} component={ButlerPage} />
+      <Route path={"/practice/:missionId"} component={PracticePage} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
@@ -38,10 +45,12 @@ function App() {
       <ThemeProvider
         defaultTheme="dark"
       >
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <LearningProgressProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </LearningProgressProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
