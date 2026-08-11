@@ -1,142 +1,261 @@
 {
   "resources": {
-    "eng_elementary": {
+    "eng_phonics_letters": {
       "categoryId": 1,
-      "categoryName": "國小英文",
-      "categoryUrl": "https://www.junyiacademy.org/topics/eng-elementary",
+      "categoryName": "字母與發音",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english-lettersandphonics",
       "courses": [
         {
           "id": 1,
-          "name": "國小英語總覽",
-          "url": "https://www.junyiacademy.org/topics/eng-elementary",
-          "level": "一年級至六年級",
-          "description": "對應108課綱的國小英語學習資源,從字母發音到日常會話,逐步建立英語基礎。"
+          "name": "認識字母 A",
+          "url": "https://www.junyiacademy.org/topics/e1aa",
+          "level": "國小三年級",
+          "description": "認識英文字母 A 的讀法與寫法,搭配影片與初階至進階學習單練習。"
         },
         {
           "id": 2,
-          "name": "字母與發音 Phonics",
-          "url": "https://www.junyiacademy.org/topics/junyi-english",
-          "level": "低年級",
-          "description": "以趣味教學影片認識26個英文字母與自然發音法,奠定拼讀能力基礎。"
+          "name": "字母的讀法",
+          "url": "https://www.junyiacademy.org/topics/lettersandphonics-namewrite#topic-page-anchor-lettername",
+          "level": "國小低年級",
+          "description": "26 個英文字母的正確讀法,是自然發音學習的第一步。"
         },
         {
           "id": 3,
-          "name": "國小英語影片系列(Wonder World)",
-          "url": "https://www.junyiacademy.org/topics/eng-elementary",
-          "level": "一年級至六年級",
-          "description": "配合南版教材的單元影片,將課文內容以生動動畫呈現,搭配課後練習強化學習。"
-        }
-      ]
-    },
-    "eng_junior": {
-      "categoryId": 2,
-      "categoryName": "國中英文",
-      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english",
-      "courses": [
+          "name": "字母與代表字詞",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-lettersandphonics-lettersound",
+          "level": "國小低年級",
+          "description": "每個字母的代表音與常見代表字詞,建立字母音感。"
+        },
         {
           "id": 4,
-          "name": "國中英文總覽",
-          "url": "https://www.junyiacademy.org/topics/junyi-english",
-          "level": "七年級至九年級",
-          "description": "國中英文學科影片與習題,涵蓋文法、單字、閱讀與聽力,銜接高中學習。"
+          "name": "自然發音的六十堂課",
+          "url": "https://www.junyiacademy.org/topics/eephn",
+          "level": "國小低中年級",
+          "description": "陳超明教授協助課程設計,老師示範發音並搭配轉盤、抽球等互動小遊戲,「看到字就會念,會唸就會拼」。"
         },
         {
           "id": 5,
-          "name": "課文單字例句(南一版)",
-          "url": "https://www.junyiacademy.org/topics/junyi-english",
-          "level": "七年級至九年級",
-          "description": "依南一版課本逐課整理的單字與例句影片,幫助學生掌握課文重點字彙。"
-        },
+          "name": "母音與子音拼讀",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-lettersandphonics-spellsound",
+          "level": "國小中年級",
+          "description": "母音、子音與字母拼讀規則,銜接自然發音完整體系。"
+        }
+      ]
+    },
+    "eng_words": {
+      "categoryId": 2,
+      "categoryName": "單字",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english-vocab",
+      "courses": [
         {
           "id": 6,
-          "name": "文法專題(時態系列)",
-          "url": "https://www.junyiacademy.org/videos/nMV0ZvWSqW4",
-          "level": "七年級至九年級",
-          "description": "從現在式到完成式、進行式,以清晰的脈絡講解英文時態,搭配例題練習。"
+          "name": "常見單字 Sight Words",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-vocab#topic-page-anchor-junyi-english-vocab-sightwords",
+          "level": "國小低年級",
+          "description": "高頻 Sight Words 與拼字相似的單字辨析,快速累積基礎字彙。"
+        },
+        {
+          "id": 7,
+          "name": "主題單字(動物、家庭、食物…)",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-vocab",
+          "level": "國小至國中",
+          "description": "依 Animals、Clothes、Food、Family 等主題分類學習單字,搭配例句記憶。"
+        },
+        {
+          "id": 8,
+          "name": "國中英文單字 2000",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-vocab",
+          "level": "國中",
+          "description": "全新上架的國中英文單字 2000 系列,銜接會考字彙需求。"
+        },
+        {
+          "id": 9,
+          "name": "臺灣主題單字",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-vocab",
+          "level": "國小至國中",
+          "description": "臺灣景點、飲食與風俗的英文表達,用英文介紹家鄉。"
+        },
+        {
+          "id": 10,
+          "name": "學科英文單字",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-vocab",
+          "level": "國小至國中",
+          "description": "自然、社會、人類身體等跨學科英文單字,支援雙語學習。"
+        }
+      ]
+    },
+    "eng_grammar": {
+      "categoryId": 3,
+      "categoryName": "文法",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english-grammar",
+      "courses": [
+        {
+          "id": 11,
+          "name": "時態:現在式",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-grammar#topic-page-anchor-junyi-english-grammar-tense",
+          "level": "國中",
+          "description": "Present Tense 現在式,時態系列的起點。"
+        },
+        {
+          "id": 12,
+          "name": "時態:未來式、過去式",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-grammar#topic-page-anchor-junyi-english-grammar-tense",
+          "level": "國中",
+          "description": "Future Tense 與 Past Tense,掌握三大基礎時態。"
+        },
+        {
+          "id": 13,
+          "name": "詞類(名詞、動詞、形容詞…)",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-grammar",
+          "level": "國中",
+          "description": "名詞與代名詞、動詞、形容詞與副詞等詞類分類學習。"
+        },
+        {
+          "id": 14,
+          "name": "句型與從句型到寫作",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-grammar",
+          "level": "國中至高中",
+          "description": "句型結構、功能與假設語氣,余綺芳老師「從句型到寫作」資源授權課程。"
         }
       ]
     },
     "eng_listening": {
-      "categoryId": 3,
-      "categoryName": "聽力訓練",
+      "categoryId": 4,
+      "categoryName": "聽力",
       "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english-listening",
       "courses": [
         {
-          "id": 7,
-          "name": "英文聽力專區",
+          "id": 15,
+          "name": "聽力策略與聽故事",
           "url": "https://www.junyiacademy.org/topics/junyi-english-listening",
           "level": "國小至國中",
-          "description": "以互動影片與題目訓練聽力理解,從短句對話到篇章聽解循序漸進。"
+          "description": "聽力策略方法論與聽故事活動,循序漸進培養聽解能力。"
         },
         {
-          "id": 8,
-          "name": "聽故事 Storytelling",
-          "url": "https://www.junyiacademy.org/topics/junyi-english-others-storytelling",
+          "id": 16,
+          "name": "兒歌",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-listening",
           "level": "國小",
-          "description": "以故事為主題的聽力活動,在情境中練習辨識關鍵訊息與細節。"
-        }
-      ]
-    },
-    "eng_speaking_writing": {
-      "categoryId": 4,
-      "categoryName": "口說與寫作",
-      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english",
-      "courses": [
-        {
-          "id": 9,
-          "name": "Jutor Writing 英文寫作",
-          "url": "https://www.junyiacademy.org/topics/junyi-english",
-          "level": "國小至國中",
-          "description": "AI輔助英文寫作工具,提供即時回饋與修改建議,提升書寫表達能力。"
+          "description": "透過英文兒歌磨耳朵,培養語感與節奏感。"
         },
         {
-          "id": 10,
-          "name": "Jutor Speaking 英語口說",
-          "url": "https://www.junyiacademy.org/topics/junyi-english",
-          "level": "國小至國中",
-          "description": "AI輔助口說練習,即時分析發音與流利度,讓每個孩子都有開口說英文的機會。"
+          "id": 17,
+          "name": "Jutor Listening 英聽測驗",
+          "url": "https://www.junyiacademy.org/topics/jutor#topic-page-anchor-jutor-listening",
+          "level": "國中",
+          "description": "Jutor 歷屆英聽試題線上測驗平台,實戰演練會考聽力。"
         }
       ]
     },
-    "eng_exam": {
+    "eng_reading": {
       "categoryId": 5,
-      "categoryName": "測驗與練習題庫",
-      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english",
+      "categoryName": "閱讀",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english-reading",
       "courses": [
         {
-          "id": 11,
-          "name": "英文互動題庫",
-          "url": "https://www.junyiacademy.org/topics/junyi-english",
+          "id": 18,
+          "name": "英文閱讀素養與策略",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-reading",
           "level": "國小至國中",
-          "description": "超過2000題英文互動練習題,即時回饋並依作答表現調整難度。"
+          "description": "英文閱讀素養課程與閱讀策略教學,提升篇章理解力。"
         },
         {
-          "id": 12,
-          "name": "單元測驗與總複習",
-          "url": "https://www.junyiacademy.org/topics/junyi-english",
+          "id": 19,
+          "name": "英文主題閱讀",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-reading",
           "level": "國小至國中",
-          "description": "各單元測驗與期末總複習題組,協助檢驗學習成效並聚焦弱項補強。"
+          "description": "主題式英文閱讀素材,擴充閱讀廣度與字彙。"
         }
       ]
     },
-    "eng_teacher": {
+    "eng_context": {
       "categoryId": 6,
-      "categoryName": "教師英文教學資源",
-      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-teacher-resources",
+      "categoryName": "活用與口說",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english-context",
       "courses": [
         {
-          "id": 13,
-          "name": "教師資源區",
-          "url": "https://www.junyiacademy.org/topics/junyi-teacher-resources",
-          "level": "教師專用",
-          "description": "英文教學影片、教案範例與研習資源,支持教師以均一平台實踐混合式教學。"
+          "id": 20,
+          "name": "生活情境應用",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-context",
+          "level": "國小至國中",
+          "description": "將單字與句子應用於真實生活情境,活用所學。"
         },
         {
-          "id": 14,
-          "name": "數位學習工作坊",
-          "url": "https://www.junyiacademy.org/topics/junyi-teacher-resources",
-          "level": "教師專用",
-          "description": "科技輔助自主學習的實作工作坊,帶您掌握英文聽力題庫與AI工具教學運用。"
+          "id": 21,
+          "name": "Jutor Speaking 英語口說",
+          "url": "https://www.junyiacademy.org/topics/jutor#topic-page-anchor-jutor-speaking",
+          "level": "國小至國中",
+          "description": "AI 輔助口說練習,即時分析發音與流利度。"
+        },
+        {
+          "id": 22,
+          "name": "PlayGo AI 英語情境聊天",
+          "url": "https://www.junyiacademy.org/topics/ai-eng-chat",
+          "level": "國小至國中",
+          "description": "與 AI 進行英文情境對話,實境練口說。"
+        }
+      ]
+    },
+    "eng_writing": {
+      "categoryId": 7,
+      "categoryName": "寫作",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english-writing",
+      "courses": [
+        {
+          "id": 23,
+          "name": "高中英語寫作",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-writing",
+          "level": "高中",
+          "description": "高中階段英語寫作課程,銜接學測寫作。"
+        },
+        {
+          "id": 24,
+          "name": "余老師英文寫作",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-writing",
+          "level": "國中至高中",
+          "description": "余綺芳老師授權的英文寫作教學資源。"
+        },
+        {
+          "id": 25,
+          "name": "Jutor Writing 英文寫作",
+          "url": "https://www.junyiacademy.org/topics/jutor#topic-page-anchor-jutor-writing",
+          "level": "國小至國中",
+          "description": "AI 輔助英文寫作,提供即時回饋與修改建議。"
+        }
+      ]
+    },
+    "eng_by_grade": {
+      "categoryId": 8,
+      "categoryName": "依年級學習",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english",
+      "courses": [
+        {
+          "id": 26,
+          "name": "國小英文(低中高年級)",
+          "url": "https://www.junyiacademy.org/topics/eng-elementary",
+          "level": "國小",
+          "description": "依低、中、高年級與 300 常用單字分類的國小英語資源。"
+        },
+        {
+          "id": 27,
+          "name": "國中英文(7–9 年級)",
+          "url": "https://www.junyiacademy.org/topics/eng-junior",
+          "level": "國中",
+          "description": "七至九年級英文課程與總複習,會考衝刺。"
+        },
+        {
+          "id": 28,
+          "name": "高中英文(10–12 年級)",
+          "url": "https://www.junyiacademy.org/topics/english-high",
+          "level": "高中",
+          "description": "十至十二年級與學測總複習,銜接大學入學。"
+        },
+        {
+          "id": 29,
+          "name": "基礎單字 960",
+          "url": "https://www.junyiacademy.org/topics/a-j-vocab",
+          "level": "國小至國中",
+          "description": "基礎必備 960 單字系列,穩固字彙地基。"
         }
       ]
     }

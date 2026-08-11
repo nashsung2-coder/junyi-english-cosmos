@@ -277,22 +277,54 @@ export const ADVENTURES = [
   },
 ] as const;
 
-/** 資源分類連結 */
+/** 資源分類連結(均一英文學習真實課程連結,來源:www.junyiacademy.org) */
 export const RESOURCE_LINKS = [
+  {
+    category: "英文學習專區",
+    url: "https://www.junyiacademy.org/topics/junyi-english",
+  },
+  {
+    category: "字母與發音",
+    url: "https://www.junyiacademy.org/topics/junyi-english-lettersandphonics",
+  },
+  {
+    category: "單字",
+    url: "https://www.junyiacademy.org/topics/junyi-english-vocab",
+  },
+  {
+    category: "文法",
+    url: "https://www.junyiacademy.org/topics/junyi-english-grammar",
+  },
+  {
+    category: "聽力",
+    url: "https://www.junyiacademy.org/topics/junyi-english-listening",
+  },
+  {
+    category: "閱讀",
+    url: "https://www.junyiacademy.org/topics/junyi-english-reading",
+  },
+  {
+    category: "寫作",
+    url: "https://www.junyiacademy.org/topics/junyi-english-writing",
+  },
+  {
+    category: "生活情境應用",
+    url: "https://www.junyiacademy.org/topics/junyi-english-context",
+  },
   {
     category: "國小英文",
     url: "https://www.junyiacademy.org/topics/eng-elementary",
   },
   {
     category: "國中英文",
-    url: "https://www.junyiacademy.org/topics/junyi-english",
+    url: "https://www.junyiacademy.org/topics/eng-junior",
   },
   {
-    category: "聽力訓練",
-    url: "https://www.junyiacademy.org/topics/junyi-english-listening",
+    category: "高中英文",
+    url: "https://www.junyiacademy.org/topics/english-high",
   },
   {
-    category: "教師資源",
-    url: "https://www.junyiacademy.org/topics/junyi-teacher-resources",
+    category: "Jutor AI 英語家教",
+    url: "https://www.junyiacademy.org/topics/jutor",
   },
 ] as const;
