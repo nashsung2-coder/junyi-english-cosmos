@@ -1,0 +1,144 @@
+{
+  "resources": {
+    "eng_elementary": {
+      "categoryId": 1,
+      "categoryName": "國小英文",
+      "categoryUrl": "https://www.junyiacademy.org/topics/eng-elementary",
+      "courses": [
+        {
+          "id": 1,
+          "name": "國小英語總覽",
+          "url": "https://www.junyiacademy.org/topics/eng-elementary",
+          "level": "一年級至六年級",
+          "description": "對應108課綱的國小英語學習資源,從字母發音到日常會話,逐步建立英語基礎。"
+        },
+        {
+          "id": 2,
+          "name": "字母與發音 Phonics",
+          "url": "https://www.junyiacademy.org/topics/junyi-english",
+          "level": "低年級",
+          "description": "以趣味教學影片認識26個英文字母與自然發音法,奠定拼讀能力基礎。"
+        },
+        {
+          "id": 3,
+          "name": "國小英語影片系列(Wonder World)",
+          "url": "https://www.junyiacademy.org/topics/eng-elementary",
+          "level": "一年級至六年級",
+          "description": "配合南版教材的單元影片,將課文內容以生動動畫呈現,搭配課後練習強化學習。"
+        }
+      ]
+    },
+    "eng_junior": {
+      "categoryId": 2,
+      "categoryName": "國中英文",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english",
+      "courses": [
+        {
+          "id": 4,
+          "name": "國中英文總覽",
+          "url": "https://www.junyiacademy.org/topics/junyi-english",
+          "level": "七年級至九年級",
+          "description": "國中英文學科影片與習題,涵蓋文法、單字、閱讀與聽力,銜接高中學習。"
+        },
+        {
+          "id": 5,
+          "name": "課文單字例句(南一版)",
+          "url": "https://www.junyiacademy.org/topics/junyi-english",
+          "level": "七年級至九年級",
+          "description": "依南一版課本逐課整理的單字與例句影片,幫助學生掌握課文重點字彙。"
+        },
+        {
+          "id": 6,
+          "name": "文法專題(時態系列)",
+          "url": "https://www.junyiacademy.org/videos/nMV0ZvWSqW4",
+          "level": "七年級至九年級",
+          "description": "從現在式到完成式、進行式,以清晰的脈絡講解英文時態,搭配例題練習。"
+        }
+      ]
+    },
+    "eng_listening": {
+      "categoryId": 3,
+      "categoryName": "聽力訓練",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english-listening",
+      "courses": [
+        {
+          "id": 7,
+          "name": "英文聽力專區",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-listening",
+          "level": "國小至國中",
+          "description": "以互動影片與題目訓練聽力理解,從短句對話到篇章聽解循序漸進。"
+        },
+        {
+          "id": 8,
+          "name": "聽故事 Storytelling",
+          "url": "https://www.junyiacademy.org/topics/junyi-english-others-storytelling",
+          "level": "國小",
+          "description": "以故事為主題的聽力活動,在情境中練習辨識關鍵訊息與細節。"
+        }
+      ]
+    },
+    "eng_speaking_writing": {
+      "categoryId": 4,
+      "categoryName": "口說與寫作",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english",
+      "courses": [
+        {
+          "id": 9,
+          "name": "Jutor Writing 英文寫作",
+          "url": "https://www.junyiacademy.org/topics/junyi-english",
+          "level": "國小至國中",
+          "description": "AI輔助英文寫作工具,提供即時回饋與修改建議,提升書寫表達能力。"
+        },
+        {
+          "id": 10,
+          "name": "Jutor Speaking 英語口說",
+          "url": "https://www.junyiacademy.org/topics/junyi-english",
+          "level": "國小至國中",
+          "description": "AI輔助口說練習,即時分析發音與流利度,讓每個孩子都有開口說英文的機會。"
+        }
+      ]
+    },
+    "eng_exam": {
+      "categoryId": 5,
+      "categoryName": "測驗與練習題庫",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-english",
+      "courses": [
+        {
+          "id": 11,
+          "name": "英文互動題庫",
+          "url": "https://www.junyiacademy.org/topics/junyi-english",
+          "level": "國小至國中",
+          "description": "超過2000題英文互動練習題,即時回饋並依作答表現調整難度。"
+        },
+        {
+          "id": 12,
+          "name": "單元測驗與總複習",
+          "url": "https://www.junyiacademy.org/topics/junyi-english",
+          "level": "國小至國中",
+          "description": "各單元測驗與期末總複習題組,協助檢驗學習成效並聚焦弱項補強。"
+        }
+      ]
+    },
+    "eng_teacher": {
+      "categoryId": 6,
+      "categoryName": "教師英文教學資源",
+      "categoryUrl": "https://www.junyiacademy.org/topics/junyi-teacher-resources",
+      "courses": [
+        {
+          "id": 13,
+          "name": "教師資源區",
+          "url": "https://www.junyiacademy.org/topics/junyi-teacher-resources",
+          "level": "教師專用",
+          "description": "英文教學影片、教案範例與研習資源,支持教師以均一平台實踐混合式教學。"
+        },
+        {
+          "id": 14,
+          "name": "數位學習工作坊",
+          "url": "https://www.junyiacademy.org/topics/junyi-teacher-resources",
+          "level": "教師專用",
+          "description": "科技輔助自主學習的實作工作坊,帶您掌握英文聽力題庫與AI工具教學運用。"
+        }
+      ]
+    }
+  }
+}
