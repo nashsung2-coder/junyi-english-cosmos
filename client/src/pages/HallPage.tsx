@@ -5,6 +5,7 @@ import { ArrowDown, BarChart3, BookOpenCheck, Gamepad2, Users } from "lucide-rea
 import { PORTALS } from "@/const";
 import Navbar from "@/components/Navbar";
 import SubjectPlaceholder from "@/components/SubjectPlaceholder";
+import { useLearningProgress } from "@/contexts/LearningProgressContext";
 
 /**
  * HallPage - 星辰啟航 (大廳)
@@ -19,6 +20,7 @@ const LOGO = "/assets/junyi-logo.png";
 
 export default function HallPage() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const { state, level } = useLearningProgress();
 
   const iconMap = {
     BarChart3: BarChart3,
@@ -43,6 +45,18 @@ export default function HallPage() {
           backgroundPosition: "center",
         }}
       >
+        <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-75" aria-hidden="true">
+          <svg className="h-full w-full" viewBox="0 0 1200 560" preserveAspectRatio="none" fill="none">
+            <path d="M-30 408C164 264 265 447 441 332S752 137 914 262s189 100 332-70" stroke="rgba(78,205,196,.22)" strokeWidth="1.15" strokeDasharray="4 14" />
+            <path d="M-10 236c166-70 241 64 393 28 168-39 255-174 416-87 168 90 271 6 430-70" stroke="rgba(255,209,102,.16)" strokeWidth="1" strokeDasharray="2 18" />
+            <path d="M134 72c111 86 195 44 274 120 62 60 93 163 220 194" stroke="rgba(96,165,250,.16)" strokeWidth="1" />
+            <circle cx="209" cy="318" r="4" fill="#4ECDC4" fillOpacity=".68" />
+            <circle cx="441" cy="332" r="3" fill="#FFD166" fillOpacity=".75" />
+            <circle cx="691" cy="183" r="4" fill="#4ECDC4" fillOpacity=".55" />
+            <circle cx="914" cy="262" r="3" fill="#FFD166" fillOpacity=".65" />
+            <circle cx="1071" cy="166" r="3" fill="#4ECDC4" fillOpacity=".6" />
+          </svg>
+        </div>
         <div className="container max-w-4xl mx-auto text-center animate-fade-in-up">
           <h1 className="text-5xl md:text-6xl font-black mb-4 animate-float leading-tight">
             <span className="bg-gradient-to-r from-teal-300 via-teal-400 to-amber-300 bg-clip-text text-transparent">
@@ -54,14 +68,20 @@ export default function HallPage() {
           <p className="text-lg text-muted-foreground mb-8 max-w-2xl mx-auto">
             在均一星辰宇宙中，每一次學習都是一次探索。用數據驅動成長、用遊戲激發熱情、用陪伴溫暖學習旅程。
           </p>
-          <div className="flex justify-center">
-            <ArrowDown className="w-6 h-6 text-accent animate-bounce" />
+          <div className="mx-auto grid max-w-2xl grid-cols-3 overflow-hidden rounded-2xl border border-white/[0.14] bg-slate-950/35 text-left backdrop-blur-sm">
+            <div className="border-r border-white/[0.10] px-4 py-3 md:px-5"><span className="block text-[10px] font-bold tracking-[.12em] text-slate-400">完成遠征</span><span className="mt-1 block font-mono text-xl font-bold text-teal-200">{state.completedMissionIds.length}</span></div>
+            <div className="border-r border-white/[0.10] px-4 py-3 md:px-5"><span className="block text-[10px] font-bold tracking-[.12em] text-slate-400">作答題數</span><span className="mt-1 block font-mono text-xl font-bold text-white">{state.totalQuestions}</span></div>
+            <div className="px-4 py-3 md:px-5"><span className="block text-[10px] font-bold tracking-[.12em] text-slate-400">冒險等級</span><span className="mt-1 block font-mono text-xl font-bold text-amber-200">Lv.{level}</span></div>
+          </div>
+          <div className="mt-5 flex justify-center gap-4">
+            <Link href="/practice/letter-jungle" className="inline-flex items-center rounded-xl border border-teal-300/35 bg-teal-300/[0.10] px-4 py-2 text-sm font-medium text-teal-100 transition-colors hover:bg-teal-300/[0.18]">開始今日遠征 →</Link>
+            <a href="#portals" className="inline-flex items-center text-sm text-slate-300 transition-colors hover:text-white">探索星圖<ArrowDown className="ml-1.5 h-4 w-4" /></a>
           </div>
         </div>
       </section>
 
       {/* 入口卡片 */}
-      <section className="py-16 px-4">
+      <section id="portals" className="py-16 px-4">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
             {PORTALS.map((portal) => {

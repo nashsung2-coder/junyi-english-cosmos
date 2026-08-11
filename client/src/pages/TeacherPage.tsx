@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Users, Package, UserCheck, Trophy, Bell, TrendingUp, ExternalLink, AlertCircle, CheckCircle2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import SubjectPlaceholder from "@/components/SubjectPlaceholder";
+import CosmicCommandDeck from "@/components/CosmicCommandDeck";
 
 /**
  * TeacherPage - 教師區 (班級指揮艙)
@@ -91,6 +92,21 @@ export default function TeacherPage() {
       </div>
 
       <div className="container py-8">
+        <CosmicCommandDeck
+          eyebrow="CLASSROOM COMMAND DECK"
+          title={`${cls.name} 的學習星圖正在校準`}
+          description="用班級節奏、能力分布與任務完成狀況決定下一個教學航點；所有重要訊號都集中在這個指揮艙。"
+          icon={Users}
+          accent="#B98CFF"
+          action={<Link href="/specialty" className="inline-flex rounded-xl border border-violet-300/35 bg-violet-300/[0.08] px-3.5 py-2 text-xs font-medium text-violet-200 transition-colors hover:bg-violet-300/[0.15]">查看學習資源 →</Link>}
+        >
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+            <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">班級人數</span><span className="mt-1 block font-mono text-lg font-semibold text-white">{cls.students} 位</span></div>
+            <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">本週活躍率</span><span className="mt-1 block font-mono text-lg font-semibold text-violet-200">84%</span></div>
+            <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">待關注學生</span><span className="mt-1 block font-mono text-lg font-semibold text-white">3 位</span></div>
+            <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">進行中任務</span><span className="mt-1 block font-mono text-lg font-semibold text-white">3 組</span></div>
+          </div>
+        </CosmicCommandDeck>
         {/* 導覽 Tab */}
         <div className="flex gap-2 overflow-x-auto pb-4 mb-6">
           {NAV.map((item) => {

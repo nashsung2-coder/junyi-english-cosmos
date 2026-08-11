@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Heart, TrendingUp, BookOpen, Users, Gift, MessageCircle, ChevronUp, ChevronDown, ExternalLink, Sparkles } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import SubjectPlaceholder from "@/components/SubjectPlaceholder";
+import CosmicCommandDeck from "@/components/CosmicCommandDeck";
 
 /**
  * ParentPage - 家長區 (親子星港)
@@ -92,6 +93,21 @@ export default function ParentPage() {
       </div>
 
       <div className="container py-8">
+        <CosmicCommandDeck
+          eyebrow="FAMILY LEARNING PORT"
+          title={`陪伴 ${child.name}，把每一次努力留在星圖上`}
+          description="從當週的練習節奏、能力變化到一句及時鼓勵，親子星港把共學的每一步整理成溫柔而清楚的陪伴線索。"
+          icon={Heart}
+          accent="#5CC9A7"
+          action={<Link href="/journey" className="inline-flex rounded-xl border border-emerald-300/35 bg-emerald-300/[0.08] px-3.5 py-2 text-xs font-medium text-emerald-200 transition-colors hover:bg-emerald-300/[0.15]">查看成長星圖 →</Link>}
+        >
+          <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+            <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">本週學習</span><span className="mt-1 block font-mono text-lg font-semibold text-white">4 次</span></div>
+            <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">連續紀錄</span><span className="mt-1 block font-mono text-lg font-semibold text-emerald-200">12 天</span></div>
+            <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">最新正確率</span><span className="mt-1 block font-mono text-lg font-semibold text-white">85%</span></div>
+            <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">共學提醒</span><span className="mt-1 block text-sm font-semibold text-white">閱讀可再加強</span></div>
+          </div>
+        </CosmicCommandDeck>
         {/* 成長摘要 */}
         <div className="glass-card p-6 mb-6 relative overflow-hidden">
           <img src={FAMILY_IMG} alt="" className="absolute bottom-0 left-0 right-0 h-2/3 w-full object-cover opacity-10" />

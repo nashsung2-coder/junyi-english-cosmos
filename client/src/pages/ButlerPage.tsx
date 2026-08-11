@@ -5,6 +5,7 @@ import { ABILITY_MAP, AI_SUGGESTIONS } from "@/lib/journeyData";
 import { Bot, Trophy, Circle, CheckCircle2, Target } from "lucide-react";
 import { Link } from "wouter";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
+import CosmicCommandDeck from "@/components/CosmicCommandDeck";
 
 /**
  * ButlerPage - 個人能力智慧管家
@@ -58,25 +59,20 @@ export default function ButlerPage() {
       <Navbar />
       <main className="flex-1 overflow-auto pt-[60px]">
         <div className="container max-w-5xl mx-auto px-4 pt-5 pb-10">
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold tracking-wide">能力智慧管家</h1>
-            <Link
-              href="/game"
-              className="text-xs px-3 py-1.5 rounded-lg border border-white/15 hover:border-accent hover:text-accent transition-colors"
-            >
-              ← 進入遠征
-            </Link>
-          </div>
-
-          <div className="glass-card p-5 flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-lg bg-accent/15">
-              <Bot className="w-5 h-5 text-accent" />
+          <CosmicCommandDeck
+            eyebrow="PERSONAL GROWTH OS"
+            title="能力智慧管家"
+            description="把每一題作答轉換為能力訊號，整理成可行的下一步。這張圖譜會隨你的英文遠征持續校準。"
+            icon={Bot}
+            accent="#B98CFF"
+            action={<Link href="/game" className="inline-flex rounded-xl border border-violet-300/35 bg-violet-300/[0.08] px-3.5 py-2 text-xs font-medium text-violet-200 transition-colors hover:bg-violet-300/[0.15]">進入遠征 →</Link>}
+          >
+            <div className="grid gap-3 text-sm sm:grid-cols-3">
+              <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">互動練習</span><span className="mt-1 block font-mono text-lg font-semibold text-white">{state.totalQuestions} 題</span></div>
+              <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">目前正確率</span><span className="mt-1 block font-mono text-lg font-semibold text-violet-200">{accuracy}%</span></div>
+              <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">目前等級</span><span className="mt-1 block font-mono text-lg font-semibold text-white">Lv.{level}</span></div>
             </div>
-            <div>
-              <h2 className="text-lg font-semibold">能力圖譜</h2>
-              <p className="text-xs text-muted-foreground">由 {state.totalQuestions} 題可作答練習更新 · 累計正確率 {accuracy}% · 涵蓋語言能力、紀錄與學習習慣</p>
-            </div>
-          </div>
+          </CosmicCommandDeck>
 
           {dynamicAbilityMap.map((cat) => (
             <div key={cat.category} className="glass-card p-5 mb-4">

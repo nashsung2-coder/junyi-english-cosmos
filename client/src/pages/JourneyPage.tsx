@@ -18,6 +18,7 @@ import {
   PET_WHISPERS,
 } from "@/lib/journeyData";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
+import CosmicCommandDeck from "@/components/CosmicCommandDeck";
 
 /**
  * JourneyPage - 歲月陪伴
@@ -41,30 +42,19 @@ export default function JourneyPage() {
       <Navbar />
       <main className="flex-1 overflow-auto pt-[60px]">
         <div className="container max-w-5xl mx-auto px-4 pt-5 pb-10">
-          {/* 頁首 */}
-          <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold tracking-wide">歲月陪伴</h1>
-            <Link
-              href="/game"
-              className="text-xs px-3 py-1.5 rounded-lg border border-white/15 hover:border-accent hover:text-accent transition-colors"
-            >
-              ← 繼續遠征
-            </Link>
-          </div>
-
-          {/* 起始資訊列 */}
-          <div className="glass-card p-5 flex flex-wrap items-center justify-between gap-4 mb-6">
-            <div>
-              <div className="text-sm text-muted-foreground">開啟星辰旅程</div>
-              <div className="text-2xl font-bold tracking-wide">
-                {JOURNEY_START.year} 年 {JOURNEY_START.month} 月
-              </div>
+          <CosmicCommandDeck
+            eyebrow="COMPANIONSHIP LOG"
+            title="歲月陪伴"
+            description="讓每一場遠征化成看得見的成長軌跡；狐狸貓星塵會在你的學習星圖裡，一路記得每個努力的瞬間。"
+            icon={Heart}
+            accent="#4ECDC4"
+            action={<Link href="/game" className="inline-flex rounded-xl border border-accent/35 bg-accent/[0.08] px-3.5 py-2 text-xs font-medium text-accent transition-colors hover:bg-accent/[0.15]">繼續遠征 →</Link>}
+          >
+            <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+              <div><span className="mr-2 text-xs text-slate-400">啟程時間</span><span className="font-mono font-semibold text-white">{JOURNEY_START.year} 年 {JOURNEY_START.month} 月</span></div>
+              <div className="flex items-center gap-2 text-accent"><Heart className="h-3.5 w-3.5 fill-accent" /><span>已與狐狸貓「星塵」相伴 {MONTHLY_RECORDS.length} 個月</span></div>
             </div>
-            <div className="flex items-center gap-2 text-accent">
-              <Heart className="w-4 h-4 fill-accent" />
-              <span className="text-sm">已與狐狸貓「星塵」相伴 {MONTHLY_RECORDS.length} 個月</span>
-            </div>
-          </div>
+          </CosmicCommandDeck>
 
           <section className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <div className="rounded-2xl border border-accent/20 bg-accent/[0.055] p-4">
