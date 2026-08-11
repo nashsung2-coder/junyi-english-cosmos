@@ -4,15 +4,15 @@
 - [x] 個人能力智慧管家:能力圖譜(含證照/成績)+ AI 下一階段方向建議(可選擇)
 - [x] 模擬資料建立(journeyData.ts)
 - [x] TypeScript 檢查通過 + 本地建置驗證
-- [ ] 部署最新版到 Cloudflare Pages (junyi-english-cosmos)
-- [ ] GitHub 推送最新版(作者 nashsung <nashsung2@gmail.com>)
+- [x] 部署最新版到 Cloudflare Pages (junyi-english-cosmos)
+- [x] GitHub 推送最新版(作者 nashsung <nashsung2@gmail.com>)
 
 - [x] 新增 JourneyPage(歲月陪伴)獨立頁面:/journey
 - [x] 新增 ButlerPage(能力智慧管家)獨立頁面:/butler
 - [x] Navbar 加入「歲月陪伴」「能力管家」入口(含路由,其他科目保持假)
 - [x] 從 SpecialtyPage 移除歲月陪伴/能力管家 tabs,恢復原 2 tabs
 - [x] App.tsx 註冊新路由
-- [ ] 驗證 → 建置 → 部署 Cloudflare Pages → GitHub push(作者 nashsung)
+- [x] 驗證 → 建置 → 部署 Cloudflare Pages → GitHub push(作者 nashsung)
 
 - [x] 重構 Navbar：核心入口保留在主列，將學科標籤收納為「學科探索」選單，解決單列過度擁擠問題
 - [x] 補齊全站視覺重構：逐頁優化 Hall／Journey／Butler／Parent／Teacher 的排版、留白、字級與卡片層級，維持一致的深空極簡設計語言
@@ -26,3 +26,18 @@
 - [x] 在 Hall 星圖補強後重新完成 Hall／Specialty／Game／Journey／Butler／Parent／Teacher 的桌機與手機視覺驗收，並追加結果至 task_notes.md
 - [x] 在補充驗收紀錄後，標記全站視覺重構完成
 - [x] 完成互動邏輯 Vitest、跨裝置截圖與本地建置；待部署 Cloudflare Pages 與 GitHub 推送
+
+- [x] 定義多學科學習資料模型：英文、國文、數學、自然、社會、藝術、健康的任務、點數、專屬寵物與養成素材
+- [x] 將 Hall 首屏主標由「你的英文宇宙」更新為「你的學習宇宙」，並將副標與任務引導改為跨學科敘事
+- [x] 驗證 Hall 首屏「你的學習宇宙」與跨學科副標、CTA、學科區塊文案在型別檢查與本地畫面中一致呈現
+- [x] 建立跨學科積分錢包、寵物飽足／心情、飼料、道具、生活用品與庫存的前端狀態
+- [x] 將現有英文題組與新增各科模擬題組統一為可作答、可回饋、可獎勵的學習任務
+- [x] 建立大廳寵物夥伴社群：不同科目寵物的聊天、玩耍、狀態與互動動態
+- [x] 建立跨學科寵物商店：用學習點數購買飼料、道具與生活必需品，並可實際使用到寵物
+- [x] 將各學科探索入口由「即將推出」改為可進入的模擬學習與養成頁面
+- [ ] 完成最新版本的 Cloudflare Pages 部署與 GitHub 推送，並保留成功證據後再勾選相關 todo
+- [x] 修正 /game 頁首被固定導覽列遮擋的間距與手機版安全區，確認首屏內容完整可見
+- [x] 將 /game 的學習模式改為可直接試玩的題組與結果回饋，而非純展示入口
+- [x] 將 /game 的娛樂模式改為可直接試玩的寵物互動小遊戲，並讓結果可影響寵物狀態與獎勵
+- [x] 為跨學科獎勵、追星小遊戲獎勵與寵物效果補齊純函式 Vitest 驗證
+- [x] 將星際冒險的狐狸貓狀態改用跨頁持久化資料，讓追星、餵食與道具效果即時反映

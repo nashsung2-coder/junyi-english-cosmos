@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
 import { accuracyPercent } from "@/lib/learningProgress";
 import { getPracticeMission } from "@/lib/practiceData";
+import { getSubject } from "@/lib/subjectUniverse";
 
 export default function PracticePage() {
   const [, params] = useRoute("/practice/:missionId");
@@ -43,6 +44,7 @@ export default function PracticePage() {
   }
 
   const question = mission.questions[questionIndex];
+  const subject = getSubject(mission.subject);
   const correctCount = Object.entries(answers).filter(([index, answer]) => Number(answer) === mission.questions[Number(index)]?.correctIndex).length;
   const progress = Math.round((questionIndex / mission.questions.length) * 100);
   const currentCorrect = selected === question.correctIndex;
@@ -63,7 +65,7 @@ export default function PracticePage() {
     }
 
     const finalCorrect = correctCount;
-    const result = completeMission({ missionId: mission.id, total: mission.questions.length, correct: finalCorrect, dimension: mission.dimension });
+    const result = completeMission({ missionId: mission.id, total: mission.questions.length, correct: finalCorrect, dimension: mission.dimension, subject: mission.subject });
     setReward(result);
     setCompleted(true);
     toast.success(`遠征紀錄已同步：獲得 ${result.starCoins} 星幣`);
@@ -102,7 +104,7 @@ export default function PracticePage() {
               <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4"><Sparkles className="mx-auto mb-2 h-5 w-5 text-accent" /><div className="font-mono text-xl font-bold text-accent">+{reward.experience}</div><div className="mt-1 text-xs text-muted-foreground">冒險經驗值</div></div>
             </div>
             <div className="rounded-2xl border border-white/8 bg-white/[0.025] p-4 text-left text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">下一步：</span>回到遊戲模式，用新取得的星幣照顧狐狸貓；或前往均一延伸練習，繼續累積能力值。
+              <span className="font-semibold text-foreground">下一步：</span>回到遊戲模式，用新取得的星幣照顧 {subject.pet.name}；或前往均一延伸學習，繼續累積能力值。
             </div>
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
               <Button onClick={restart} variant="outline" className="border-white/15"><RotateCcw className="mr-2 h-4 w-4" />再練一次</Button>
@@ -114,7 +116,7 @@ export default function PracticePage() {
           <section className="mx-auto max-w-3xl">
             <div className="mb-6 rounded-2xl border border-white/10 bg-white/[0.025] p-4 md:p-5">
               <div className="flex flex-wrap items-start justify-between gap-4">
-                <div><p className="text-xs font-semibold tracking-[0.18em]" style={{ color: mission.accent }}>ENGLISH EXPEDITION</p><h1 className="mt-1 text-2xl font-bold md:text-3xl">{mission.name}</h1><p className="mt-1 text-sm text-muted-foreground">{mission.subtitle} · {mission.estimate}</p></div>
+                <div><p className="text-xs font-semibold tracking-[0.18em]" style={{ color: mission.accent }}>{subject.shortName.toUpperCase()} EXPEDITION · {subject.pet.emoji} {subject.pet.name}</p><h1 className="mt-1 text-2xl font-bold md:text-3xl">{mission.name}</h1><p className="mt-1 text-sm text-muted-foreground">{mission.subtitle} · {mission.estimate}</p></div>
                 <span className="rounded-full border px-3 py-1 text-xs" style={{ borderColor: `${mission.accent}55`, color: mission.accent }}>{mission.difficulty}</span>
               </div>
               <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full transition-all duration-300" style={{ width: `${progress}%`, background: mission.accent }} /></div>

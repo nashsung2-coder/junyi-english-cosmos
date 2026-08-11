@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { STARS, EXPEDITIONS, PET_SHOP, ADVENTURES, PLAYGO_URL } from "@/const";
 import Navbar from "@/components/Navbar";
+import PetArcade from "@/components/PetArcade";
 import SubjectPlaceholder from "@/components/SubjectPlaceholder";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
 
@@ -34,13 +35,8 @@ import { useLearningProgress } from "@/contexts/LearningProgressContext";
  *   * 「與寵物聊天」連結 PlayGO AI
  */
 
-const STARMAP_IMG = "/assets/junyi-starmap.png";
-const MASCOT_IMG = "/assets/junyi-mascot.png";
-
 /** 用戶狀態(本地示範值) */
 const INITIAL = {
-  intimacy: 82,
-  happiness: 70,
   power: 45, // 裝備戰鬥力(初始 0,用戶購買裝備提升)
   ownedGears: [] as string[],
   ownedItems: [] as string[],
@@ -58,7 +54,8 @@ export default function GamePage() {
   const [mode, setMode] = useState<"learn" | "play">("learn");
   const [petTab, setPetTab] = useState("home");
   const [s, setS] = useState(INITIAL);
-  const { state: learningState, spendStarCoins, missionCompleted } = useLearningProgress();
+  const { state: learningState, spendStarCoins, missionCompleted, adjustPetStatus } = useLearningProgress();
+  const englishPet = learningState.pets.english;
 
   const buy = (shop: (typeof PET_SHOP)[number]) => {
     if (learningState.starCoins < shop.price) {
@@ -70,15 +67,11 @@ export default function GamePage() {
       return;
     }
     if (shop.type === "food") {
-      const intimacyGain = shop.id === "star-milk" ? 20 : 8;
+      const hungerGain = shop.id === "star-milk" ? 20 : 12;
       const happyGain = shop.id === "star-milk" ? 10 : 10;
       spendStarCoins(shop.price);
-      setS((p) => ({
-        ...p,
-        intimacy: Math.min(100, p.intimacy + intimacyGain),
-        happiness: Math.min(100, p.happiness + happyGain),
-      }));
-      toast.success(`餵食成功!${shop.name} → 親密度 +${intimacyGain},狐狸貓好開心`);
+      adjustPetStatus("english", { hunger: hungerGain, happiness: happyGain });
+      toast.success(`餵食成功！${shop.name} → 飽足度 +${hungerGain}、快樂度 +${happyGain}`);
     } else if (shop.type === "item") {
       spendStarCoins(shop.price);
       setS((p) => ({ ...p, ownedItems: [...p.ownedItems, shop.id] }));
@@ -103,13 +96,13 @@ export default function GamePage() {
     setS((p) => ({
       ...p,
       ownedItems: p.ownedItems.filter((id, i) => (i === p.ownedItems.indexOf("potion") ? false : true)),
-      happiness: Math.min(100, p.happiness + 30),
     }));
+    adjustPetStatus("english", { energy: 30, happiness: 8 });
     toast.success("使用能量藥水!狐狸貓活力滿滿");
   };
 
   const startAdventure = (adv: (typeof ADVENTURES)[number]) => {
-    if (s.happiness < 20) {
+    if (englishPet.happiness < 20 || englishPet.energy < 15) {
       toast.error("夥伴心情太低了,先餵食照顧牠吧!");
       return;
     }
@@ -121,7 +114,7 @@ export default function GamePage() {
     setTimeout(() => {
       setS((p) => {
         if (!p.adventureState) return p;
-        const won = p.power + Math.floor(p.intimacy / 5) >= p.adventureState.powerNeeded;
+        const won = p.power + Math.floor(englishPet.energy / 5) >= p.adventureState.powerNeeded;
         return {
           ...p,
           adventureState: { ...p.adventureState, phase: won ? "win" : "lose" },
@@ -139,11 +132,11 @@ export default function GamePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(ellipse_62%_42%_at_74%_0%,rgba(245,158,11,0.14),transparent_68%),#061014] text-foreground">
+    <div className="min-h-screen pt-[calc(68px+env(safe-area-inset-top))] bg-[radial-gradient(ellipse_62%_42%_at_74%_0%,rgba(245,158,11,0.14),transparent_68%),#061014] text-foreground">
       {/* 全站導覽列 */}
       <Navbar />
       {/* 頂部狀態列 */}
-      <div className="sticky top-[60px] z-30 border-b border-amber-300/10 bg-[#0b1113]/88 backdrop-cosmic">
+      <div className="sticky top-[calc(68px+env(safe-area-inset-top))] z-30 border-b border-amber-300/10 bg-[#0b1113]/88 backdrop-cosmic">
         <div className="container pt-5 pb-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/hall">
@@ -217,7 +210,26 @@ export default function GamePage() {
                 <h2 className="text-lg font-semibold mb-4 inline-flex items-center gap-2">
                   <Map className="w-5 h-5 text-accent" /> 六顆知識星球
                 </h2>
-                <img src={STARMAP_IMG} alt="星際地圖" className="w-full rounded-lg mb-5 opacity-90" />
+                <div className="relative mb-5 h-36 overflow-hidden rounded-2xl border border-cyan-200/15 bg-[radial-gradient(circle_at_18%_25%,rgba(78,205,196,.28),transparent_2px),radial-gradient(circle_at_72%_72%,rgba(167,139,250,.3),transparent_2px),radial-gradient(circle_at_43%_65%,rgba(255,209,102,.24),transparent_1px),linear-gradient(135deg,rgba(5,26,37,.95),rgba(8,12,28,.9))]">
+                  <div className="absolute inset-x-6 top-1/2 h-px -rotate-6 bg-gradient-to-r from-transparent via-cyan-200/30 to-transparent" />
+                  {STARS.map((star, index) => (
+                    <span
+                      key={star.id}
+                      className="absolute flex h-8 w-8 items-center justify-center rounded-full border text-xs text-white shadow-lg"
+                      style={{
+                        left: `${10 + index * 15}%`,
+                        top: `${index % 2 === 0 ? 28 : 58}%`,
+                        transform: "translate(-50%, -50%)",
+                        borderColor: `${star.color}99`,
+                        background: `${star.color}33`,
+                        boxShadow: `0 0 18px ${star.color}99`,
+                      }}
+                    >
+                      ✦
+                    </span>
+                  ))}
+                  <div className="absolute bottom-3 left-4 text-[10px] font-semibold tracking-[.2em] text-cyan-100/75">JUNYI KNOWLEDGE MAP</div>
+                </div>
                 <div className="space-y-3">
                   {STARS.map((star) => (
                     <a
@@ -340,7 +352,7 @@ export default function GamePage() {
                       <XOctagon className="w-14 h-14 mx-auto mb-4 text-red-300" />
                       <h3 className="text-xl font-bold mb-1">戰鬥失敗…</h3>
                       <p className="text-sm text-muted-foreground mb-1">
-                        夥伴的戰鬥力({s.power + Math.floor(s.intimacy / 5)})不足以征服
+                        夥伴的戰鬥力({s.power + Math.floor(englishPet.energy / 5)})不足以征服
                         「{s.adventureState.name}」(需要 {s.adventureState.powerNeeded})
                       </p>
                       <div className="glass-card p-4 my-5 text-left border-accent/30 bg-accent/5">
@@ -369,10 +381,11 @@ export default function GamePage() {
             {/* 寵物狀態總覽 */}
             <div className="glass-card p-6 mb-6">
               <div className="flex flex-col md:flex-row items-center gap-8">
-                <div className="relative">
-                  <img src={MASCOT_IMG} alt="狐狸貓夥伴" className="w-44 h-44 object-contain animate-float" />
+                <div className="relative flex h-44 w-44 shrink-0 items-center justify-center overflow-hidden rounded-[2rem] border border-cyan-200/20 bg-[radial-gradient(circle_at_34%_28%,rgba(255,255,255,.5),transparent_5%),radial-gradient(circle_at_50%_45%,rgba(78,205,196,.48),transparent_52%),linear-gradient(145deg,#0d3141,#070d24)] shadow-[0_0_40px_rgba(78,205,196,.16)]">
+                  <div className="absolute inset-3 rounded-full border border-dashed border-cyan-100/25" />
+                  <span role="img" aria-label="狐狸貓夥伴" className="relative animate-float text-7xl drop-shadow-[0_0_18px_rgba(78,205,196,.6)]">🐱</span>
                   <div className="absolute -top-2 -right-2 text-2xl animate-bounce">
-                    {s.happiness > 60 ? "💛" : s.happiness > 30 ? "😐" : "🌧️"}
+                    {englishPet.happiness > 60 ? "💛" : englishPet.happiness > 30 ? "😐" : "🌧️"}
                   </div>
                 </div>
                 <div className="flex-1 w-full">
@@ -380,7 +393,7 @@ export default function GamePage() {
                     <h2 className="text-xl font-semibold">狐狸貓 · 星塵</h2>
                     <span className="badge-cosmic bg-amber-500/15 text-amber-300">Lv.8</span>
                     <span className="badge-cosmic bg-rose-500/15 text-rose-300 inline-flex items-center gap-1">
-                      <Swords className="w-3 h-3" /> 戰鬥力 {s.power + Math.floor(s.intimacy / 5)}
+                      <Swords className="w-3 h-3" /> 戰鬥力 {s.power + Math.floor(englishPet.energy / 5)}
                     </span>
                   </div>
                   <p className="text-sm text-muted-foreground mb-4">
@@ -389,25 +402,34 @@ export default function GamePage() {
                   <div className="space-y-3 mb-5">
                     <div>
                       <div className="flex justify-between text-xs mb-1">
-                        <span className="text-muted-foreground">親密度</span>
-                        <span className="font-mono text-accent">{s.intimacy}/100</span>
+                        <span className="text-muted-foreground">飽足度</span>
+                        <span className="font-mono text-accent">{englishPet.hunger}/100</span>
                       </div>
                       <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                        <div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-400 transition-all duration-500" style={{ width: `${s.intimacy}%` }} />
+                        <div className="h-full rounded-full bg-gradient-to-r from-teal-500 to-emerald-400 transition-all duration-500" style={{ width: `${englishPet.hunger}%` }} />
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between text-xs mb-1">
                         <span className="text-muted-foreground">快樂度</span>
-                        <span className="font-mono text-amber-300">{s.happiness}/100</span>
+                        <span className="font-mono text-amber-300">{englishPet.happiness}/100</span>
                       </div>
                       <div className="h-2 rounded-full bg-white/10 overflow-hidden">
-                        <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-500" style={{ width: `${s.happiness}%` }} />
+                        <div className="h-full rounded-full bg-gradient-to-r from-amber-500 to-yellow-400 transition-all duration-500" style={{ width: `${englishPet.happiness}%` }} />
                       </div>
                     </div>
                     <div>
                       <div className="flex justify-between text-xs mb-1">
-                        <span className="text-muted-foreground">戰鬥力(來自裝備)</span>
+                        <span className="text-muted-foreground">探索能量</span>
+                        <span className="font-mono text-sky-300">{englishPet.energy}/100</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-white/10 overflow-hidden">
+                        <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-cyan-400 transition-all duration-500" style={{ width: `${englishPet.energy}%` }} />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between text-xs mb-1">
+                        <span className="text-muted-foreground">戰鬥力（來自裝備）</span>
                         <span className="font-mono text-rose-300">{s.power}</span>
                       </div>
                       <div className="h-2 rounded-full bg-white/10 overflow-hidden">
@@ -426,7 +448,7 @@ export default function GamePage() {
                     </a>
                     <button
                       onClick={() =>
-                        setS((p) => ({ ...p, intimacy: Math.min(100, p.intimacy + 3), happiness: Math.min(100, p.happiness + 5) }))
+                        adjustPetStatus("english", { happiness: 5 })
                       }
                       className="rounded-lg px-4 py-2 text-sm border border-pink-400/40 text-pink-300 bg-pink-500/10 hover:bg-pink-500/20 transition-colors inline-flex items-center gap-2"
                     >
@@ -444,6 +466,8 @@ export default function GamePage() {
                 </div>
               </div>
             </div>
+
+            <PetArcade />
 
             <Tabs value={petTab} onValueChange={setPetTab}>
               <TabsList className="w-full bg-white/5 mb-6 grid grid-cols-2">
@@ -502,7 +526,7 @@ export default function GamePage() {
                     <div>
                       <h3 className="font-semibold text-amber-200">學習星幣:唯一的購物貨幣</h3>
                       <p className="text-xs text-muted-foreground">
-                        星幣只能在「學習遊戲」中透過知識遠征獲得。餵食、買裝備、買藥水都用它——所以,愈努力學習英文,夥伴就愈強大。
+                        星幣主要來自「學習遊戲」的知識遠征；完成追星軌道等娛樂挑戰也能獲得小額獎勵。餵食、買裝備、買生活用品都用它——所以，每一段學習與陪伴都能讓夥伴更強大。
                       </p>
                     </div>
                   </div>

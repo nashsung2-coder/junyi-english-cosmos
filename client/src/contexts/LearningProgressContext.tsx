@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { calculateMissionReward, calculateLevel, accuracyPercent, updateCorrectAnswerStreak } from "@/lib/learningProgress";
 import type { LearningDimensionId } from "@/lib/practiceData";
+import { applyPetEffect, PET_ACTIONS, type PetActionId, type PetItem, type PetStatus, type SubjectPetStatus } from "@/lib/petShop";
+import { DEFAULT_PET_STATUS, SUBJECTS, type SubjectId } from "@/lib/subjectUniverse";
 
 type MissionScore = { correct: number; total: number; completedAt: string };
 
@@ -18,6 +20,9 @@ type LearningState = {
   dimensionPoints: Record<LearningDimensionId, number>;
   recentActivity: number[];
   adoptedSuggestionIds: number[];
+  subjectProgress: Record<SubjectId, { missions: number; questions: number; correct: number }>;
+  pets: SubjectPetStatus;
+  inventory: Record<string, number>;
 };
 
 type MissionResult = {
@@ -25,6 +30,7 @@ type MissionResult = {
   total: number;
   correct: number;
   dimension: LearningDimensionId;
+  subject: SubjectId;
 };
 
 type LearningProgressContextValue = {
@@ -35,10 +41,18 @@ type LearningProgressContextValue = {
   spendStarCoins: (amount: number) => boolean;
   adoptDirections: (suggestionIds: number[]) => number;
   recordAnswer: (isCorrect: boolean) => void;
+  grantBonusStarCoins: (amount: number) => void;
   missionCompleted: (missionId: number) => boolean;
+  buyPetItem: (item: PetItem) => boolean;
+  usePetItem: (subjectId: SubjectId, item: PetItem) => boolean;
+  interactWithPet: (subjectId: SubjectId, actionId: PetActionId) => string;
+  adjustPetStatus: (subjectId: SubjectId, effect: { hunger?: number; happiness?: number; energy?: number }) => void;
 };
 
 const STORAGE_KEY = "junyi-cosmos-learning-progress-v1";
+
+const createSubjectProgress = () => Object.fromEntries(SUBJECTS.map((subject) => [subject.id, { missions: 0, questions: 0, correct: 0 }])) as LearningState["subjectProgress"];
+const createPetStatuses = () => Object.fromEntries(SUBJECTS.map((subject) => [subject.id, { ...DEFAULT_PET_STATUS }])) as SubjectPetStatus;
 
 const initialState: LearningState = {
   experience: 420,
@@ -51,9 +65,12 @@ const initialState: LearningState = {
   bestCorrectStreak: 0,
   completedMissionIds: [],
   missionScores: {},
-  dimensionPoints: { listening: 18, speaking: 14, reading: 16, writing: 10, vocabulary: 28, grammar: 12 },
+  dimensionPoints: { listening: 18, speaking: 14, reading: 16, writing: 10, vocabulary: 28, grammar: 12, chinese: 10, math: 10, science: 10, social: 10, arts: 10, health: 10 },
   recentActivity: [0, 0, 1, 0, 2, 1, 0],
   adoptedSuggestionIds: [],
+  subjectProgress: createSubjectProgress(),
+  pets: createPetStatuses(),
+  inventory: { "meteor-kibble": 1, "orbit-ball": 1 },
 };
 
 function loadInitialState(): LearningState {
@@ -103,6 +120,23 @@ export function LearningProgressProvider({ children }: { children: ReactNode }) 
           [result.dimension]: Math.min(100, current.dimensionPoints[result.dimension] + result.correct * 5),
         },
         recentActivity: [...current.recentActivity.slice(-6), result.correct],
+        subjectProgress: {
+          ...current.subjectProgress,
+          [result.subject]: {
+            missions: current.subjectProgress[result.subject].missions + 1,
+            questions: current.subjectProgress[result.subject].questions + result.total,
+            correct: current.subjectProgress[result.subject].correct + result.correct,
+          },
+        },
+        pets: {
+          ...current.pets,
+          [result.subject]: {
+            ...current.pets[result.subject],
+            happiness: Math.min(100, current.pets[result.subject].happiness + 5 + result.correct * 2),
+            energy: Math.min(100, current.pets[result.subject].energy + 3),
+            level: Math.max(current.pets[result.subject].level, 1 + Math.floor((current.subjectProgress[result.subject].missions + 1) / 3)),
+          },
+        },
       };
     });
 
@@ -132,6 +166,42 @@ export function LearningProgressProvider({ children }: { children: ReactNode }) 
     });
   };
 
+  const grantBonusStarCoins = (amount: number) => {
+    const safeAmount = Math.max(0, Math.floor(amount));
+    if (safeAmount === 0) return;
+    setState((current) => ({ ...current, starCoins: current.starCoins + safeAmount }));
+  };
+
+  const buyPetItem = (item: PetItem) => {
+    if (state.starCoins < item.cost) return false;
+    setState((current) => ({
+      ...current,
+      starCoins: current.starCoins - item.cost,
+      inventory: { ...current.inventory, [item.id]: (current.inventory[item.id] ?? 0) + 1 },
+    }));
+    return true;
+  };
+
+  const usePetItem = (subjectId: SubjectId, item: PetItem) => {
+    if ((state.inventory[item.id] ?? 0) < 1) return false;
+    setState((current) => ({
+      ...current,
+      inventory: { ...current.inventory, [item.id]: current.inventory[item.id] - 1 },
+      pets: { ...current.pets, [subjectId]: applyPetEffect(current.pets[subjectId], item.effect) },
+    }));
+    return true;
+  };
+
+  const interactWithPet = (subjectId: SubjectId, actionId: PetActionId) => {
+    const action = PET_ACTIONS.find((candidate) => candidate.id === actionId)!;
+    setState((current) => ({ ...current, pets: { ...current.pets, [subjectId]: applyPetEffect(current.pets[subjectId], action.effect) } }));
+    return action.message;
+  };
+
+  const adjustPetStatus = (subjectId: SubjectId, effect: { hunger?: number; happiness?: number; energy?: number }) => {
+    setState((current) => ({ ...current, pets: { ...current.pets, [subjectId]: applyPetEffect(current.pets[subjectId], effect) } }));
+  };
+
   const value = useMemo<LearningProgressContextValue>(
     () => ({
       state,
@@ -141,7 +211,12 @@ export function LearningProgressProvider({ children }: { children: ReactNode }) 
       spendStarCoins,
       adoptDirections,
       recordAnswer,
+      grantBonusStarCoins,
       missionCompleted: (missionId) => state.completedMissionIds.includes(missionId),
+      buyPetItem,
+      usePetItem,
+      interactWithPet,
+      adjustPetStatus,
     }),
     [state],
   );

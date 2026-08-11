@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { accuracyPercent, calculateLevel, calculateMissionReward, updateCorrectAnswerStreak } from "./learningProgress";
+import { accuracyPercent, calculateArcadeReward, calculateLevel, calculateMissionReward, updateCorrectAnswerStreak } from "./learningProgress";
 
 describe("learning progress scoring", () => {
   it("awards first-clear and perfect-score bonuses", () => {
@@ -20,5 +20,11 @@ describe("learning progress scoring", () => {
     expect(updateCorrectAnswerStreak(2, 4, true)).toEqual({ currentStreak: 3, bestStreak: 4 });
     expect(updateCorrectAnswerStreak(3, 3, true)).toEqual({ currentStreak: 4, bestStreak: 4 });
     expect(updateCorrectAnswerStreak(4, 4, false)).toEqual({ currentStreak: 0, bestStreak: 4 });
+  });
+
+  it("rewards arcade play by hits while keeping its reward within one round", () => {
+    expect(calculateArcadeReward(5, 5)).toBe(20);
+    expect(calculateArcadeReward(-2, 5)).toBe(5);
+    expect(calculateArcadeReward(9, 5)).toBe(20);
   });
 });

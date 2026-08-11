@@ -1,4 +1,6 @@
-export type LearningDimensionId = "listening" | "speaking" | "reading" | "writing" | "vocabulary" | "grammar";
+import type { SubjectId } from "@/lib/subjectUniverse";
+
+export type LearningDimensionId = "listening" | "speaking" | "reading" | "writing" | "vocabulary" | "grammar" | "chinese" | "math" | "science" | "social" | "arts" | "health";
 
 export type PracticeQuestion = {
   prompt: string;
@@ -10,6 +12,7 @@ export type PracticeQuestion = {
 
 export type PracticeMission = {
   id: number;
+  subject: SubjectId;
   name: string;
   subtitle: string;
   difficulty: string;
@@ -23,6 +26,7 @@ export type PracticeMission = {
 export const PRACTICE_MISSIONS: PracticeMission[] = [
   {
     id: 1,
+    subject: "english",
     name: "字母叢林",
     subtitle: "辨識字母與第一個發音線索",
     difficulty: "新手",
@@ -39,6 +43,7 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
   },
   {
     id: 2,
+    subject: "english",
     name: "單字溪谷",
     subtitle: "從日常情境選出最精準的字彙",
     difficulty: "簡單",
@@ -55,6 +60,7 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
   },
   {
     id: 3,
+    subject: "english",
     name: "對話平原",
     subtitle: "在日常對話中選出自然回應",
     difficulty: "中等",
@@ -71,6 +77,7 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
   },
   {
     id: 4,
+    subject: "english",
     name: "時態雪山",
     subtitle: "辨識現在、過去與進行中的時間線索",
     difficulty: "困難",
@@ -87,6 +94,7 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
   },
   {
     id: 5,
+    subject: "english",
     name: "閱讀星雲",
     subtitle: "從短文抓出人物、時間與關鍵細節",
     difficulty: "困難",
@@ -99,6 +107,102 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
       { context: "Mia has a small dog named Coco. Every morning, Mia walks Coco in the park before school.", prompt: "Where do Mia and Coco go?", choices: ["The park", "The library", "The zoo", "The classroom"], correctIndex: 0, explanation: "in the park 指出他們去公園。" },
       { context: "Leo loves space. He reads a book about planets and draws Saturn with its rings.", prompt: "What does Leo draw?", choices: ["Saturn", "The Moon", "A rocket", "A star"], correctIndex: 0, explanation: "draws Saturn with its rings 說明 Leo 畫的是土星。" },
       { context: "Leo loves space. He reads a book about planets and draws Saturn with its rings.", prompt: "Why is Leo likely interested in planets?", choices: ["He loves space.", "He is late for school.", "He is hungry.", "He has a dog."], correctIndex: 0, explanation: "第一句 Leo loves space. 是理解興趣的關鍵。" },
+    ],
+  },
+  {
+    id: 101,
+    subject: "chinese",
+    name: "成語星橋",
+    subtitle: "從語境讀懂成語的意義與用法",
+    difficulty: "簡單",
+    dimension: "chinese",
+    accent: "#F08A8A",
+    estimate: "約 3 分鐘",
+    junyiUrl: "https://www.junyiacademy.org/",
+    questions: [
+      { prompt: "「畫龍點睛」最接近下列哪一個意思？", choices: ["在關鍵處加上精采的一筆", "把龍畫得很大", "做事拖延", "一直重複練習"], correctIndex: 0, explanation: "畫龍點睛比喻在關鍵處加上精要的一筆，使整體更生動。" },
+      { prompt: "下列哪一句最適合使用「津津有味」？", choices: ["小明把故事書讀得津津有味。", "天空津津有味地下雨。", "妹妹津津有味地睡覺。", "爸爸津津有味地遲到。"], correctIndex: 0, explanation: "津津有味形容對事情很有興趣，讀故事書的語境最自然。" },
+      { prompt: "「春風化雨」通常用來比喻什麼？", choices: ["溫和而有成效的教導", "猛烈的暴風雨", "春天的旅行", "農作物收成"], correctIndex: 0, explanation: "春風化雨比喻良好的教育與薰陶。" },
+    ],
+  },
+  {
+    id: 102,
+    subject: "math",
+    name: "數字迷宮",
+    subtitle: "解開數量、運算與規律的航線",
+    difficulty: "簡單",
+    dimension: "math",
+    accent: "#FFD166",
+    estimate: "約 3 分鐘",
+    junyiUrl: "https://www.junyiacademy.org/",
+    questions: [
+      { prompt: "36 ÷ 4 的答案是？", choices: ["7", "8", "9", "10"], correctIndex: 2, explanation: "4 × 9 = 36，所以 36 ÷ 4 = 9。" },
+      { prompt: "找出規律：3、6、9、12、____", choices: ["13", "14", "15", "16"], correctIndex: 2, explanation: "每次加 3，因此下一個數是 15。" },
+      { prompt: "一個正方形有幾條邊？", choices: ["3", "4", "5", "6"], correctIndex: 1, explanation: "正方形有四條邊，而且四邊等長。" },
+    ],
+  },
+  {
+    id: 103,
+    subject: "science",
+    name: "元素觀測站",
+    subtitle: "用觀察與推理解開自然現象",
+    difficulty: "簡單",
+    dimension: "science",
+    accent: "#73D5FF",
+    estimate: "約 3 分鐘",
+    junyiUrl: "https://www.junyiacademy.org/",
+    questions: [
+      { prompt: "植物製造養分主要需要哪一種能量？", choices: ["太陽光", "月光", "風力", "聲音"], correctIndex: 0, explanation: "植物透過光合作用利用太陽光製造養分。" },
+      { prompt: "水加熱後變成水蒸氣，這個變化叫什麼？", choices: ["凝固", "蒸發", "融化", "結冰"], correctIndex: 1, explanation: "液態水受熱變成氣態水蒸氣，稱為蒸發。" },
+      { prompt: "下列何者是生物？", choices: ["石頭", "雲朵", "蝴蝶", "雨滴"], correctIndex: 2, explanation: "蝴蝶會生長、繁殖並對環境產生反應，是生物。" },
+    ],
+  },
+  {
+    id: 104,
+    subject: "social",
+    name: "島嶼座標",
+    subtitle: "從地圖與生活讀懂我們所在的地方",
+    difficulty: "簡單",
+    dimension: "social",
+    accent: "#A78BFA",
+    estimate: "約 3 分鐘",
+    junyiUrl: "https://www.junyiacademy.org/",
+    questions: [
+      { prompt: "地圖上的圖例主要用來說明什麼？", choices: ["地圖符號的意義", "天氣預報", "故事內容", "考試分數"], correctIndex: 0, explanation: "圖例會解釋地圖上各種顏色與符號代表的資訊。" },
+      { prompt: "要規劃到陌生地方的路線，最先可以參考什麼？", choices: ["地圖", "食譜", "課表", "小說"], correctIndex: 0, explanation: "地圖能提供位置、方向和道路等路線資訊。" },
+      { prompt: "社區公園最可能提供哪一種公共功能？", choices: ["休閒運動", "製造汽車", "印製貨幣", "發射火箭"], correctIndex: 0, explanation: "公園通常提供居民休閒、遊戲和運動的空間。" },
+    ],
+  },
+  {
+    id: 105,
+    subject: "arts",
+    name: "色彩星雲",
+    subtitle: "用色彩與節奏探索創作語言",
+    difficulty: "簡單",
+    dimension: "arts",
+    accent: "#F59DDA",
+    estimate: "約 3 分鐘",
+    junyiUrl: "https://www.junyiacademy.org/",
+    questions: [
+      { prompt: "紅色和黃色混合後，最可能接近哪一種顏色？", choices: ["綠色", "橘色", "紫色", "藍色"], correctIndex: 1, explanation: "紅、黃兩種顏色混合，會形成橘色。" },
+      { prompt: "重複出現且有規律的強弱變化，最接近音樂的哪個元素？", choices: ["節奏", "顏色", "大小", "氣味"], correctIndex: 0, explanation: "節奏是聲音長短、強弱與重複規律形成的感受。" },
+      { prompt: "創作前先觀察光線與物體形狀，主要是在培養什麼？", choices: ["觀察力", "記憶密碼", "跑步速度", "音量"], correctIndex: 0, explanation: "仔細觀察是把真實感受轉成創作的重要起點。" },
+    ],
+  },
+  {
+    id: 106,
+    subject: "health",
+    name: "活力軌道",
+    subtitle: "把照顧身心變成穩定的探索能量",
+    difficulty: "簡單",
+    dimension: "health",
+    accent: "#5CC9A7",
+    estimate: "約 3 分鐘",
+    junyiUrl: "https://www.junyiacademy.org/",
+    questions: [
+      { prompt: "長時間使用螢幕後，較合適的做法是？", choices: ["持續盯著螢幕", "休息眼睛並望向遠處", "把亮度調到最高", "不喝水"], correctIndex: 1, explanation: "適度休息眼睛、看向遠處，可以減少用眼疲勞。" },
+      { prompt: "下列何者較有助於維持日常精神？", choices: ["規律作息", "整晚不睡", "只吃零食", "完全不活動"], correctIndex: 0, explanation: "規律睡眠與休息能幫助身體恢復精神。" },
+      { prompt: "運動後補充水分的主要目的之一是？", choices: ["幫助身體補水", "讓鞋子變亮", "讓作業變少", "讓時間停止"], correctIndex: 0, explanation: "流汗後適量補水，有助於維持身體正常運作。" },
     ],
   },
 ];
