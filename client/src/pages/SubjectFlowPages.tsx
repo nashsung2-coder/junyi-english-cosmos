@@ -30,6 +30,16 @@ const AREA_GUIDANCE: Record<SubjectAreaId, (subjectName: string) => string> = {
   teacher: (name) => `以${name}的任務完成率與正確率作為下一次學習引導的起點。`,
 };
 
+const AREA_LOOP: Record<SubjectAreaId, { eyebrow: string; title: (subjectName: string) => string; description: (subjectName: string) => string }> = {
+  hall: { eyebrow: "HARBOR ROUTINE", title: (name) => `${name}的今日停泊計畫`, description: (name) => `先完成一段${name}任務，再帶著成果回到避風港與夥伴整理今天的發現。` },
+  specialty: { eyebrow: "SKILL CALIBRATION", title: (name) => `${name}能力校準路徑`, description: (name) => `用本次${name}任務的正確率辨識下一個要鞏固或進階的能力節點。` },
+  game: { eyebrow: "EXPEDITION LOOP", title: (name) => `${name}遠征補給循環`, description: (name) => `答題獎勵會轉成星幣與夥伴能量；補給完成後，再挑戰下一段${name}遠征。` },
+  journey: { eyebrow: "GROWTH LOG", title: (name) => `${name}成長記事`, description: (name) => `每次完成${name}任務，都會成為你與夥伴一起回顧的成長片段。` },
+  butler: { eyebrow: "NEXT BEST STEP", title: (name) => `${name}智慧建議`, description: (name) => `先完成一項${name}任務，管家才能用最新表現提出更貼近你的下一步。` },
+  parent: { eyebrow: "FAMILY RHYTHM", title: (name) => `${name}親子共學節奏`, description: (name) => `把${name}任務拆成短而穩定的共學時間，完成後一起聊聊最有把握與最想再試的題目。` },
+  teacher: { eyebrow: "TEACHING SIGNAL", title: (name) => `${name}教學觀察訊號`, description: (name) => `以${name}的完成次數與正確率作為下一次提問、分組或補強的具體依據。` },
+};
+
 function CompanionHaven() {
   const { state, interactWithPet } = useLearningProgress();
   const [activeSubjectId, setActiveSubjectId] = useState<SubjectId>("english");
@@ -160,11 +170,20 @@ export function SubjectManagementPage() {
   const pet = state.pets[subject.id];
   const accuracy = progress.questions === 0 ? 0 : Math.round((progress.correct / progress.questions) * 100);
   const AreaIcon = AREA_ICONS[area];
+  const areaLoop = AREA_LOOP[area];
+  const missionStage = progress.missions === 0 ? "首次啟航" : accuracy < 70 ? "穩定基礎" : "進階探索";
+  const companionFeedback = pet.energy < 35
+    ? `${subject.pet.name}的能量偏低，完成任務後可以回到星際冒險安排一段補給。`
+    : pet.happiness < 45
+      ? `${subject.pet.name}想多聽聽你的發現；回到避風港聊天或玩耍能讓牠更有精神。`
+      : progress.missions === 0
+        ? `${subject.pet.name}已準備好陪你完成第一段${subject.name}任務。`
+        : `${subject.pet.name}正保存你的最新紀錄，準備陪你展開下一段探索。`;
 
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_70%_50%_at_75%_0%,color-mix(in_srgb,var(--accent)_12%,transparent),transparent_68%),#061014] text-foreground">
       <Navbar />
-      <main className="page-safe-top container max-w-6xl pb-14">
+      <main className="page-safe-top container max-w-6xl pb-14" aria-label={`${subject.name}${meta.managementLabel}`}>
         <Link href={`/${area === "hall" ? "hall" : area}`} className="inline-flex items-center gap-2 text-sm text-slate-400 transition-colors hover:text-white"><ArrowLeft className="h-4 w-4" />返回科目選擇</Link>
         <section className="mt-5 overflow-hidden rounded-3xl border border-white/10 bg-white/[.026] p-5 shadow-[0_20px_70px_rgba(0,0,0,.26)] sm:p-8">
           <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-start">
@@ -180,12 +199,12 @@ export function SubjectManagementPage() {
         </section>
 
         <section className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_.8fr]">
-          <div className="rounded-3xl border border-white/10 bg-white/[.026] p-6"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>NEXT MISSION</p><h2 className="mt-3 text-2xl font-bold text-white">{subject.name}的下一個學習行動</h2><p className="mt-3 leading-7 text-slate-300">{AREA_GUIDANCE[area](subject.name)}</p><div className="mt-6 rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-sm font-semibold text-white">專屬任務：{subject.name}知識遠征</p><p className="mt-1 text-xs leading-5 text-slate-400">完成後會更新{meta.managementLabel}、星幣與 {subject.pet.name} 的狀態。</p><Link href={`/practice/${missionId}`} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: subject.color }}>進入可作答任務 <ArrowRight className="h-4 w-4" /></Link></div></div>
-          <aside className="rounded-3xl border border-white/10 bg-white/[.026] p-6"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>COMPANION STATUS</p><h2 className="mt-3 text-xl font-bold text-white">{subject.pet.name}的補給站</h2><p className="mt-2 text-sm leading-6 text-slate-400">最喜歡的物品是「{subject.pet.favoriteItem}」。完成任務與互動都會幫助牠維持探索狀態。</p><div className="mt-5 space-y-3">{[["飽足度", pet.hunger], ["快樂度", pet.happiness], ["能量", pet.energy]].map(([label, value]) => <div key={label as string}><div className="mb-1 flex justify-between text-xs text-slate-400"><span>{label as string}</span><span>{value as number}/100</span></div><div className="h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${value as number}%`, background: subject.color }} /></div></div>)}</div></aside>
+          <div className="rounded-3xl border border-white/10 bg-white/[.026] p-6"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>NEXT MISSION</p><h2 className="mt-3 text-2xl font-bold text-white">{subject.name}的下一個學習行動</h2><p className="mt-3 leading-7 text-slate-300">{AREA_GUIDANCE[area](subject.name)}</p><div className="mt-6 grid gap-3 sm:grid-cols-2"><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">目前階段</p><p className="mt-1 font-semibold text-white">{missionStage}</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">這次任務</p><p className="mt-1 font-semibold text-white">{subject.name}知識遠征</p></div></div><div className="mt-3 rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-sm font-semibold text-white">完成後會立即更新你的學習紀錄</p><p className="mt-1 text-xs leading-5 text-slate-400">答題成果會同步到{meta.managementLabel}、星幣與 {subject.pet.name} 的探索狀態。</p><Link href={`/practice/${missionId}`} className="mt-4 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: subject.color }}>開始可作答任務 <ArrowRight className="h-4 w-4" /></Link></div></div>
+          <aside className="rounded-3xl border border-white/10 bg-white/[.026] p-6"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>COMPANION STATUS</p><h2 className="mt-3 text-xl font-bold text-white">{subject.pet.name}的補給站</h2><p className="mt-2 text-sm leading-6 text-slate-400">最喜歡的物品是「{subject.pet.favoriteItem}」。{companionFeedback}</p><div className="mt-5 space-y-3">{[["飽足度", pet.hunger], ["快樂度", pet.happiness], ["能量", pet.energy]].map(([label, value]) => <div key={label as string}><div className="mb-1 flex justify-between text-xs text-slate-400"><span>{label as string}</span><span>{value as number}/100</span></div><div className="h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${value as number}%`, background: subject.color }} /></div></div>)}</div></aside>
         </section>
 
         {area === "game" && <div className="mt-6"><PetArcade subjectId={subject.id} /></div>}
-        {area !== "game" && <section className="mt-6 rounded-3xl border border-white/10 bg-white/[.026] p-6"><div className="flex flex-wrap items-center justify-between gap-4"><div><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>SUBJECT FOCUS</p><h2 className="mt-2 text-xl font-bold text-white">{subject.name}{meta.managementLabel}已就緒</h2><p className="mt-2 text-sm text-slate-400">隨時可回到這個頁面檢視該科的最新任務、能力與夥伴狀態。</p></div><div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-slate-300"><Coins className="mr-2 inline h-4 w-4 text-amber-200" />目前共有 {state.starCoins} 星幣</div></div></section>}
+        {area !== "game" && <section className="mt-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[.026] p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div className="max-w-2xl"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>{areaLoop.eyebrow}</p><h2 className="mt-2 text-xl font-bold text-white">{areaLoop.title(subject.name)}</h2><p className="mt-2 text-sm leading-6 text-slate-400">{areaLoop.description(subject.name)}</p></div><div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-slate-300"><Coins className="mr-2 inline h-4 w-4 text-amber-200" />目前共有 {state.starCoins} 星幣</div></div><div className="mt-5 grid gap-3 md:grid-cols-3"><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">現在</p><p className="mt-1 text-sm font-semibold text-white">{progress.missions === 0 ? "從第一段短任務開始" : `已留下 ${progress.missions} 次任務紀錄`}</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">夥伴回饋</p><p className="mt-1 text-sm font-semibold text-white">{pet.happiness >= 60 ? "狀態穩定，適合繼續探索" : "先回避風港陪伴夥伴"}</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">下一步</p><Link href={`/practice/${missionId}`} className="mt-1 inline-flex items-center gap-1 text-sm font-semibold" style={{ color: subject.color }}>完成一段{subject.name}任務 <ArrowRight className="h-4 w-4" /></Link></div></div></section>}
       </main>
     </div>
   );

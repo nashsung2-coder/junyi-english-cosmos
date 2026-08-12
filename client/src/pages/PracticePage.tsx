@@ -48,6 +48,7 @@ export default function PracticePage() {
   const correctCount = Object.entries(answers).filter(([index, answer]) => Number(answer) === mission.questions[Number(index)]?.correctIndex).length;
   const progress = Math.round((questionIndex / mission.questions.length) * 100);
   const currentCorrect = selected === question.correctIndex;
+  const managementHref = `/subject/${mission.subject}/game`;
 
   const checkAnswer = () => {
     if (selected === null || checked) return;
@@ -83,10 +84,10 @@ export default function PracticePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <main className="page-safe-top container max-w-5xl pb-8 md:pb-12">
+      <main className="page-safe-top container max-w-5xl pb-8 md:pb-12" aria-label={`${subject.name}${mission.name}互動任務`}>
         <div className="mb-7 flex items-center justify-between gap-4">
-          <Link href="/game" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" /> 返回星辰冒險
+          <Link href={managementHref} className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
+            <ArrowLeft className="h-4 w-4" /> 返回{subject.name}冒險管理
           </Link>
           <div className="flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-400/5 px-3 py-1.5 text-xs text-amber-200">
             <Coins className="h-3.5 w-3.5" /> {state.starCoins} 星幣 · Lv.{level}
@@ -103,12 +104,12 @@ export default function PracticePage() {
               <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4"><Coins className="mx-auto mb-2 h-5 w-5 text-amber-200" /><div className="font-mono text-xl font-bold text-amber-200">+{reward.starCoins}</div><div className="mt-1 text-xs text-muted-foreground">學習星幣</div></div>
               <div className="rounded-2xl border border-white/10 bg-white/[0.035] p-4"><Sparkles className="mx-auto mb-2 h-5 w-5 text-accent" /><div className="font-mono text-xl font-bold text-accent">+{reward.experience}</div><div className="mt-1 text-xs text-muted-foreground">冒險經驗值</div></div>
             </div>
-            <div className="rounded-2xl border border-white/8 bg-white/[0.025] p-4 text-left text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">下一步：</span>回到遊戲模式，用新取得的星幣照顧 {subject.pet.name}；或前往均一延伸學習，繼續累積能力值。
+            <div className="rounded-2xl border border-white/8 bg-white/[0.025] p-4 text-left text-sm text-muted-foreground" role="status">
+              <span className="font-semibold text-foreground">下一步：</span>回到{subject.name}冒險管理頁，查看這次任務如何補足 {subject.pet.name} 的能量；再依自己的節奏前往均一延伸學習。
             </div>
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
               <Button onClick={restart} variant="outline" className="border-white/15"><RotateCcw className="mr-2 h-4 w-4" />再練一次</Button>
-              <Link href="/game"><Button className="w-full bg-accent text-accent-foreground hover:bg-accent/85"><Coins className="mr-2 h-4 w-4" />帶著獎勵返回</Button></Link>
+              <Link href={managementHref}><Button className="w-full bg-accent text-accent-foreground hover:bg-accent/85"><Coins className="mr-2 h-4 w-4" />查看任務回報</Button></Link>
               <a href={mission.junyiUrl} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full border-accent/35 text-accent"><ExternalLink className="mr-2 h-4 w-4" />延伸學習</Button></a>
             </div>
           </section>
@@ -119,8 +120,8 @@ export default function PracticePage() {
                 <div><p className="text-xs font-semibold tracking-[0.18em]" style={{ color: mission.accent }}>{subject.shortName.toUpperCase()} EXPEDITION · {subject.pet.emoji} {subject.pet.name}</p><h1 className="mt-1 text-2xl font-bold md:text-3xl">{mission.name}</h1><p className="mt-1 text-sm text-muted-foreground">{mission.subtitle} · {mission.estimate}</p></div>
                 <span className="rounded-full border px-3 py-1 text-xs" style={{ borderColor: `${mission.accent}55`, color: mission.accent }}>{mission.difficulty}</span>
               </div>
-              <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full transition-all duration-300" style={{ width: `${progress}%`, background: mission.accent }} /></div>
-              <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>任務進度</span><span className="font-mono">{questionIndex + 1} / {mission.questions.length}</span></div>
+              <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/10" role="progressbar" aria-label="任務進度" aria-valuemin={0} aria-valuemax={mission.questions.length} aria-valuenow={questionIndex} aria-valuetext={`第 ${questionIndex + 1} 題，共 ${mission.questions.length} 題`}><div className="h-full rounded-full transition-all duration-300" style={{ width: `${progress}%`, background: mission.accent }} /></div>
+              <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>任務進度 · 每題作答後都會獲得即時解析</span><span className="font-mono">{questionIndex + 1} / {mission.questions.length}</span></div>
             </div>
 
             <QuizQuestionCard
