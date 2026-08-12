@@ -19,7 +19,6 @@ export type PracticeMission = {
   dimension: LearningDimensionId;
   accent: string;
   estimate: string;
-  junyiUrl: string;
   questions: PracticeQuestion[];
 };
 
@@ -33,7 +32,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "speaking",
     accent: "#4ECDC4",
     estimate: "約 3 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/junyi-english-lettersandphonics",
     questions: [
       { prompt: "哪一個字母是英文單字 apple 的第一個字母？", choices: ["A", "E", "P", "L"], correctIndex: 0, explanation: "apple 的第一個音是 /æ/，對應字母 A。" },
       { prompt: "請選出與 /b/ 起始音最相近的單字。", choices: ["ball", "cat", "fish", "sun"], correctIndex: 0, explanation: "ball 的開頭是 /b/；先把聲音和字母連起來記。" },
@@ -50,7 +48,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "vocabulary",
     accent: "#FFD166",
     estimate: "約 4 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/a-j-vocab",
     questions: [
       { prompt: "I drink ____ when I am thirsty.", choices: ["water", "book", "chair", "teacher"], correctIndex: 0, explanation: "thirsty 是口渴；water 是最符合語意的飲品。" },
       { prompt: "Which word means「家庭」？", choices: ["family", "friend", "flower", "farm"], correctIndex: 0, explanation: "family 指家人與家庭；可用 my family 介紹家人。" },
@@ -67,7 +64,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "listening",
     accent: "#60A5FA",
     estimate: "約 4 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/english-topic",
     questions: [
       { prompt: "A: How are you?  B: ____", choices: ["I am fine, thank you.", "It is a book.", "I am ten books.", "Good night yesterday."], correctIndex: 0, explanation: "How are you? 用來關心近況；I am fine, thank you. 是自然回應。" },
       { prompt: "A: What is your name?  B: ____", choices: ["My name is Amy.", "I am at school.", "It is Monday.", "I like apples."], correctIndex: 0, explanation: "詢問姓名時可回答 My name is …。" },
@@ -84,7 +80,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "grammar",
     accent: "#A977F4",
     estimate: "約 5 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/english-topic",
     questions: [
       { prompt: "She ____ to school every day.", choices: ["walks", "walk", "walking", "walked"], correctIndex: 0, explanation: "every day 表示習慣；主詞 She 是第三人稱單數，要用 walks。" },
       { prompt: "They ____ soccer now.", choices: ["play", "plays", "are playing", "played"], correctIndex: 2, explanation: "now 是進行式提示字；They are playing soccer.。" },
@@ -101,7 +96,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "reading",
     accent: "#5CE0B8",
     estimate: "約 5 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/english-topic",
     questions: [
       { context: "Mia has a small dog named Coco. Every morning, Mia walks Coco in the park before school.", prompt: "When does Mia walk Coco?", choices: ["Every morning", "After dinner", "On Sundays only", "At night"], correctIndex: 0, explanation: "短文中的 Every morning 直接指出散步時間。" },
       { context: "Mia has a small dog named Coco. Every morning, Mia walks Coco in the park before school.", prompt: "Where do Mia and Coco go?", choices: ["The park", "The library", "The zoo", "The classroom"], correctIndex: 0, explanation: "in the park 指出他們去公園。" },
@@ -118,7 +112,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "chinese",
     accent: "#F08A8A",
     estimate: "約 3 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/junyi-chinese",
     questions: [
       { prompt: "「畫龍點睛」最接近下列哪一個意思？", choices: ["在關鍵處加上精采的一筆", "把龍畫得很大", "做事拖延", "一直重複練習"], correctIndex: 0, explanation: "畫龍點睛比喻在關鍵處加上精要的一筆，使整體更生動。" },
       { prompt: "下列哪一句最適合使用「津津有味」？", choices: ["小明把故事書讀得津津有味。", "天空津津有味地下雨。", "妹妹津津有味地睡覺。", "爸爸津津有味地遲到。"], correctIndex: 0, explanation: "津津有味形容對事情很有興趣，讀故事書的語境最自然。" },
@@ -134,7 +127,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "math",
     accent: "#FFD166",
     estimate: "約 3 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/course-compare",
     questions: [
       { prompt: "36 ÷ 4 的答案是？", choices: ["7", "8", "9", "10"], correctIndex: 2, explanation: "4 × 9 = 36，所以 36 ÷ 4 = 9。" },
       { prompt: "找出規律：3、6、9、12、____", choices: ["13", "14", "15", "16"], correctIndex: 2, explanation: "每次加 3，因此下一個數是 15。" },
@@ -150,7 +142,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "science",
     accent: "#73D5FF",
     estimate: "約 3 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/junyi-science",
     questions: [
       { prompt: "植物製造養分主要需要哪一種能量？", choices: ["太陽光", "月光", "風力", "聲音"], correctIndex: 0, explanation: "植物透過光合作用利用太陽光製造養分。" },
       { prompt: "水加熱後變成水蒸氣，這個變化叫什麼？", choices: ["凝固", "蒸發", "融化", "結冰"], correctIndex: 1, explanation: "液態水受熱變成氣態水蒸氣，稱為蒸發。" },
@@ -166,7 +157,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "social",
     accent: "#A78BFA",
     estimate: "約 3 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/junyi-society",
     questions: [
       { prompt: "地圖上的圖例主要用來說明什麼？", choices: ["地圖符號的意義", "天氣預報", "故事內容", "考試分數"], correctIndex: 0, explanation: "圖例會解釋地圖上各種顏色與符號代表的資訊。" },
       { prompt: "要規劃到陌生地方的路線，最先可以參考什麼？", choices: ["地圖", "食譜", "課表", "小說"], correctIndex: 0, explanation: "地圖能提供位置、方向和道路等路線資訊。" },
@@ -182,7 +172,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "arts",
     accent: "#F59DDA",
     estimate: "約 3 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/v1051-new-topic",
     questions: [
       { prompt: "紅色和黃色混合後，最可能接近哪一種顏色？", choices: ["綠色", "橘色", "紫色", "藍色"], correctIndex: 1, explanation: "紅、黃兩種顏色混合，會形成橘色。" },
       { prompt: "重複出現且有規律的強弱變化，最接近音樂的哪個元素？", choices: ["節奏", "顏色", "大小", "氣味"], correctIndex: 0, explanation: "節奏是聲音長短、強弱與重複規律形成的感受。" },
@@ -198,7 +187,6 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
     dimension: "health",
     accent: "#5CC9A7",
     estimate: "約 3 分鐘",
-    junyiUrl: "https://www.junyiacademy.org/topics/v1170-new-topic-14",
     questions: [
       { prompt: "長時間使用螢幕後，較合適的做法是？", choices: ["持續盯著螢幕", "休息眼睛並望向遠處", "把亮度調到最高", "不喝水"], correctIndex: 1, explanation: "適度休息眼睛、看向遠處，可以減少用眼疲勞。" },
       { prompt: "下列何者較有助於維持日常精神？", choices: ["規律作息", "整晚不睡", "只吃零食", "完全不活動"], correctIndex: 0, explanation: "規律睡眠與休息能幫助身體恢復精神。" },

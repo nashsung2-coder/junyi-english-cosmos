@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import QuizQuestionCard from "@/components/QuizQuestionCard";
 import { Button } from "@/components/ui/button";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
+import { getJunyiPracticeResource } from "@/lib/junyiResources";
 import { accuracyPercent } from "@/lib/learningProgress";
 import { getPracticeMission } from "@/lib/practiceData";
 import { getSubject } from "@/lib/subjectUniverse";
@@ -49,6 +50,7 @@ export default function PracticePage() {
   const progress = Math.round((questionIndex / mission.questions.length) * 100);
   const currentCorrect = selected === question.correctIndex;
   const managementHref = `/subject/${mission.subject}/game`;
+  const junyiResource = getJunyiPracticeResource(mission.id, mission.subject);
 
   const checkAnswer = () => {
     if (selected === null || checked) return;
@@ -110,7 +112,7 @@ export default function PracticePage() {
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
               <Button onClick={restart} variant="outline" className="tap-target border-white/15"><RotateCcw className="mr-2 h-4 w-4" />再練一次</Button>
               <Link href={managementHref} className="tap-target inline-flex w-full items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-colors hover:bg-accent/85"><Coins className="mr-2 h-4 w-4" />查看任務回報</Link>
-              <a href={mission.junyiUrl} target="_blank" rel="noopener noreferrer" className="tap-target inline-flex w-full items-center justify-center rounded-md border border-accent/35 px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10"><ExternalLink className="mr-2 h-4 w-4" />延伸學習</a>
+              <a href={junyiResource.url} target="_blank" rel="noopener noreferrer" aria-label={`前往均一教材：${junyiResource.title}`} className="tap-target inline-flex w-full items-center justify-center rounded-md border border-accent/35 px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10"><ExternalLink className="mr-2 h-4 w-4" />延伸學習：{junyiResource.title}</a>
             </div>
           </section>
         ) : (
