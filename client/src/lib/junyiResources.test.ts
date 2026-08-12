@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getJunyiSubjectResources, JUNYI_SUBJECT_RESOURCES } from "./junyiResources";
+import { getJunyiResourceLevel, getJunyiSubjectResources, JUNYI_SUBJECT_RESOURCES } from "./junyiResources";
 
 describe("junyi subject resources", () => {
   it("provides a verified Junyi hub and mission resource for every subject", () => {
@@ -66,5 +66,15 @@ describe("junyi subject resources", () => {
       title: "臺灣四大區域的特色與發展",
       url: "https://www.junyiacademy.org/videos/EjhOP8udqmI?topic=junyi-society%2Fcoocele-t%2Fcoocele-t5",
     });
+  });
+
+  it("classifies verified resources so learners can distinguish units, grade routes, and tools", () => {
+    const englishResources = getJunyiSubjectResources("english");
+    const mathResources = getJunyiSubjectResources("math");
+
+    expect(getJunyiResourceLevel(mathResources.extensions[0])).toBe("單元教材");
+    expect(getJunyiResourceLevel(mathResources.extensions[1])).toBe("年段課程");
+    expect(getJunyiResourceLevel(englishResources.extensions[3])).toBe("學習工具");
+    expect(getJunyiResourceLevel(englishResources.hub)).toBe("主題課程");
   });
 });

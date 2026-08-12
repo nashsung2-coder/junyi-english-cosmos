@@ -6,6 +6,8 @@ export type JunyiLearningResource = {
   url: string;
 };
 
+export type JunyiResourceLevel = "單元教材" | "主題課程" | "年段課程" | "學習工具";
+
 export type SubjectLearningResources = {
   hub: JunyiLearningResource;
   mission: JunyiLearningResource;
@@ -77,6 +79,18 @@ export const JUNYI_SUBJECT_RESOURCES: Record<SubjectId, SubjectLearningResources
 };
 
 export const getJunyiSubjectResources = (subjectId: SubjectId) => JUNYI_SUBJECT_RESOURCES[subjectId];
+
+const UNIT_RESOURCE_TITLE = /比例|磁鐵|成語|臺灣四大區域|節奏|永續食代|時態|閱讀素養/;
+
+/**
+ * 以集中化資料提供教材層級，讓畫面能清楚區分均一的單元、主題、年段與工具入口。
+ */
+export const getJunyiResourceLevel = (resource: JunyiLearningResource): JunyiResourceLevel => {
+  if (UNIT_RESOURCE_TITLE.test(resource.title) || resource.url.includes("/videos/") || resource.url.includes("/v/")) return "單元教材";
+  if (resource.title.includes("國中") || resource.title.includes("國小") || resource.title.includes("高中")) return "年段課程";
+  if (resource.title.includes("Jutor")) return "學習工具";
+  return "主題課程";
+};
 
 export const getJunyiPracticeResource = (missionId: number, subjectId: SubjectId): JunyiLearningResource => {
   const resource = getJunyiSubjectResources(subjectId);
