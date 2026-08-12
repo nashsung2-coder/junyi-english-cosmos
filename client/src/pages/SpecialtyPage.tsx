@@ -24,6 +24,13 @@ import { DIMENSIONS, TODAY_TASKS, ACHIEVEMENTS, RESOURCE_LINKS } from "@/const";
 import Navbar from "@/components/Navbar";
 import SubjectPlaceholder from "@/components/SubjectPlaceholder";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
+import { getJunyiSubjectResources } from "@/lib/junyiResources";
+
+const ENGLISH_RESOURCES = getJunyiSubjectResources("english");
+const ENGLISH_HUB_URL = ENGLISH_RESOURCES.hub.url;
+const ENGLISH_TENSE_URL = ENGLISH_RESOURCES.extensions[1]?.url ?? ENGLISH_HUB_URL;
+const ENGLISH_READING_URL = ENGLISH_RESOURCES.extensions[2]?.url ?? ENGLISH_HUB_URL;
+const ENGLISH_JUTOR_URL = ENGLISH_RESOURCES.extensions[3]?.url ?? ENGLISH_HUB_URL;
 
 /**
  * SpecialtyPage - 專攻區 (學力之間)
@@ -53,26 +60,26 @@ const NAV = [
 
 const SKILLS: Record<string, Array<{ name: string; level: string; unlocked: boolean; progress: number; url: string }>> = {
   listening: [
-    { name: "短句聽解", level: "Lv.3", unlocked: true, progress: 80, url: "https://www.junyiacademy.org/topics/english-topic" },
-    { name: "對話理解", level: "Lv.2", unlocked: true, progress: 55, url: "https://www.junyiacademy.org/topics/english-topic" },
-    { name: "故事聽解", level: "Lv.1", unlocked: true, progress: 30, url: "https://www.junyiacademy.org/topics/english-topic" },
-    { name: "篇章聽解", level: "Lv.1", unlocked: false, progress: 0, url: "https://www.junyiacademy.org/topics/english-topic" },
+    { name: "短句聽解", level: "Lv.3", unlocked: true, progress: 80, url: ENGLISH_HUB_URL },
+    { name: "對話理解", level: "Lv.2", unlocked: true, progress: 55, url: ENGLISH_JUTOR_URL },
+    { name: "故事聽解", level: "Lv.1", unlocked: true, progress: 30, url: ENGLISH_READING_URL },
+    { name: "篇章聽解", level: "Lv.1", unlocked: false, progress: 0, url: ENGLISH_READING_URL },
   ],
   speaking: [
     { name: "字母發音", level: "Lv.3", unlocked: true, progress: 95, url: "https://www.junyiacademy.org/topics/junyi-english-lettersandphonics" },
-    { name: "單字跟讀", level: "Lv.2", unlocked: true, progress: 60, url: "https://www.junyiacademy.org/topics/jutor" },
-    { name: "句型模仿", level: "Lv.1", unlocked: true, progress: 20, url: "https://www.junyiacademy.org/topics/english-topic" },
-    { name: "主題簡報", level: "Lv.1", unlocked: false, progress: 0, url: "https://www.junyiacademy.org/topics/jutor" },
+    { name: "單字跟讀", level: "Lv.2", unlocked: true, progress: 60, url: ENGLISH_JUTOR_URL },
+    { name: "句型模仿", level: "Lv.1", unlocked: true, progress: 20, url: ENGLISH_JUTOR_URL },
+    { name: "主題簡報", level: "Lv.1", unlocked: false, progress: 0, url: ENGLISH_JUTOR_URL },
   ],
   reading: [
-    { name: "句子認讀", level: "Lv.3", unlocked: true, progress: 85, url: "https://www.junyiacademy.org/topics/english-topic" },
-    { name: "短文理解", level: "Lv.2", unlocked: true, progress: 45, url: "https://www.junyiacademy.org/topics/english-topic" },
-    { name: "推論閱讀", level: "Lv.1", unlocked: true, progress: 15, url: "https://www.junyiacademy.org/topics/english-topic" },
+    { name: "句子認讀", level: "Lv.3", unlocked: true, progress: 85, url: ENGLISH_READING_URL },
+    { name: "短文理解", level: "Lv.2", unlocked: true, progress: 45, url: ENGLISH_READING_URL },
+    { name: "推論閱讀", level: "Lv.1", unlocked: true, progress: 15, url: ENGLISH_READING_URL },
   ],
   writing: [
     { name: "單字拼寫", level: "Lv.3", unlocked: true, progress: 75, url: "https://www.junyiacademy.org/topics/a-j-vocab" },
-    { name: "句子書寫", level: "Lv.2", unlocked: true, progress: 50, url: "https://www.junyiacademy.org/topics/jutor" },
-    { name: "段落寫作", level: "Lv.1", unlocked: false, progress: 0, url: "https://www.junyiacademy.org/topics/jutor" },
+    { name: "句子書寫", level: "Lv.2", unlocked: true, progress: 50, url: ENGLISH_JUTOR_URL },
+    { name: "段落寫作", level: "Lv.1", unlocked: false, progress: 0, url: ENGLISH_JUTOR_URL },
   ],
   vocabulary: [
     { name: "主題單字(食物/動物)", level: "Lv.3", unlocked: true, progress: 90, url: "https://www.junyiacademy.org/topics/a-j-vocab" },
@@ -81,10 +88,10 @@ const SKILLS: Record<string, Array<{ name: string; level: string; unlocked: bool
     { name: "進階學術字彙", level: "Lv.1", unlocked: false, progress: 0, url: "https://www.junyiacademy.org/topics/a-j-vocab" },
   ],
   grammar: [
-    { name: "be動詞", level: "Lv.3", unlocked: true, progress: 100, url: "https://www.junyiacademy.org/topics/english-topic" },
-    { name: "現在進行式", level: "Lv.2", unlocked: true, progress: 65, url: "https://www.junyiacademy.org/videos/nMV0ZvWSqW4" },
-    { name: "過去式", level: "Lv.1", unlocked: true, progress: 25, url: "https://www.junyiacademy.org/topics/english-topic" },
-    { name: "完成式", level: "Lv.1", unlocked: false, progress: 0, url: "https://www.junyiacademy.org/topics/english-topic" },
+    { name: "be動詞", level: "Lv.3", unlocked: true, progress: 100, url: ENGLISH_TENSE_URL },
+    { name: "現在進行式", level: "Lv.2", unlocked: true, progress: 65, url: ENGLISH_TENSE_URL },
+    { name: "過去式", level: "Lv.1", unlocked: true, progress: 25, url: ENGLISH_TENSE_URL },
+    { name: "完成式", level: "Lv.1", unlocked: false, progress: 0, url: ENGLISH_TENSE_URL },
   ],
 };
 

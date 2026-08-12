@@ -6,6 +6,7 @@ import { ArrowLeft, Heart, TrendingUp, BookOpen, Users, Gift, MessageCircle, Che
 import Navbar from "@/components/Navbar";
 import SubjectPlaceholder from "@/components/SubjectPlaceholder";
 import CosmicCommandDeck from "@/components/CosmicCommandDeck";
+import { getJunyiSubjectResources } from "@/lib/junyiResources";
 
 /**
  * ParentPage - 家長區 (親子星港)
@@ -16,6 +17,7 @@ import CosmicCommandDeck from "@/components/CosmicCommandDeck";
 
 const FAMILY_IMG = "/assets/junyi-family.png";
 const MASCOT_IMG = "/assets/junyi-mascot.png";
+const ENGLISH_RESOURCES = getJunyiSubjectResources("english");
 
 const CHILDREN = [
   { id: 1, name: "星兒", grade: "國小四年級" },
@@ -188,25 +190,25 @@ export default function ParentPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <a
-                    href="https://www.junyiacademy.org/topics/english-topic"
+                    href={ENGLISH_RESOURCES.mission.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="tap-target glass-card-hover p-4 group"
                   >
-                    <div className="text-sm font-semibold mb-1">聽故事 · 親子共聽</div>
-                    <div className="text-xs text-muted-foreground">以故事為主題的聽力活動,適合一起聽、一起聊。</div>
+                    <div className="text-sm font-semibold mb-1">字母與發音 · 親子共學</div>
+                    <div className="text-xs text-muted-foreground">從字母、拼讀到自然發音，適合一起聽、一起跟讀並聊聊新發現。</div>
                     <div className="text-xs text-emerald-300 mt-2 inline-flex items-center gap-1">
                       前往學習 <ExternalLink className="w-3 h-3" />
                     </div>
                   </a>
                   <a
-                    href="https://www.junyiacademy.org/topics/english-topic"
+                    href={ENGLISH_RESOURCES.extensions[2]?.url ?? ENGLISH_RESOURCES.hub.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="tap-target glass-card-hover p-4 group"
                   >
-                    <div className="text-sm font-semibold mb-1">英文聽力專區</div>
-                    <div className="text-xs text-muted-foreground">互動聽力影片與題目,從短句到篇章循序漸進。</div>
+                    <div className="text-sm font-semibold mb-1">英文閱讀素養</div>
+                    <div className="text-xs text-muted-foreground">從主旨、細節到推論，選一篇短文一起讀、一起聊理解策略。</div>
                     <div className="text-xs text-emerald-300 mt-2 inline-flex items-center gap-1">
                       前往學習 <ExternalLink className="w-3 h-3" />
                     </div>

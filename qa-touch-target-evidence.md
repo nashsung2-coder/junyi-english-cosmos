@@ -21,5 +21,6 @@
 | 數學任務完成頁端到端 | `/practice/102`，桌機實際作答 | 正確完成三題後，頁面顯示 3/3、+114 學習星幣、+84 冒險經驗值、數學管理頁回流與「延伸學習」按鈕。該外連指向已驗證的均一比例教材：`https://www.junyiacademy.org/topics/g-mjnbl`。 |
 | 英文時態與閱讀單元 | `/subject/english/specialty`，375 × 812 全頁 | 時態：現在、過去與完成式、英文閱讀素養與 Jutor 入口皆在真實教材區塊以獨立卡片呈現；長標題可換行閱讀，外連圖示與行動提示維持清楚，且首屏與內容均位於固定導覽安全區下方。 |
 | 已部署數學單元教材 | `https://2360f3fc.junyi-english-cosmos.pages.dev/subject/math/specialty` | 公開站已顯示「數學課程地圖」、「比例：比、連比例與正反比」與「國中數學」三個真實教材入口；比例卡的公開網址為 `https://www.junyiacademy.org/topics/g-mjnbl`，與集中資源對照相符。 |
+| 專攻區與親子星港入口 | `/specialty`、`/parent`，375 × 812 全頁 | 兩條主導航均先呈現七科航線卡與「進入管理」CTA，再導向科目專屬管理頁；固定導覽列未遮擋首屏。遺留的舊式專攻／親子英文網址已由 `junyiLegacyLinkCleanup.test.ts` 驗證改用集中化教材對照。 |
 
 > 驗證基準：`tap-target` 提供最小寬高 2.75rem（44px）。固定導覽列的按鈕額外使用 `h-11`／`w-11`，避免緊鄰互動元件的誤觸。
