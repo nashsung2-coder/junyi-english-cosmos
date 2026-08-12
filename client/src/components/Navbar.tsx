@@ -66,7 +66,7 @@ export default function Navbar() {
   };
 
   const panelButtonClass = (active: boolean) =>
-    `inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-sm font-medium transition-all duration-200 active:scale-[0.97] ${
+    `tap-target inline-flex h-11 items-center gap-1.5 rounded-full px-3 text-sm font-medium transition-all duration-200 active:scale-[0.97] ${
       active
         ? "bg-accent/13 text-accent shadow-[inset_0_0_0_1px_rgba(78,205,196,.22)]"
         : "text-slate-300 hover:bg-white/[0.055] hover:text-white"
@@ -86,7 +86,7 @@ export default function Navbar() {
     <Link
       href={href}
       onClick={closeMenus}
-      className="group flex items-start gap-3 rounded-xl p-3 text-left transition-colors hover:bg-white/[0.06]"
+      className="tap-target group flex items-start gap-3 rounded-xl p-3 text-left transition-colors hover:bg-white/[0.06]"
     >
       <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-accent/10 text-accent transition-transform duration-200 group-hover:scale-105">
         <Icon className="h-4 w-4" />
@@ -101,7 +101,7 @@ export default function Navbar() {
   return (
     <nav className="fixed inset-x-0 top-0 z-50 border-b border-white/[0.08] bg-[#070a17]/85 backdrop-cosmic">
       <div className="container flex h-[68px] items-center gap-3">
-        <Link href="/" onClick={closeMenus} className="flex shrink-0 items-center gap-2.5" aria-label="回到均一星辰宇宙大廳">
+        <Link href="/" onClick={closeMenus} className="tap-target flex shrink-0 items-center gap-2.5" aria-label="回到均一星辰宇宙大廳">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent/[0.11] ring-1 ring-accent/20">
             <img src={LOGO} alt="" className="h-6 w-6" />
           </span>
@@ -166,7 +166,7 @@ export default function Navbar() {
             type="button"
             onClick={() => setOpenPanel(openPanel === "subjects" ? null : "subjects")}
             aria-expanded={openPanel === "subjects"}
-            className="inline-flex h-10 items-center gap-2 rounded-full border border-white/[0.10] px-3 text-sm font-medium text-slate-300 transition-colors hover:border-accent/35 hover:bg-white/[0.055] hover:text-white active:scale-[0.97]"
+            className="tap-target inline-flex h-11 items-center gap-2 rounded-full border border-white/[0.10] px-3 text-sm font-medium text-slate-300 transition-colors hover:border-accent/35 hover:bg-white/[0.055] hover:text-white active:scale-[0.97]"
           >
             <Compass className="h-4 w-4 text-accent" />
             學科探索
@@ -187,7 +187,7 @@ export default function Navbar() {
                     type="button"
                     key={subject.name}
                     onClick={() => handleSubject(subject)}
-                    className={`rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
+                    className={`tap-target rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
                       subject.name === "英文"
                         ? "border-accent/25 bg-accent/[0.08] text-accent hover:bg-accent/[0.14]"
                         : "border-white/[0.07] bg-white/[0.025] text-slate-300 hover:border-white/[0.16] hover:bg-white/[0.07]"
@@ -205,7 +205,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => toast.success("星際帳號已登入", { description: "星辰小騎士的學習進度將持續累積。" })}
-          className="hidden h-10 shrink-0 items-center gap-2 rounded-full border border-accent/30 bg-accent/[0.08] px-3 text-xs font-medium text-accent transition-colors hover:bg-accent/[0.14] sm:inline-flex"
+          className="tap-target hidden h-11 shrink-0 items-center gap-2 rounded-full border border-accent/30 bg-accent/[0.08] px-3 text-xs font-medium text-accent transition-colors hover:bg-accent/[0.14] sm:inline-flex"
           aria-label="已登入，星辰小騎士"
         >
           <span className="relative flex h-2 w-2">
@@ -222,7 +222,7 @@ export default function Navbar() {
             setMobileOpen(!mobileOpen);
             setOpenPanel(null);
           }}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-slate-300 transition-colors hover:bg-white/[0.06] hover:text-white xl:hidden"
+          className="tap-target grid h-11 w-11 shrink-0 place-items-center rounded-xl text-slate-300 transition-colors hover:bg-white/[0.06] hover:text-white xl:hidden"
           aria-label={mobileOpen ? "關閉選單" : "開啟選單"}
           aria-expanded={mobileOpen}
         >
@@ -236,12 +236,12 @@ export default function Navbar() {
             <section>
               <p className="mb-2 text-[10px] font-bold tracking-[0.16em] text-slate-500">主要航線</p>
               <div className="grid grid-cols-2 gap-2">
-                <Link href="/" onClick={closeMenus} className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">大廳</Link>
-                <Link href="/specialty" onClick={closeMenus} className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">專攻區</Link>
-                <Link href="/game" onClick={closeMenus} className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">星際冒險</Link>
-                <Link href="/journey" onClick={closeMenus} className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">我的成長</Link>
-                <Link href="/butler" onClick={closeMenus} className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">能力管家</Link>
-                <button type="button" onClick={() => toast("家長與教師支援", { description: "可從下方支援入口進入。" })} className="rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-left text-sm text-slate-200">支援入口</button>
+                <Link href="/" onClick={closeMenus} className="tap-target rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">大廳</Link>
+                <Link href="/specialty" onClick={closeMenus} className="tap-target rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">專攻區</Link>
+                <Link href="/game" onClick={closeMenus} className="tap-target rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">星際冒險</Link>
+                <Link href="/journey" onClick={closeMenus} className="tap-target rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">我的成長</Link>
+                <Link href="/butler" onClick={closeMenus} className="tap-target rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-sm text-slate-200">能力管家</Link>
+                <button type="button" onClick={() => toast("家長與教師支援", { description: "可從下方支援入口進入。" })} className="tap-target rounded-xl border border-white/[0.08] bg-white/[0.025] p-3 text-left text-sm text-slate-200">支援入口</button>
               </div>
             </section>
 
@@ -252,7 +252,7 @@ export default function Navbar() {
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {SUBJECTS.map((subject) => (
-                  <button key={subject.name} type="button" onClick={() => handleSubject(subject)} className="rounded-full border border-white/[0.09] px-2.5 py-1.5 text-xs text-slate-300 transition-colors hover:border-accent/35 hover:bg-accent/[0.08] hover:text-accent">
+                  <button key={subject.name} type="button" onClick={() => handleSubject(subject)} className="tap-target inline-flex items-center rounded-full border border-white/[0.09] px-2.5 py-1.5 text-xs text-slate-300 transition-colors hover:border-accent/35 hover:bg-accent/[0.08] hover:text-accent">
                     {subject.name}
                   </button>
                 ))}
@@ -260,9 +260,9 @@ export default function Navbar() {
             </section>
 
             <div className="grid grid-cols-2 gap-2">
-              {SUPPORT_LINKS.map(({ name, href }) => <Link key={href} href={href} onClick={closeMenus} className="rounded-xl px-3 py-2 text-center text-sm text-slate-400 hover:bg-white/[0.06] hover:text-slate-100">{name}</Link>)}
+              {SUPPORT_LINKS.map(({ name, href }) => <Link key={href} href={href} onClick={closeMenus} className="tap-target inline-flex items-center justify-center rounded-xl px-3 py-2 text-center text-sm text-slate-400 hover:bg-white/[0.06] hover:text-slate-100">{name}</Link>)}
             </div>
-            <button type="button" onClick={() => toast.success("星際帳號已登入", { description: "星辰小騎士的學習進度將持續累積。" })} className="flex w-full items-center justify-center gap-2 rounded-xl border border-accent/30 bg-accent/[0.08] px-3 py-2.5 text-xs font-medium text-accent">
+            <button type="button" onClick={() => toast.success("星際帳號已登入", { description: "星辰小騎士的學習進度將持續累積。" })} className="tap-target flex w-full items-center justify-center gap-2 rounded-xl border border-accent/30 bg-accent/[0.08] px-3 py-2.5 text-xs font-medium text-accent">
               <UserRound className="h-4 w-4" /> 已登入 · 星辰小騎士
             </button>
           </div>

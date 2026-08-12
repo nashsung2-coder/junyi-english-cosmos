@@ -44,7 +44,7 @@ export default function QuizQuestionCard({
               onClick={() => onSelect(index)}
               aria-pressed={chosen}
               aria-label={`${String.fromCharCode(65 + index)}：${choice}${chosen ? "，已選擇" : ""}`}
-              className={`flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-all ${showCorrect ? "border-emerald-300/60 bg-emerald-400/10" : showWrong ? "border-rose-300/60 bg-rose-400/10" : chosen ? "border-accent/70 bg-accent/10" : "border-white/10 bg-white/[0.025] hover:border-white/25 hover:bg-white/[0.055]"}`}
+              className={`tap-target flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-all ${showCorrect ? "border-emerald-300/60 bg-emerald-400/10" : showWrong ? "border-rose-300/60 bg-rose-400/10" : chosen ? "border-accent/70 bg-accent/10" : "border-white/10 bg-white/[0.025] hover:border-white/25 hover:bg-white/[0.055]"}`}
             >
               <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-mono ${showCorrect ? "border-emerald-300 bg-emerald-300 text-emerald-950" : showWrong ? "border-rose-300 bg-rose-300 text-rose-950" : chosen ? "border-accent bg-accent text-accent-foreground" : "border-white/20 text-muted-foreground"}`}>{showCorrect ? <CheckCircle2 className="h-4 w-4" /> : showWrong ? <XCircle className="h-4 w-4" /> : String.fromCharCode(65 + index)}</span>
               <span className="text-sm md:text-base">{choice}</span>
@@ -60,9 +60,9 @@ export default function QuizQuestionCard({
       )}
       <div className="mt-7 flex justify-end gap-3">
         {!checked ? (
-          <Button onClick={onCheck} disabled={selected === null} className="bg-accent text-accent-foreground hover:bg-accent/85">確認作答<CheckCircle2 className="ml-2 h-4 w-4" /></Button>
+          <Button onClick={onCheck} disabled={selected === null} className="tap-target bg-accent text-accent-foreground hover:bg-accent/85">確認作答<CheckCircle2 className="ml-2 h-4 w-4" /></Button>
         ) : (
-          <Button onClick={onNext} className="bg-white text-slate-950 hover:bg-white/90">{isFinalQuestion ? "完成遠征" : "下一題"}<ArrowRight className="ml-2 h-4 w-4" /></Button>
+          <Button onClick={onNext} className="tap-target bg-white text-slate-950 hover:bg-white/90">{isFinalQuestion ? "完成遠征" : "下一題"}<ArrowRight className="ml-2 h-4 w-4" /></Button>
         )}
       </div>
     </article>

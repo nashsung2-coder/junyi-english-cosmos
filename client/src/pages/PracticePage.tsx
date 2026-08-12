@@ -37,7 +37,7 @@ export default function PracticePage() {
         <main className="page-safe-top container pb-24 text-center">
           <CircleHelp className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
           <h1 className="text-2xl font-bold">找不到這條遠征航線</h1>
-          <Link href="/game" className="mt-5 inline-flex text-accent hover:underline">回到遊戲模式</Link>
+          <Link href="/game" className="tap-target mt-5 inline-flex items-center text-accent hover:underline">回到遊戲模式</Link>
         </main>
       </div>
     );
@@ -86,7 +86,7 @@ export default function PracticePage() {
       <Navbar />
       <main className="page-safe-top container max-w-5xl pb-8 md:pb-12" aria-label={`${subject.name}${mission.name}互動任務`}>
         <div className="mb-7 flex items-center justify-between gap-4">
-          <Link href={managementHref} className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link href={managementHref} className="tap-target inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
             <ArrowLeft className="h-4 w-4" /> 返回{subject.name}冒險管理
           </Link>
           <div className="flex items-center gap-2 rounded-full border border-amber-300/20 bg-amber-400/5 px-3 py-1.5 text-xs text-amber-200">
@@ -108,9 +108,9 @@ export default function PracticePage() {
               <span className="font-semibold text-foreground">下一步：</span>回到{subject.name}冒險管理頁，查看這次任務如何補足 {subject.pet.name} 的能量；再依自己的節奏前往均一延伸學習。
             </div>
             <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-              <Button onClick={restart} variant="outline" className="border-white/15"><RotateCcw className="mr-2 h-4 w-4" />再練一次</Button>
-              <Link href={managementHref}><Button className="w-full bg-accent text-accent-foreground hover:bg-accent/85"><Coins className="mr-2 h-4 w-4" />查看任務回報</Button></Link>
-              <a href={mission.junyiUrl} target="_blank" rel="noopener noreferrer"><Button variant="outline" className="w-full border-accent/35 text-accent"><ExternalLink className="mr-2 h-4 w-4" />延伸學習</Button></a>
+              <Button onClick={restart} variant="outline" className="tap-target border-white/15"><RotateCcw className="mr-2 h-4 w-4" />再練一次</Button>
+              <Link href={managementHref} className="tap-target inline-flex w-full items-center justify-center rounded-md bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-colors hover:bg-accent/85"><Coins className="mr-2 h-4 w-4" />查看任務回報</Link>
+              <a href={mission.junyiUrl} target="_blank" rel="noopener noreferrer" className="tap-target inline-flex w-full items-center justify-center rounded-md border border-accent/35 px-4 py-2 text-sm font-medium text-accent transition-colors hover:bg-accent/10"><ExternalLink className="mr-2 h-4 w-4" />延伸學習</a>
             </div>
           </section>
         ) : (

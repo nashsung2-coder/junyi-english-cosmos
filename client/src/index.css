@@ -139,6 +139,7 @@
 
   html {
     @apply scroll-smooth;
+    scroll-padding-top: calc(68px + env(safe-area-inset-top) + 1rem);
   }
 
   body {
@@ -155,6 +156,12 @@
   input[type="checkbox"]:not(:disabled),
   input[type="radio"]:not(:disabled) {
     @apply cursor-pointer;
+  }
+
+  :where(a[href], button, input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])):focus-visible {
+    outline: 2px solid var(--cosmos-teal);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 5px oklch(0.78 0.12 185 / 0.18);
   }
 }
 
@@ -332,6 +339,28 @@
   /* 固定導覽列為 68px；同時保留裝置瀏海安全區，供所有頁面主內容共用。 */
   .page-safe-top {
     padding-top: calc(68px + env(safe-area-inset-top) + 1.5rem);
+  }
+
+  .tap-target {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+}
+
+@media (pointer: coarse) {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  [type="reset"]:not(:disabled),
+  select:not(:disabled),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled) {
+    min-height: 2.75rem;
+  }
+
+  .glass-card-hover:hover {
+    transform: none;
   }
 }
 

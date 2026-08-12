@@ -65,7 +65,7 @@ export default function ButlerPage() {
             description="把每一題作答轉換為能力訊號，整理成可行的下一步。這張圖譜會隨你的英文遠征持續校準。"
             icon={Bot}
             accent="#B98CFF"
-            action={<Link href="/game" className="inline-flex rounded-xl border border-violet-300/35 bg-violet-300/[0.08] px-3.5 py-2 text-xs font-medium text-violet-200 transition-colors hover:bg-violet-300/[0.15]">進入遠征 →</Link>}
+            action={<Link href="/game" className="tap-target inline-flex items-center rounded-xl border border-violet-300/35 bg-violet-300/[0.08] px-3.5 py-2 text-xs font-medium text-violet-200 transition-colors hover:bg-violet-300/[0.15]">進入遠征 →</Link>}
           >
             <div className="grid gap-3 text-sm sm:grid-cols-3">
               <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">互動練習</span><span className="mt-1 block font-mono text-lg font-semibold text-white">{state.totalQuestions} 題</span></div>
@@ -139,7 +139,7 @@ function AISelector({ suggestions, adoptedIds, onAdopt }: { suggestions: typeof 
         </div>
         <button
           onClick={adopt}
-          className="px-4 py-1.5 rounded-lg bg-accent text-background text-sm font-semibold hover:opacity-90 transition-opacity active:scale-[0.97]"
+          className="tap-target px-4 py-1.5 rounded-lg bg-accent text-background text-sm font-semibold hover:opacity-90 transition-opacity active:scale-[0.97]"
         >
           採納方向 ({selected.length})
         </button>
@@ -151,7 +151,7 @@ function AISelector({ suggestions, adoptedIds, onAdopt }: { suggestions: typeof 
             <button
               key={s.id}
               onClick={() => toggle(s.id)}
-              className={`text-left rounded-lg border p-4 transition-colors ${
+              className={`tap-target text-left rounded-lg border p-4 transition-colors ${
                 active ? "border-accent bg-accent/10" : "border-white/10 bg-white/5 hover:border-white/25"
               }`}
             >

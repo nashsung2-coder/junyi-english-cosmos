@@ -139,7 +139,7 @@ export default function GamePage() {
       <div className="sticky top-[calc(68px+env(safe-area-inset-top))] z-30 border-b border-amber-300/10 bg-[#0b1113]/88 backdrop-cosmic">
         <div className="container pt-5 pb-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/hall">
+            <Link href="/hall" className="tap-target inline-flex items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground" aria-label="回到大廳">
               <ArrowLeft className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
             </Link>
             <div>
@@ -165,7 +165,7 @@ export default function GamePage() {
         <div className="grid grid-cols-2 max-w-xl mx-auto mb-8 bg-white/5 rounded-xl p-1">
           <button
             onClick={() => setMode("learn")}
-            className={`rounded-lg py-3 text-sm font-semibold transition-all duration-300 inline-flex items-center justify-center gap-2 ${
+            className={`tap-target rounded-lg py-3 text-sm font-semibold transition-all duration-300 inline-flex items-center justify-center gap-2 ${
               mode === "learn"
                 ? "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-200 shadow-[0_0_20px_rgba(251,191,36,0.15)]"
                 : "text-muted-foreground hover:text-foreground"
@@ -175,7 +175,7 @@ export default function GamePage() {
           </button>
           <button
             onClick={() => setMode("play")}
-            className={`rounded-lg py-3 text-sm font-semibold transition-all duration-300 inline-flex items-center justify-center gap-2 ${
+            className={`tap-target rounded-lg py-3 text-sm font-semibold transition-all duration-300 inline-flex items-center justify-center gap-2 ${
               mode === "play"
                 ? "bg-gradient-to-r from-amber-500/20 to-orange-500/20 text-amber-300 shadow-[0_0_20px_rgba(255,209,102,0.15)]"
                 : "text-muted-foreground hover:text-foreground"
@@ -237,7 +237,7 @@ export default function GamePage() {
                       href={star.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block p-3 rounded-lg bg-white/4 border border-white/8 hover:border-white/20 transition-all"
+                      className="tap-target block p-3 rounded-lg bg-white/4 border border-white/8 hover:border-white/20 transition-all"
                     >
                       <div className="flex items-center justify-between mb-1.5">
                         <div className="flex items-center gap-2">
@@ -305,11 +305,11 @@ export default function GamePage() {
                         </div>
                       </div>
                       <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                        <Link href={`/practice/${exp.id}`} className="btn-cosmic-primary inline-flex items-center justify-center gap-2 text-sm">
+                        <Link href={`/practice/${exp.id}`} className="tap-target btn-cosmic-primary inline-flex items-center justify-center gap-2 text-sm">
                           {missionCompleted(exp.id) ? "再次遠征" : "開始測驗"}
                           <Swords className="w-4 h-4" />
                         </Link>
-                        <a href={exp.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-white/30 hover:text-foreground">
+                        <a href={exp.url} target="_blank" rel="noopener noreferrer" className="tap-target inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-white/30 hover:text-foreground">
                           均一延伸
                           <ExternalLink className="w-4 h-4" />
                         </a>
@@ -342,7 +342,7 @@ export default function GamePage() {
                       <h3 className="text-xl font-bold mb-1">勝利!</h3>
                       <p className="text-sm text-muted-foreground mb-1">{s.adventureState.reward}</p>
                       <p className="text-xs text-accent/80 mb-5">夥伴的戰鬥力 + 親密度發揮了作用!</p>
-                      <Button onClick={dismissAdventure} className="bg-accent text-accent-foreground">
+                      <Button onClick={dismissAdventure} className="tap-target bg-accent text-accent-foreground">
                         太棒了!
                       </Button>
                     </>
@@ -365,10 +365,10 @@ export default function GamePage() {
                         </p>
                       </div>
                       <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                        <Button onClick={goToLearn} className="bg-gradient-to-r from-teal-500 to-emerald-500 text-black font-semibold">
+                        <Button onClick={goToLearn} className="tap-target bg-gradient-to-r from-teal-500 to-emerald-500 text-black font-semibold">
                           <TrendingUp className="w-4 h-4 mr-2" /> 去學習遊戲變強
                         </Button>
-                        <Button variant="outline" onClick={dismissAdventure} className="border-white/20 text-muted-foreground">
+                        <Button variant="outline" onClick={dismissAdventure} className="tap-target border-white/20 text-muted-foreground">
                           先休息
                         </Button>
                       </div>
@@ -442,7 +442,7 @@ export default function GamePage() {
                       href={PLAYGO_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-cosmic-primary inline-flex items-center gap-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:opacity-90"
+                      className="tap-target btn-cosmic-primary inline-flex items-center gap-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 text-white hover:opacity-90"
                     >
                       <MessageCircleHeart className="w-4 h-4" /> 與寵物聊天(PlayGO)
                     </a>
@@ -450,14 +450,14 @@ export default function GamePage() {
                       onClick={() =>
                         adjustPetStatus("english", { happiness: 5 })
                       }
-                      className="rounded-lg px-4 py-2 text-sm border border-pink-400/40 text-pink-300 bg-pink-500/10 hover:bg-pink-500/20 transition-colors inline-flex items-center gap-2"
+                      className="tap-target rounded-lg px-4 py-2 text-sm border border-pink-400/40 text-pink-300 bg-pink-500/10 hover:bg-pink-500/20 transition-colors inline-flex items-center gap-2"
                     >
                       <Heart className="w-4 h-4" /> 撫摸夥伴
                     </button>
                     {s.ownedItems.includes("potion") && (
                       <button
                         onClick={usePotion}
-                        className="rounded-lg px-4 py-2 text-sm border border-cyan-400/40 text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 transition-colors inline-flex items-center gap-2"
+                        className="tap-target rounded-lg px-4 py-2 text-sm border border-cyan-400/40 text-cyan-300 bg-cyan-500/10 hover:bg-cyan-500/20 transition-colors inline-flex items-center gap-2"
                       >
                         🧪 使用能量藥水
                       </button>
@@ -471,10 +471,10 @@ export default function GamePage() {
 
             <Tabs value={petTab} onValueChange={setPetTab}>
               <TabsList className="w-full bg-white/5 mb-6 grid grid-cols-2">
-                <TabsTrigger value="adventure" className="inline-flex items-center gap-2">
+                <TabsTrigger value="adventure" className="tap-target inline-flex items-center gap-2">
                   <Swords className="w-4 h-4" /> 夥伴冒險
                 </TabsTrigger>
-                <TabsTrigger value="shop" className="inline-flex items-center gap-2">
+                <TabsTrigger value="shop" className="tap-target inline-flex items-center gap-2">
                   <ShoppingBag className="w-4 h-4" /> 星幣商店
                 </TabsTrigger>
               </TabsList>
@@ -502,7 +502,7 @@ export default function GamePage() {
                       <div className="mt-auto">
                         <button
                           onClick={() => startAdventure(adv)}
-                          className="btn-cosmic-primary w-full inline-flex items-center justify-center gap-2 text-sm"
+                          className="tap-target btn-cosmic-primary w-full inline-flex items-center justify-center gap-2 text-sm"
                           style={{ background: `linear-gradient(135deg, ${adv.color}CC, ${adv.color}88)` }}
                         >
                           <Swords className="w-4 h-4" /> 派出夥伴
@@ -557,7 +557,7 @@ export default function GamePage() {
                         <button
                           onClick={() => buy(item)}
                           disabled={owned}
-                          className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 ${
+                          className={`tap-target rounded-lg px-4 py-2 text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 ${
                             owned
                               ? "bg-white/8 text-muted-foreground cursor-not-allowed"
                               : affordable

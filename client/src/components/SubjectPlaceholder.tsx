@@ -59,7 +59,7 @@ export default function SubjectPlaceholder({
             <a
               key={item.name}
               href={item.href}
-              className="group glass-card-hover block p-4 text-left transition-all duration-300"
+              className="tap-target group glass-card-hover block p-4 text-left transition-all duration-300"
             >
               <div className="flex items-start gap-3">
                 <div className="rounded-lg border border-cyan-200/20 bg-cyan-300/10 p-2 text-cyan-100 transition-colors group-hover:bg-cyan-300/20">

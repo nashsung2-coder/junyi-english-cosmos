@@ -94,8 +94,8 @@ export default function HallPage() {
             <div className="px-4 py-3 md:px-5"><span className="block text-[10px] font-bold tracking-[.12em] text-slate-400">冒險等級</span><span className="mt-1 block font-mono text-xl font-bold text-amber-200">Lv.{level}</span></div>
           </div>
           <div className="mt-5 flex justify-center gap-4">
-            <Link href="/practice/letter-jungle" className="inline-flex items-center rounded-xl border border-teal-300/35 bg-teal-300/[0.10] px-4 py-2 text-sm font-medium text-teal-100 transition-colors hover:bg-teal-300/[0.18]">開始今日學習 →</Link>
-            <a href="#portals" className="inline-flex items-center text-sm text-slate-300 transition-colors hover:text-white">探索星圖<ArrowDown className="ml-1.5 h-4 w-4" /></a>
+            <Link href="/practice/letter-jungle" className="tap-target inline-flex items-center rounded-xl border border-teal-300/35 bg-teal-300/[0.10] px-4 py-2 text-sm font-medium text-teal-100 transition-colors hover:bg-teal-300/[0.18]">開始今日學習 →</Link>
+            <a href="#portals" className="tap-target inline-flex items-center text-sm text-slate-300 transition-colors hover:text-white">探索星圖<ArrowDown className="ml-1.5 h-4 w-4" /></a>
           </div>
         </div>
       </section>
@@ -109,7 +109,7 @@ export default function HallPage() {
               const isHovered = hoveredCard === portal.id;
 
               return (
-                <Link key={portal.id} href={portal.href}>
+                <Link key={portal.id} href={portal.href} className="tap-target block rounded-2xl">
                   <div
                     className={`glass-card-hover group relative overflow-hidden h-full cursor-pointer ${
                       hoveredCard !== null && !isHovered ? "opacity-40" : "opacity-100"
@@ -148,12 +148,9 @@ export default function HallPage() {
                             {stat}
                           </div>
                         ))}
-                        <Button
-                          className="w-full mt-3 bg-accent text-accent-foreground hover:opacity-90"
-                          size="sm"
-                        >
+                        <span className="tap-target mt-3 inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2 text-sm font-medium text-accent-foreground transition-opacity hover:opacity-90">
                           進入
-                        </Button>
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -176,11 +173,11 @@ export default function HallPage() {
               const progress = state.subjectProgress[subject.id];
               const isSelected = subject.id === selectedSubject;
               return <article key={subject.id} className={`rounded-2xl border p-4 transition-all ${isSelected ? "border-white/30 bg-white/[0.07]" : "border-white/10 bg-white/[0.025] hover:border-white/20"}`}>
-                <button type="button" onClick={() => { setSelectedSubject(subject.id); setPetMessage(subject.pet.greeting); }} className="w-full text-left">
+                <button type="button" onClick={() => { setSelectedSubject(subject.id); setPetMessage(subject.pet.greeting); }} className="tap-target w-full text-left">
                   <div className="flex items-start justify-between gap-3"><div><p className="text-sm font-bold text-white">{subject.pet.emoji} {subject.name} · {subject.pet.name}</p><p className="mt-1 text-xs leading-5 text-slate-400">{subject.tagline}</p></div><span className="h-2.5 w-2.5 rounded-full shadow-[0_0_16px_currentColor]" style={{ background: subject.color, color: subject.color }} /></div>
                   <div className="mt-4 flex items-center justify-between text-xs text-slate-400"><span>已完成 {progress.missions} 次</span><span style={{ color: subject.color }}>{progress.questions ? `${Math.round((progress.correct / progress.questions) * 100)}%` : "等待啟程"}</span></div>
                 </button>
-                <Link href={`/practice/${mission.id}`} className="mt-4 flex items-center justify-center rounded-xl border border-white/12 bg-white/[0.04] px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-white/[0.09]">試玩 {mission.name} →</Link>
+                <Link href={`/practice/${mission.id}`} className="tap-target mt-4 flex items-center justify-center rounded-xl border border-white/12 bg-white/[0.04] px-3 py-2 text-xs font-medium text-white transition-colors hover:bg-white/[0.09]">試玩 {mission.name} →</Link>
               </article>;
             })}
           </div>
@@ -195,9 +192,9 @@ export default function HallPage() {
               <p className="relative text-xs font-bold tracking-[.18em] text-teal-200">COMPANION COMMONS</p>
               <div className="relative mt-3 flex flex-wrap items-start justify-between gap-4"><div><h2 className="text-2xl font-bold text-white">夥伴廣場</h2><p className="mt-2 text-sm leading-6 text-slate-400">選擇一位學科夥伴，和牠聊天、玩耍或使用背包中的生活用品。</p></div><div className="rounded-2xl border border-white/10 bg-white/[0.035] px-4 py-3 text-right"><div className="text-2xl">{selectedPet.pet.emoji}</div><div className="mt-1 text-xs font-semibold" style={{ color: selectedPet.color }}>{selectedPet.pet.name} · Lv.{selectedPetStatus.level}</div></div></div>
               <div className="relative mt-5 rounded-2xl border border-white/10 bg-black/15 p-4"><div className="flex items-start gap-3"><MessageCircle className="mt-0.5 h-4 w-4 shrink-0" style={{ color: selectedPet.color }} /><p className="text-sm leading-6 text-slate-200">「{petMessage}」</p></div><div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">{([ ["飽足", selectedPetStatus.hunger], ["心情", selectedPetStatus.happiness], ["活力", selectedPetStatus.energy] ] as const).map(([label, value]) => <div key={label}><span className="text-slate-500">{label}</span><div className="mt-2 h-1.5 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${value}%`, background: selectedPet.color }} /></div><span className="mt-1 block font-mono text-slate-300">{value}</span></div>)}</div></div>
-              <div className="relative mt-4 flex flex-wrap gap-2">{PET_ACTIONS.map((action) => <Button key={action.id} size="sm" variant="outline" onClick={() => handlePetAction(action.id)} className="border-white/15 bg-white/[0.03] text-white hover:bg-white/[0.09]">{action.emoji} {action.label}</Button>)}</div>
+              <div className="relative mt-4 flex flex-wrap gap-2">{PET_ACTIONS.map((action) => <Button key={action.id} size="sm" variant="outline" onClick={() => handlePetAction(action.id)} className="tap-target border-white/15 bg-white/[0.03] text-white hover:bg-white/[0.09]">{action.emoji} {action.label}</Button>)}</div>
             </article>
-            <article className="rounded-3xl border border-white/10 bg-gradient-to-b from-amber-400/[0.08] to-white/[0.02] p-5 md:p-6"><p className="text-xs font-bold tracking-[.18em] text-amber-200">STAR SUPPLY DEPOT</p><h2 className="mt-2 text-xl font-bold text-white">夥伴補給站</h2><p className="mt-2 text-sm leading-6 text-slate-400">用學習星幣換取飼料、玩具與生活用品；購買後可立刻給目前選擇的夥伴使用。</p><div className="mt-4 space-y-2">{PET_SHOP_ITEMS.map((item) => { const count = state.inventory[item.id] ?? 0; return <div key={item.id} className="rounded-xl border border-white/10 bg-black/10 p-3"><div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="text-sm font-semibold text-white">{item.emoji} {item.name} <span className="text-xs font-normal text-slate-500">×{count}</span></p><p className="mt-0.5 text-[11px] text-slate-400">{item.description}</p></div><span className="shrink-0 text-xs text-amber-200">{item.cost} 幣</span></div><div className="mt-2 flex gap-2"><Button size="sm" onClick={() => handleBuyItem(item)} className="h-7 flex-1 bg-amber-300 text-[11px] text-slate-950 hover:bg-amber-200"><ShoppingBag className="mr-1 h-3 w-3" />兌換</Button><Button size="sm" disabled={count < 1} onClick={() => handleUseItem(item)} variant="outline" className="h-7 flex-1 border-white/15 text-[11px] text-white hover:bg-white/[0.08]"><Heart className="mr-1 h-3 w-3" />使用</Button></div></div>; })}</div></article>
+            <article className="rounded-3xl border border-white/10 bg-gradient-to-b from-amber-400/[0.08] to-white/[0.02] p-5 md:p-6"><p className="text-xs font-bold tracking-[.18em] text-amber-200">STAR SUPPLY DEPOT</p><h2 className="mt-2 text-xl font-bold text-white">夥伴補給站</h2><p className="mt-2 text-sm leading-6 text-slate-400">用學習星幣換取飼料、玩具與生活用品；購買後可立刻給目前選擇的夥伴使用。</p><div className="mt-4 space-y-2">{PET_SHOP_ITEMS.map((item) => { const count = state.inventory[item.id] ?? 0; return <div key={item.id} className="rounded-xl border border-white/10 bg-black/10 p-3"><div className="flex items-center justify-between gap-2"><div className="min-w-0"><p className="text-sm font-semibold text-white">{item.emoji} {item.name} <span className="text-xs font-normal text-slate-500">×{count}</span></p><p className="mt-0.5 text-[11px] text-slate-400">{item.description}</p></div><span className="shrink-0 text-xs text-amber-200">{item.cost} 幣</span></div><div className="mt-2 flex gap-2"><Button size="sm" onClick={() => handleBuyItem(item)} className="tap-target flex-1 bg-amber-300 text-[11px] text-slate-950 hover:bg-amber-200"><ShoppingBag className="mr-1 h-3 w-3" />兌換</Button><Button size="sm" disabled={count < 1} onClick={() => handleUseItem(item)} variant="outline" className="tap-target flex-1 border-white/15 text-[11px] text-white hover:bg-white/[0.08]"><Heart className="mr-1 h-3 w-3" />使用</Button></div></div>; })}</div></article>
           </div>
         </div>
       </section>
@@ -207,13 +204,13 @@ export default function HallPage() {
         <div className="container flex flex-col md:flex-row items-center justify-between text-xs text-muted-foreground">
           <div>© 2024 均一教育平台 Junyi Academy</div>
           <div className="flex gap-6 mt-4 md:mt-0">
-            <a href="https://www.junyiacademy.org/" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+            <a href="https://www.junyiacademy.org/" target="_blank" rel="noopener noreferrer" className="tap-target inline-flex items-center hover:text-foreground transition-colors">
               均一官網
             </a>
-            <a href="https://www.junyiacademy.org/topics/junyi-english" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+            <a href="https://www.junyiacademy.org/topics/junyi-english" target="_blank" rel="noopener noreferrer" className="tap-target inline-flex items-center hover:text-foreground transition-colors">
               英文專區
             </a>
-            <a href="https://www.junyiacademy.org/topics/junyi-teacher-resources" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">
+            <a href="https://www.junyiacademy.org/topics/junyi-teacher-resources" target="_blank" rel="noopener noreferrer" className="tap-target inline-flex items-center hover:text-foreground transition-colors">
               教師資源
             </a>
           </div>

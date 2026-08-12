@@ -64,7 +64,7 @@ export default function PetArcade({ subjectId = "english" }: { subjectId?: Subje
             <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-slate-300"><Sparkles className="mr-1 inline h-3.5 w-3.5 text-amber-200" />命中 {hits}</span>
           </div>
           <p aria-live="polite" className="mt-4 text-sm leading-6 text-amber-100/90">{message}</p>
-          <Button onClick={start} className="mt-5 bg-amber-300 text-amber-950 hover:bg-amber-200">{active ? "重新開始" : "開始追星"}<Coins className="ml-2 h-4 w-4" /></Button>
+          <Button onClick={start} className="tap-target mt-5 bg-amber-300 text-amber-950 hover:bg-amber-200">{active ? "重新開始" : "開始追星"}<Coins className="ml-2 h-4 w-4" /></Button>
         </div>
         <div className="grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-[#071016]/65 p-3">
           {CELLS.map((cell) => {
@@ -75,7 +75,7 @@ export default function PetArcade({ subjectId = "english" }: { subjectId?: Subje
                 type="button"
                 aria-label={isTarget ? "發亮星球" : "軌道星球"}
                 onClick={() => chooseCell(cell)}
-                className={`aspect-square rounded-xl border transition-all duration-200 ${isTarget ? "scale-105 border-amber-100 bg-amber-300 text-amber-950 shadow-[0_0_24px_rgba(252,211,77,.65)]" : "border-white/10 bg-white/[0.035] text-slate-600 hover:border-amber-200/40 hover:text-amber-100"}`}
+                className={`tap-target aspect-square rounded-xl border transition-all duration-200 ${isTarget ? "scale-105 border-amber-100 bg-amber-300 text-amber-950 shadow-[0_0_24px_rgba(252,211,77,.65)]" : "border-white/10 bg-white/[0.035] text-slate-600 hover:border-amber-200/40 hover:text-amber-100"}`}
               >
                 <Sparkles className={`mx-auto h-5 w-5 ${isTarget ? "animate-pulse" : ""}`} />
               </button>

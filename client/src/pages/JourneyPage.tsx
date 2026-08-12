@@ -48,7 +48,7 @@ export default function JourneyPage() {
             description="讓每一場遠征化成看得見的成長軌跡；狐狸貓星塵會在你的學習星圖裡，一路記得每個努力的瞬間。"
             icon={Heart}
             accent="#4ECDC4"
-            action={<Link href="/game" className="inline-flex rounded-xl border border-accent/35 bg-accent/[0.08] px-3.5 py-2 text-xs font-medium text-accent transition-colors hover:bg-accent/[0.15]">繼續遠征 →</Link>}
+            action={<Link href="/game" className="tap-target inline-flex items-center rounded-xl border border-accent/35 bg-accent/[0.08] px-3.5 py-2 text-xs font-medium text-accent transition-colors hover:bg-accent/[0.15]">繼續遠征 →</Link>}
           >
             <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
               <div><span className="mr-2 text-xs text-slate-400">啟程時間</span><span className="font-mono font-semibold text-white">{JOURNEY_START.year} 年 {JOURNEY_START.month} 月</span></div>

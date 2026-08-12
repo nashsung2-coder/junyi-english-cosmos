@@ -69,7 +69,7 @@ export default function ParentPage() {
       <div className="sticky top-[60px] z-30 border-b border-white/8 bg-background/80 backdrop-cosmic">
         <div className="container pt-5 pb-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/hall">
+            <Link href="/hall" className="tap-target inline-flex items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground" aria-label="回到大廳">
               <ArrowLeft className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
             </Link>
             <h1 className="text-2xl font-bold">親子星港</h1>
@@ -79,7 +79,7 @@ export default function ParentPage() {
               <button
                 key={c.id}
                 onClick={() => setSelectedChild(c.id)}
-                className={`px-3 py-1.5 rounded-full text-xs transition-all ${
+                className={`tap-target px-3 py-1.5 rounded-full text-xs transition-all ${
                   selectedChild === c.id
                     ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/40"
                     : "bg-white/5 text-muted-foreground hover:bg-white/8"
@@ -99,7 +99,7 @@ export default function ParentPage() {
           description="從當週的練習節奏、能力變化到一句及時鼓勵，親子星港把共學的每一步整理成溫柔而清楚的陪伴線索。"
           icon={Heart}
           accent="#5CC9A7"
-          action={<Link href="/journey" className="inline-flex rounded-xl border border-emerald-300/35 bg-emerald-300/[0.08] px-3.5 py-2 text-xs font-medium text-emerald-200 transition-colors hover:bg-emerald-300/[0.15]">查看成長星圖 →</Link>}
+          action={<Link href="/journey" className="tap-target inline-flex items-center rounded-xl border border-emerald-300/35 bg-emerald-300/[0.08] px-3.5 py-2 text-xs font-medium text-emerald-200 transition-colors hover:bg-emerald-300/[0.15]">查看成長星圖 →</Link>}
         >
           <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
             <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">本週學習</span><span className="mt-1 block font-mono text-lg font-semibold text-white">4 次</span></div>
@@ -137,11 +137,11 @@ export default function ParentPage() {
 
         <Tabs defaultValue="landscape" className="w-full">
           <TabsList className="w-full bg-white/5 mb-6 grid grid-cols-2 md:grid-cols-5">
-            <TabsTrigger value="landscape">能力風景</TabsTrigger>
-            <TabsTrigger value="colearning">親子共學艙</TabsTrigger>
-            <TabsTrigger value="gallery">成長相簿</TabsTrigger>
-            <TabsTrigger value="activity">近期動態</TabsTrigger>
-            <TabsTrigger value="cheer">加油小棧</TabsTrigger>
+            <TabsTrigger value="landscape" className="tap-target">能力風景</TabsTrigger>
+            <TabsTrigger value="colearning" className="tap-target">親子共學艙</TabsTrigger>
+            <TabsTrigger value="gallery" className="tap-target">成長相簿</TabsTrigger>
+            <TabsTrigger value="activity" className="tap-target">近期動態</TabsTrigger>
+            <TabsTrigger value="cheer" className="tap-target">加油小棧</TabsTrigger>
           </TabsList>
 
           {/* 能力風景 */}
@@ -191,7 +191,7 @@ export default function ParentPage() {
                     href="https://www.junyiacademy.org/topics/junyi-english-others-storytelling"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="glass-card-hover p-4 group"
+                    className="tap-target glass-card-hover p-4 group"
                   >
                     <div className="text-sm font-semibold mb-1">聽故事 · 親子共聽</div>
                     <div className="text-xs text-muted-foreground">以故事為主題的聽力活動,適合一起聽、一起聊。</div>
@@ -203,7 +203,7 @@ export default function ParentPage() {
                     href="https://www.junyiacademy.org/topics/junyi-english-listening"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="glass-card-hover p-4 group"
+                    className="tap-target glass-card-hover p-4 group"
                   >
                     <div className="text-sm font-semibold mb-1">英文聽力專區</div>
                     <div className="text-xs text-muted-foreground">互動聽力影片與題目,從短句到篇章循序漸進。</div>
@@ -288,7 +288,7 @@ export default function ParentPage() {
                   <button
                     key={idx}
                     onClick={() => setSelectedEnc(idx)}
-                    className={`rounded-lg border p-3 text-xs text-left transition-all ${
+                    className={`tap-target rounded-lg border p-3 text-xs text-left transition-all ${
                       selectedEnc === idx
                         ? "border-emerald-400/50 bg-emerald-500/10"
                         : "border-white/10 bg-white/3 hover:bg-white/6"
@@ -301,7 +301,7 @@ export default function ParentPage() {
                 ))}
               </div>
               <div className="flex items-center gap-3">
-                <Button onClick={sendBuff} className="bg-emerald-500 text-emerald-950 hover:opacity-90" disabled={buffSent}>
+                <Button onClick={sendBuff} className="tap-target bg-emerald-500 text-emerald-950 hover:opacity-90" disabled={buffSent}>
                   <Sparkles className="w-4 h-4 mr-2" />
                   {buffSent ? "已發送加油能量 ✨" : "發送鼓勵 Buff"}
                 </Button>

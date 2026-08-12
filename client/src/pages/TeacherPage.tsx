@@ -68,7 +68,7 @@ export default function TeacherPage() {
       <div className="sticky top-[60px] z-30 border-b border-white/8 bg-background/80 backdrop-cosmic">
         <div className="container py-4 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-3">
-            <Link href="/hall">
+            <Link href="/hall" className="tap-target inline-flex items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground" aria-label="回到大廳">
               <ArrowLeft className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
             </Link>
             <h1 className="text-2xl font-bold">班級指揮艙</h1>
@@ -78,7 +78,7 @@ export default function TeacherPage() {
               <button
                 key={c.id}
                 onClick={() => setSelectedClass(c.id)}
-                className={`px-3 py-1.5 rounded-full text-xs transition-all ${
+                className={`tap-target px-3 py-1.5 rounded-full text-xs transition-all ${
                   selectedClass === c.id
                     ? "bg-purple-500/20 text-purple-300 border border-purple-400/40"
                     : "bg-white/5 text-muted-foreground hover:bg-white/8"
@@ -98,7 +98,7 @@ export default function TeacherPage() {
           description="用班級節奏、能力分布與任務完成狀況決定下一個教學航點；所有重要訊號都集中在這個指揮艙。"
           icon={Users}
           accent="#B98CFF"
-          action={<Link href="/specialty" className="inline-flex rounded-xl border border-violet-300/35 bg-violet-300/[0.08] px-3.5 py-2 text-xs font-medium text-violet-200 transition-colors hover:bg-violet-300/[0.15]">查看學習資源 →</Link>}
+          action={<Link href="/specialty" className="tap-target inline-flex items-center rounded-xl border border-violet-300/35 bg-violet-300/[0.08] px-3.5 py-2 text-xs font-medium text-violet-200 transition-colors hover:bg-violet-300/[0.15]">查看學習資源 →</Link>}
         >
           <div className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
             <div><span className="block text-[10px] font-bold tracking-[.12em] text-slate-500">班級人數</span><span className="mt-1 block font-mono text-lg font-semibold text-white">{cls.students} 位</span></div>
@@ -115,7 +115,7 @@ export default function TeacherPage() {
               <button
                 key={item.id}
                 onClick={() => setView(item.id as typeof view)}
-                className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-200 inline-flex items-center gap-2 text-sm ${
+                className={`tap-target px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-200 inline-flex items-center gap-2 text-sm ${
                   view === item.id
                     ? "bg-purple-500/20 text-purple-300 border border-purple-400/40"
                     : "glass-card hover:bg-white/6"
@@ -225,7 +225,7 @@ export default function TeacherPage() {
           <div className="space-y-4">
             <div className="flex justify-between items-center mb-2">
               <h3 className="text-lg font-semibold">學習套餐</h3>
-              <Button size="sm" className="bg-purple-500 text-white hover:opacity-90">
+              <Button size="sm" className="tap-target bg-purple-500 text-white hover:opacity-90">
                 + 建立新套餐
               </Button>
             </div>
@@ -254,15 +254,15 @@ export default function TeacherPage() {
                     <div className="text-xs font-mono text-purple-300 text-right">{pkg.progress}% 完成</div>
                   </div>
                   <div className="flex gap-2 shrink-0">
-                    <Button variant="outline" size="sm" className="border-purple-400/40 text-purple-300 hover:bg-purple-500/10">
+                    <Button variant="outline" size="sm" className="tap-target border-purple-400/40 text-purple-300 hover:bg-purple-500/10">
                       成效報告
                     </Button>
                     {pkg.active ? (
-                      <Button size="sm" className="bg-purple-500 text-white hover:opacity-90">
+                      <Button size="sm" className="tap-target bg-purple-500 text-white hover:opacity-90">
                         續派
                       </Button>
                     ) : (
-                      <Button size="sm" className="bg-purple-500 text-white hover:opacity-90">
+                      <Button size="sm" className="tap-target bg-purple-500 text-white hover:opacity-90">
                         派發
                       </Button>
                     )}

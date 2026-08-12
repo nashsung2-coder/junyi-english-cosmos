@@ -182,10 +182,8 @@ export default function SpecialtyPage() {
     <div className="min-h-screen bg-[radial-gradient(ellipse_75%_40%_at_70%_0%,rgba(59,130,246,0.13),transparent_70%),#061014] text-foreground flex">
       {/* 左側欄 */}
       <aside className="w-20 border-r border-sky-300/10 flex flex-col items-center py-6 gap-4 bg-[#07131b]/80 backdrop-blur-xl">
-        <Link href="/hall">
-          <button className="p-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all mb-4" title="回大廳">
-            <Home className="w-5 h-5" />
-          </button>
+        <Link href="/hall" className="tap-target inline-flex items-center justify-center rounded-lg text-muted-foreground transition-all hover:bg-white/5 hover:text-foreground mb-4" title="回大廳" aria-label="回大廳">
+          <Home className="w-5 h-5" />
         </Link>
         {NAV.map((item) => {
           const Icon = item.icon;
@@ -194,7 +192,7 @@ export default function SpecialtyPage() {
             <button
               key={item.id}
               onClick={() => setActiveView(item.id)}
-              className={`p-3 rounded-lg transition-all duration-200 ${
+              className={`tap-target p-3 rounded-lg transition-all duration-200 ${
                 isActive
                   ? "bg-sky-400 text-slate-950 shadow-[0_0_24px_rgba(56,189,248,0.28)]"
                   : "text-muted-foreground hover:text-foreground hover:bg-white/5"
@@ -206,7 +204,7 @@ export default function SpecialtyPage() {
           );
         })}
         <div className="mt-auto">
-          <button className="p-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all" title="設定">
+          <button className="tap-target p-3 rounded-lg text-muted-foreground hover:text-foreground hover:bg-white/5 transition-all" title="設定">
             <Settings className="w-5 h-5" />
           </button>
         </div>
@@ -220,7 +218,7 @@ export default function SpecialtyPage() {
         <div className="sticky top-[60px] z-30 border-b border-sky-300/10 bg-[#07131b]/88 backdrop-cosmic">
           <div className="container pt-5 pb-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link href="/hall">
+              <Link href="/hall" className="tap-target inline-flex items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground" aria-label="回到大廳">
                 <ArrowLeft className="w-5 h-5 text-muted-foreground hover:text-foreground transition-colors" />
               </Link>
               <div>
@@ -233,7 +231,7 @@ export default function SpecialtyPage() {
                 </h1>
               </div>
             </div>
-            <Button variant="outline" size="sm" className="border-sky-300/40 text-sky-200 hover:bg-sky-300/10">
+            <Button variant="outline" size="sm" className="tap-target border-sky-300/40 text-sky-200 hover:bg-sky-300/10">
               近30天
             </Button>
           </div>
@@ -294,7 +292,7 @@ export default function SpecialtyPage() {
                     <button
                       key={dim.id}
                       onClick={() => setSelectedDimension(dim.id)}
-                      className={`px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-200 inline-flex items-center gap-2 ${
+                      className={`tap-target px-4 py-2 rounded-lg whitespace-nowrap transition-all duration-200 inline-flex items-center gap-2 ${
                         selectedDimension === dim.id
                           ? "bg-accent text-accent-foreground"
                           : "glass-card hover:bg-white/6"
@@ -335,7 +333,7 @@ export default function SpecialtyPage() {
                           href={skill.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className={`text-xs inline-flex items-center gap-1 px-3 py-1 rounded-full transition-colors ${
+                          className={`tap-target text-xs inline-flex items-center gap-1 px-3 py-1 rounded-full transition-colors ${
                             skill.unlocked
                               ? "bg-accent/15 text-accent hover:bg-accent/25"
                               : "bg-white/5 text-muted-foreground cursor-not-allowed"
@@ -391,7 +389,7 @@ export default function SpecialtyPage() {
                         {task.practiceId && !task.done && (
                           <Link
                             href={`/practice/${task.practiceId}`}
-                            className="shrink-0 rounded-lg border border-accent/35 px-3 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
+                            className="tap-target shrink-0 rounded-lg border border-accent/35 px-3 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
                           >
                             開始練習
                           </Link>
@@ -434,8 +432,8 @@ export default function SpecialtyPage() {
             <div className="space-y-6">
               <Tabs defaultValue="achievements" className="w-full">
                 <TabsList className="grid w-full grid-cols-2 bg-white/5">
-                  <TabsTrigger value="achievements">成就勳章</TabsTrigger>
-                  <TabsTrigger value="resources">推薦資源</TabsTrigger>
+                  <TabsTrigger value="achievements" className="tap-target">成就勳章</TabsTrigger>
+                  <TabsTrigger value="resources" className="tap-target">推薦資源</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="achievements" className="mt-6">
@@ -473,12 +471,12 @@ export default function SpecialtyPage() {
                             {practiceId && (
                               <Link
                                 href={`/practice/${practiceId}`}
-                                className="rounded-lg border border-accent/35 px-2.5 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
+                                className="tap-target rounded-lg border border-accent/35 px-2.5 py-1.5 text-xs font-medium text-accent transition-colors hover:bg-accent hover:text-accent-foreground"
                               >
                                 {completed ? "再練一次" : "開始練習"}
                               </Link>
                             )}
-                            <a href={res.url} target="_blank" rel="noopener noreferrer" aria-label={`前往均一 ${res.category} 課程`} className="rounded-lg border border-white/10 p-2 text-muted-foreground transition-colors hover:border-white/25 hover:text-accent">
+                            <a href={res.url} target="_blank" rel="noopener noreferrer" aria-label={`前往均一 ${res.category} 課程`} className="tap-target inline-flex items-center justify-center rounded-lg border border-white/10 p-2 text-muted-foreground transition-colors hover:border-white/25 hover:text-accent">
                               <ChevronRight className="h-4 w-4" />
                             </a>
                           </div>
