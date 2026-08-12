@@ -13,7 +13,7 @@ export function AnimatedPage({ location, reduceMotion, children }: AnimatedPageP
 
   return (
     <AnimatePresence mode="wait" initial={false}>
-      <motion.div key={location} data-page-route={location} {...transition}>
+      <motion.div id="main-content" tabIndex={-1} key={location} data-page-route={location} {...transition}>
         {children}
       </motion.div>
     </AnimatePresence>

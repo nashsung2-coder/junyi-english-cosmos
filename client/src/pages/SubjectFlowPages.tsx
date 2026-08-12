@@ -40,6 +40,13 @@ const AREA_LOOP: Record<SubjectAreaId, { eyebrow: string; title: (subjectName: s
   teacher: { eyebrow: "TEACHING SIGNAL", title: (name) => `${name}教學觀察訊號`, description: (name) => `以${name}的完成次數與正確率作為下一次提問、分組或補強的具體依據。` },
 };
 
+const HARBOR_PORTALS = [
+  { area: "specialty" as const, title: "專攻區", eyebrow: "SKILL ATLAS", description: "校準能力、選擇下一段任務，讓每次練習都有明確方向。", color: "#6EE7F5" },
+  { area: "game" as const, title: "星際冒險", eyebrow: "EXPEDITION BAY", description: "用知識遠征換取星幣，為夥伴補給並解鎖下一段航線。", color: "#F8C46B" },
+  { area: "parent" as const, title: "親子星港", eyebrow: "FAMILY RHYTHM", description: "把學習成果轉成一段容易開始、可以一起完成的共學節奏。", color: "#F7A8C7" },
+  { area: "teacher" as const, title: "班級指揮艙", eyebrow: "TEACHING SIGNAL", description: "從任務完成率與表現訊號，看見下一次引導的起點。", color: "#A7C5FF" },
+];
+
 function CompanionHaven() {
   const { state, interactWithPet } = useLearningProgress();
   const [activeSubjectId, setActiveSubjectId] = useState<SubjectId>("english");
@@ -83,7 +90,7 @@ function CompanionHaven() {
             <div>
               <span className="text-5xl drop-shadow-[0_0_18px_rgba(255,208,130,.35)]">{activeSubject.pet.emoji}</span>
               <p className="mt-3 font-bold text-white">{activeSubject.pet.name} 的休憩角</p>
-              <p className="mt-1 text-xs text-slate-300">快樂 {activePet.happiness} · 能量 {activePet.energy}</p>
+              <p className="mt-1 text-xs text-slate-300">飽足 {activePet.hunger} · 快樂 {activePet.happiness} · 能量 {activePet.energy}</p>
             </div>
           </motion.div>
           <div className="relative mt-5 grid grid-cols-4 gap-2 sm:grid-cols-7">
@@ -99,7 +106,7 @@ function CompanionHaven() {
           </div>
         </div>
       </div>
-      <div className="relative mt-6 flex flex-col justify-between gap-3 border-t border-white/8 pt-5 sm:flex-row sm:items-center"><p className="text-sm text-slate-300"><Heart className="mr-2 inline h-4 w-4 text-rose-300" />今天想和 <span className="font-semibold text-white">{activeSubject.pet.name}</span> 一起開啟哪段學習旅程？</p><Link href={`/subject/${activeSubject.id}/hall`} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-100 transition-colors hover:text-white">前往{activeSubject.name}管理頁 <ArrowRight className="h-4 w-4" /></Link></div>
+      <div className="relative mt-6 flex flex-col justify-between gap-3 border-t border-white/8 pt-5 sm:flex-row sm:items-center"><p className="text-sm text-slate-300"><Heart className="mr-2 inline h-4 w-4 text-rose-300" />今天想和 <span className="font-semibold text-white">{activeSubject.pet.name}</span> 一起開啟哪段學習旅程？</p><div className="flex flex-wrap gap-x-4 gap-y-2"><Link href={`/subject/${activeSubject.id}/hall`} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-100 transition-colors hover:text-white">查看{activeSubject.name}管理頁 <ArrowRight className="h-4 w-4" /></Link><Link href={`/subject/${activeSubject.id}/game`} className="inline-flex items-center gap-2 text-sm font-semibold transition-colors hover:text-white" style={{ color: activeSubject.color }}>帶夥伴去冒險 <Gamepad2 className="h-4 w-4" /></Link></div></div>
     </section>
   );
 }
@@ -122,6 +129,8 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
             <p className="mt-3 max-w-xl leading-7 text-slate-300">{isHarbor ? "在這座暖光停泊站，七科夥伴正等著與你分享今天的發現；準備好後，再選一門學科起航。" : meta.description}</p>
           </div>
         </section>
+
+        {isHarbor && <section className="mt-8" aria-labelledby="harbor-portals-title"><div className="mb-4 flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-bold tracking-[.16em] text-amber-100/75">UNIVERSE GATEWAYS</p><h2 id="harbor-portals-title" className="mt-1 text-xl font-bold text-white">從避風港選擇今天的宇宙區域</h2></div><p className="max-w-md text-sm leading-6 text-slate-400">先選一個目的地，再依學科進入專屬管理頁；每條航線都會把成果帶回你的夥伴與星圖。</p></div><div className="grid gap-3 md:grid-cols-2">{HARBOR_PORTALS.map((portal) => { const PortalIcon = AREA_ICONS[portal.area]; return <Link key={portal.area} href={`/${portal.area}`} className="group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[.028] p-5 transition-all duration-200 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100"><div className="absolute -right-8 -top-10 h-32 w-32 rounded-full border opacity-30" style={{ borderColor: portal.color }} /><div className="relative flex items-start justify-between gap-4"><span className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-black/20"><PortalIcon className="h-5 w-5" style={{ color: portal.color }} /></span><span className="text-xs font-bold tracking-[.14em]" style={{ color: portal.color }}>{portal.eyebrow}</span></div><h3 className="relative mt-5 text-xl font-bold text-white">{portal.title}</h3><p className="relative mt-2 min-h-12 text-sm leading-6 text-slate-400">{portal.description}</p><span className="relative mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white">選科啟航 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span></Link>; })}</div></section>}
 
         {isHarbor && <CompanionHaven />}
 
@@ -172,6 +181,11 @@ export function SubjectManagementPage() {
   const AreaIcon = AREA_ICONS[area];
   const areaLoop = AREA_LOOP[area];
   const missionStage = progress.missions === 0 ? "首次啟航" : accuracy < 70 ? "穩定基礎" : "進階探索";
+  const latestMissionScore = state.missionScores[String(missionId)];
+  const latestMissionAccuracy = latestMissionScore ? Math.round((latestMissionScore.correct / latestMissionScore.total) * 100) : null;
+  const latestMissionTime = latestMissionScore
+    ? new Date(latestMissionScore.completedAt).toLocaleString("zh-TW", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })
+    : null;
   const companionFeedback = pet.energy < 35
     ? `${subject.pet.name}的能量偏低，完成任務後可以回到星際冒險安排一段補給。`
     : pet.happiness < 45
@@ -203,8 +217,16 @@ export function SubjectManagementPage() {
           <aside className="rounded-3xl border border-white/10 bg-white/[.026] p-6"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>COMPANION STATUS</p><h2 className="mt-3 text-xl font-bold text-white">{subject.pet.name}的補給站</h2><p className="mt-2 text-sm leading-6 text-slate-400">最喜歡的物品是「{subject.pet.favoriteItem}」。{companionFeedback}</p><div className="mt-5 space-y-3">{[["飽足度", pet.hunger], ["快樂度", pet.happiness], ["能量", pet.energy]].map(([label, value]) => <div key={label as string}><div className="mb-1 flex justify-between text-xs text-slate-400"><span>{label as string}</span><span>{value as number}/100</span></div><div className="h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${value as number}%`, background: subject.color }} /></div></div>)}</div></aside>
         </section>
 
-        {area === "game" && <div className="mt-6"><PetArcade subjectId={subject.id} /></div>}
+        {area === "game" && <>
+          <div className="mt-6"><PetArcade subjectId={subject.id} /></div>
+          <section aria-labelledby="expedition-return-title" className="mt-6 overflow-hidden rounded-3xl border border-amber-200/15 bg-[radial-gradient(ellipse_60%_100%_at_100%_0%,rgba(248,196,107,.16),transparent_62%),rgba(255,255,255,.026)] p-6">
+            <p className="text-xs font-bold tracking-[.16em] text-amber-200/85">EXPEDITION RETURN</p>
+            <div className="mt-3 flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><h2 id="expedition-return-title" className="text-xl font-bold text-white">把遠征成果帶回成長星圖</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">完成答題或追星軌道後，星幣與 {subject.pet.name} 的狀態會立即寫入避風港及歲月陪伴，下一次回顧會看見這段探索留下的痕跡。</p></div><div className="rounded-2xl border border-amber-100/15 bg-black/20 px-4 py-3 text-sm text-amber-50"><Coins className="mr-2 inline h-4 w-4 text-amber-200" />可用星幣 {state.starCoins}</div></div>
+            <div className="mt-5 grid gap-3 md:grid-cols-3"><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">本學科最新紀錄</p><p className="mt-1 text-sm font-semibold text-white">{latestMissionAccuracy === null ? "尚未完成第一段任務" : `${latestMissionAccuracy}% 正確率 · ${latestMissionTime}`}</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">夥伴回饋</p><p className="mt-1 text-sm font-semibold text-white">{subject.pet.name} 目前快樂 {pet.happiness} · 能量 {pet.energy}</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">下一個回流點</p><Link href={`/subject/${subject.id}/journey`} className="mt-1 inline-flex items-center gap-1 text-sm font-semibold text-amber-200 transition-colors hover:text-amber-100">查看成長回顧 <ArrowRight className="h-4 w-4" /></Link></div></div>
+          </section>
+        </>}
         {area !== "game" && <section className="mt-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[.026] p-6"><div className="flex flex-wrap items-start justify-between gap-4"><div className="max-w-2xl"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>{areaLoop.eyebrow}</p><h2 className="mt-2 text-xl font-bold text-white">{areaLoop.title(subject.name)}</h2><p className="mt-2 text-sm leading-6 text-slate-400">{areaLoop.description(subject.name)}</p></div><div className="rounded-2xl border border-white/10 bg-black/15 px-4 py-3 text-sm text-slate-300"><Coins className="mr-2 inline h-4 w-4 text-amber-200" />目前共有 {state.starCoins} 星幣</div></div><div className="mt-5 grid gap-3 md:grid-cols-3"><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">現在</p><p className="mt-1 text-sm font-semibold text-white">{progress.missions === 0 ? "從第一段短任務開始" : `已留下 ${progress.missions} 次任務紀錄`}</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">夥伴回饋</p><p className="mt-1 text-sm font-semibold text-white">{pet.happiness >= 60 ? "狀態穩定，適合繼續探索" : "先回避風港陪伴夥伴"}</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">下一步</p><Link href={`/practice/${missionId}`} className="mt-1 inline-flex items-center gap-1 text-sm font-semibold" style={{ color: subject.color }}>完成一段{subject.name}任務 <ArrowRight className="h-4 w-4" /></Link></div></div></section>}
+        {area === "journey" && <section aria-labelledby="live-growth-log-title" className="mt-6 rounded-3xl border border-teal-200/15 bg-[radial-gradient(ellipse_58%_92%_at_0%_0%,rgba(78,205,196,.13),transparent_64%),rgba(255,255,255,.026)] p-6"><p className="text-xs font-bold tracking-[.16em] text-teal-200/85">LIVE GROWTH LOG</p><h2 id="live-growth-log-title" className="mt-3 text-xl font-bold text-white">{subject.pet.name}替你收下的最新成長片段</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">這裡直接讀取你剛完成的 {subject.name} 任務與夥伴狀態；每次遠征、遊戲與補給都能成為下一段回顧的素材。</p><div className="mt-5 grid gap-3 md:grid-cols-3"><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">最近任務</p><p className="mt-1 text-sm font-semibold text-white">{latestMissionAccuracy === null ? "尚未寫入任務紀錄" : `${latestMissionScore?.correct}/${latestMissionScore?.total} 題正確 · ${latestMissionTime}`}</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">本學科足跡</p><p className="mt-1 text-sm font-semibold text-white">{progress.missions} 次任務 · {progress.questions} 題作答</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">夥伴心情</p><p className="mt-1 text-sm font-semibold text-white">快樂 {pet.happiness} · 能量 {pet.energy} · Lv.{pet.level}</p></div></div><div className="mt-5 flex flex-wrap gap-3"><Link href={`/subject/${subject.id}/game`} className="inline-flex items-center gap-2 rounded-xl border border-teal-200/20 bg-teal-100/[.08] px-4 py-2 text-sm font-semibold text-teal-100 transition-colors hover:bg-teal-100/[.14]">帶夥伴去冒險 <Gamepad2 className="h-4 w-4" /></Link><Link href={`/subject/${subject.id}/hall`} className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/[.04] px-4 py-2 text-sm font-semibold text-slate-200 transition-colors hover:bg-white/[.08]">回到避風港 <ArrowRight className="h-4 w-4" /></Link></div></section>}
       </main>
     </div>
   );

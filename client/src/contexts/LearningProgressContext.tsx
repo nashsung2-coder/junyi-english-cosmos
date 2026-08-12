@@ -6,7 +6,7 @@ import { DEFAULT_PET_STATUS, SUBJECTS, type SubjectId } from "@/lib/subjectUnive
 
 type MissionScore = { correct: number; total: number; completedAt: string };
 
-type LearningState = {
+export type LearningState = {
   experience: number;
   starCoins: number;
   totalQuestions: number;
@@ -25,7 +25,7 @@ type LearningState = {
   inventory: Record<string, number>;
 };
 
-type MissionResult = {
+export type MissionResult = {
   missionId: number;
   total: number;
   correct: number;
@@ -54,26 +54,78 @@ const STORAGE_KEY = "junyi-cosmos-learning-progress-v1";
 const createSubjectProgress = () => Object.fromEntries(SUBJECTS.map((subject) => [subject.id, { missions: 0, questions: 0, correct: 0 }])) as LearningState["subjectProgress"];
 const createPetStatuses = () => Object.fromEntries(SUBJECTS.map((subject) => [subject.id, { ...DEFAULT_PET_STATUS }])) as SubjectPetStatus;
 
-const initialState: LearningState = {
-  experience: 420,
-  starCoins: 320,
-  totalQuestions: 24,
-  totalCorrect: 18,
-  currentStreak: 4,
-  longestStreak: 7,
-  currentCorrectStreak: 0,
-  bestCorrectStreak: 0,
-  completedMissionIds: [],
-  missionScores: {},
-  dimensionPoints: { listening: 18, speaking: 14, reading: 16, writing: 10, vocabulary: 28, grammar: 12, chinese: 10, math: 10, science: 10, social: 10, arts: 10, health: 10 },
-  recentActivity: [0, 0, 1, 0, 2, 1, 0],
-  adoptedSuggestionIds: [],
-  subjectProgress: createSubjectProgress(),
-  pets: createPetStatuses(),
-  inventory: { "meteor-kibble": 1, "orbit-ball": 1 },
-};
+export function createInitialLearningState(): LearningState {
+  return {
+    experience: 420,
+    starCoins: 320,
+    totalQuestions: 24,
+    totalCorrect: 18,
+    currentStreak: 4,
+    longestStreak: 7,
+    currentCorrectStreak: 0,
+    bestCorrectStreak: 0,
+    completedMissionIds: [],
+    missionScores: {},
+    dimensionPoints: { listening: 18, speaking: 14, reading: 16, writing: 10, vocabulary: 28, grammar: 12, chinese: 10, math: 10, science: 10, social: 10, arts: 10, health: 10 },
+    recentActivity: [0, 0, 1, 0, 2, 1, 0],
+    adoptedSuggestionIds: [],
+    subjectProgress: createSubjectProgress(),
+    pets: createPetStatuses(),
+    inventory: { "meteor-kibble": 1, "orbit-ball": 1 },
+  };
+}
+
+export function applyMissionCompletion(current: LearningState, result: MissionResult, completedAt = new Date().toISOString()) {
+  const firstClear = !current.completedMissionIds.includes(result.missionId);
+  const reward = calculateMissionReward({ ...result, firstClear });
+  const accuracy = result.total === 0 ? 0 : result.correct / result.total;
+  const previousBest = current.missionScores[String(result.missionId)];
+  const shouldReplaceScore = !previousBest || accuracy >= previousBest.correct / previousBest.total;
+  const missionScores = shouldReplaceScore
+    ? { ...current.missionScores, [String(result.missionId)]: { correct: result.correct, total: result.total, completedAt } }
+    : current.missionScores;
+  const subjectProgress = current.subjectProgress[result.subject];
+
+  return {
+    reward,
+    nextState: {
+      ...current,
+      experience: current.experience + reward.experience,
+      starCoins: current.starCoins + reward.starCoins,
+      totalQuestions: current.totalQuestions + result.total,
+      totalCorrect: current.totalCorrect + result.correct,
+      currentStreak: current.currentStreak + 1,
+      longestStreak: Math.max(current.longestStreak, current.currentStreak + 1),
+      completedMissionIds: firstClear ? [...current.completedMissionIds, result.missionId] : current.completedMissionIds,
+      missionScores,
+      dimensionPoints: {
+        ...current.dimensionPoints,
+        [result.dimension]: Math.min(100, current.dimensionPoints[result.dimension] + result.correct * 5),
+      },
+      recentActivity: [...current.recentActivity.slice(-6), result.correct],
+      subjectProgress: {
+        ...current.subjectProgress,
+        [result.subject]: {
+          missions: subjectProgress.missions + 1,
+          questions: subjectProgress.questions + result.total,
+          correct: subjectProgress.correct + result.correct,
+        },
+      },
+      pets: {
+        ...current.pets,
+        [result.subject]: {
+          ...current.pets[result.subject],
+          happiness: Math.min(100, current.pets[result.subject].happiness + 5 + result.correct * 2),
+          energy: Math.min(100, current.pets[result.subject].energy + 3),
+          level: Math.max(current.pets[result.subject].level, 1 + Math.floor((subjectProgress.missions + 1) / 3)),
+        },
+      },
+    },
+  };
+}
 
 function loadInitialState(): LearningState {
+  const initialState = createInitialLearningState();
   if (typeof window === "undefined") return initialState;
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
@@ -96,49 +148,7 @@ export function LearningProgressProvider({ children }: { children: ReactNode }) 
   const completeMission = (result: MissionResult) => {
     const firstClear = !state.completedMissionIds.includes(result.missionId);
     const reward = calculateMissionReward({ ...result, firstClear });
-    const accuracy = result.total === 0 ? 0 : result.correct / result.total;
-
-    setState((current) => {
-      const previousBest = current.missionScores[String(result.missionId)];
-      const shouldReplaceScore = !previousBest || accuracy >= previousBest.correct / previousBest.total;
-      const updatedScores = shouldReplaceScore
-        ? { ...current.missionScores, [String(result.missionId)]: { correct: result.correct, total: result.total, completedAt: new Date().toISOString() } }
-        : current.missionScores;
-
-      return {
-        ...current,
-        experience: current.experience + reward.experience,
-        starCoins: current.starCoins + reward.starCoins,
-        totalQuestions: current.totalQuestions + result.total,
-        totalCorrect: current.totalCorrect + result.correct,
-        currentStreak: current.currentStreak + 1,
-        longestStreak: Math.max(current.longestStreak, current.currentStreak + 1),
-        completedMissionIds: firstClear ? [...current.completedMissionIds, result.missionId] : current.completedMissionIds,
-        missionScores: updatedScores,
-        dimensionPoints: {
-          ...current.dimensionPoints,
-          [result.dimension]: Math.min(100, current.dimensionPoints[result.dimension] + result.correct * 5),
-        },
-        recentActivity: [...current.recentActivity.slice(-6), result.correct],
-        subjectProgress: {
-          ...current.subjectProgress,
-          [result.subject]: {
-            missions: current.subjectProgress[result.subject].missions + 1,
-            questions: current.subjectProgress[result.subject].questions + result.total,
-            correct: current.subjectProgress[result.subject].correct + result.correct,
-          },
-        },
-        pets: {
-          ...current.pets,
-          [result.subject]: {
-            ...current.pets[result.subject],
-            happiness: Math.min(100, current.pets[result.subject].happiness + 5 + result.correct * 2),
-            energy: Math.min(100, current.pets[result.subject].energy + 3),
-            level: Math.max(current.pets[result.subject].level, 1 + Math.floor((current.subjectProgress[result.subject].missions + 1) / 3)),
-          },
-        },
-      };
-    });
+    setState((current) => applyMissionCompletion(current, result).nextState);
 
     return reward;
   };
