@@ -1,8 +1,9 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "framer-motion";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch, useLocation } from "wouter";
+import { AnimatedPage } from "./components/AnimatedPage";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -42,19 +43,7 @@ function AnimatedRouter() {
   const [location] = useLocation();
   const reduceMotion = useReducedMotion();
 
-  return (
-    <AnimatePresence mode="wait" initial={false}>
-      <motion.div
-        key={location}
-        initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={reduceMotion ? undefined : { opacity: 0, y: -7 }}
-        transition={reduceMotion ? { duration: 0 } : { duration: 0.24, ease: [0.23, 1, 0.32, 1] }}
-      >
-        <Router />
-      </motion.div>
-    </AnimatePresence>
-  );
+  return <AnimatedPage location={location} reduceMotion={Boolean(reduceMotion)}><Router /></AnimatedPage>;
 }
 
 // NOTE: About Theme
