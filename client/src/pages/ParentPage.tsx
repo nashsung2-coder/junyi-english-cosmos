@@ -188,7 +188,7 @@ export default function ParentPage() {
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <a
-                    href="https://www.junyiacademy.org/topics/junyi-english-others-storytelling"
+                    href="https://www.junyiacademy.org/topics/english-topic"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="tap-target glass-card-hover p-4 group"
@@ -200,7 +200,7 @@ export default function ParentPage() {
                     </div>
                   </a>
                   <a
-                    href="https://www.junyiacademy.org/topics/junyi-english-listening"
+                    href="https://www.junyiacademy.org/topics/english-topic"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="tap-target glass-card-hover p-4 group"

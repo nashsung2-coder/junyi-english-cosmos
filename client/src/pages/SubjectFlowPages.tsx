@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link, useRoute } from "wouter";
-import { ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Coins, Compass, Gamepad2, Heart, LineChart, Play, Sparkles, Target, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Coins, Compass, ExternalLink, Gamepad2, Heart, LineChart, Play, Sparkles, Target, Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import PetArcade from "@/components/PetArcade";
 import { Button } from "@/components/ui/button";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
 import { PET_ACTIONS, type PetActionId } from "@/lib/petShop";
 import { SUBJECT_AREA_META, SUBJECT_MISSION_IDS, isSubjectArea, type SubjectAreaId } from "@/lib/subjectNavigation";
+import { getJunyiSubjectResources } from "@/lib/junyiResources";
 import { SUBJECTS, getSubject, type SubjectId } from "@/lib/subjectUniverse";
 
 const AREA_ICONS: Record<SubjectAreaId, typeof Compass> = {
@@ -172,6 +173,7 @@ export function SubjectManagementPage() {
 
   const selectedSubjectId = subjectId as SubjectId;
   const subject = getSubject(selectedSubjectId);
+  const junyiResources = getJunyiSubjectResources(selectedSubjectId);
   const meta = SUBJECT_AREA_META[area];
   const missionId = SUBJECT_MISSION_IDS[subject.id];
   const { state } = useLearningProgress();
@@ -215,6 +217,13 @@ export function SubjectManagementPage() {
         <section className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_.8fr]">
           <div className="rounded-3xl border border-white/10 bg-white/[.026] p-6"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>NEXT MISSION</p><h2 className="mt-3 text-2xl font-bold text-white">{subject.name}的下一個學習行動</h2><p className="mt-3 leading-7 text-slate-300">{AREA_GUIDANCE[area](subject.name)}</p><div className="mt-6 grid gap-3 sm:grid-cols-2"><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">目前階段</p><p className="mt-1 font-semibold text-white">{missionStage}</p></div><div className="rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-xs text-slate-400">這次任務</p><p className="mt-1 font-semibold text-white">{subject.name}知識遠征</p></div></div><div className="mt-3 rounded-2xl border border-white/8 bg-black/15 p-4"><p className="text-sm font-semibold text-white">完成後會立即更新你的學習紀錄</p><p className="mt-1 text-xs leading-5 text-slate-400">答題成果會同步到{meta.managementLabel}、星幣與 {subject.pet.name} 的探索狀態。</p><Link href={`/practice/${missionId}`} className="tap-target mt-4 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: subject.color }}>開始可作答任務 <ArrowRight className="h-4 w-4" /></Link></div></div>
           <aside className="rounded-3xl border border-white/10 bg-white/[.026] p-6"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>COMPANION STATUS</p><h2 className="mt-3 text-xl font-bold text-white">{subject.pet.name}的補給站</h2><p className="mt-2 text-sm leading-6 text-slate-400">最喜歡的物品是「{subject.pet.favoriteItem}」。{companionFeedback}</p><div className="mt-5 space-y-3">{[["飽足度", pet.hunger], ["快樂度", pet.happiness], ["能量", pet.energy]].map(([label, value]) => <div key={label as string}><div className="mb-1 flex justify-between text-xs text-slate-400"><span>{label as string}</span><span>{value as number}/100</span></div><div className="h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${value as number}%`, background: subject.color }} /></div></div>)}</div></aside>
+        </section>
+
+        <section aria-labelledby="junyi-learning-title" className="mt-6 overflow-hidden rounded-3xl border border-cyan-100/10 bg-[radial-gradient(ellipse_65%_105%_at_100%_0%,rgba(78,205,196,.12),transparent_62%),rgba(255,255,255,.026)] p-6">
+          <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-xs font-bold tracking-[.16em] text-teal-100/85">REAL JUNYI CONTENT</p><h2 id="junyi-learning-title" className="mt-2 text-xl font-bold text-white">接著在均一完成{subject.name}學習</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">宇宙任務會記錄你的答題與夥伴成長；下方入口則會開啟均一教育平台的對應公開教材，讓練習自然延伸成真實課程。</p></div><a href={junyiResources.hub.url} target="_blank" rel="noreferrer" className="tap-target inline-flex items-center justify-center gap-2 rounded-xl border border-teal-100/20 bg-teal-100/[.09] px-4 py-2 text-sm font-semibold text-teal-50 transition-colors hover:bg-teal-100/[.16]">查看{junyiResources.hub.title}<ExternalLink className="h-4 w-4" /></a></div>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {[junyiResources.mission, ...junyiResources.extensions].map((resource) => <a key={resource.url} href={resource.url} target="_blank" rel="noreferrer" className="tap-target group rounded-2xl border border-white/10 bg-black/15 p-4 transition-colors hover:border-teal-100/25 hover:bg-white/[.055]"><div className="flex items-start justify-between gap-3"><div><p className="font-semibold text-white">{resource.title}</p><p className="mt-1 text-sm leading-6 text-slate-400">{resource.description}</p></div><ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-teal-100/70 transition-transform group-hover:translate-x-0.5" /></div><span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-teal-100">在均一開啟 <ArrowRight className="h-3.5 w-3.5" /></span></a>)}
+          </div>
         </section>
 
         {area === "game" && <>

@@ -80,7 +80,7 @@ export const STARS = [
     color: "#FFD166",
     level: "A1",
     progress: 72,
-    url: "https://www.junyiacademy.org/topics/junyi-english-vocab",
+    url: "https://www.junyiacademy.org/topics/a-j-vocab",
   },
   {
     id: "listening",
@@ -89,7 +89,7 @@ export const STARS = [
     color: "#60A5FA",
     level: "A1",
     progress: 55,
-    url: "https://www.junyiacademy.org/topics/junyi-english-listening",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
   {
     id: "grammar",
@@ -98,7 +98,7 @@ export const STARS = [
     color: "#A977F4",
     level: "A2",
     progress: 38,
-    url: "https://www.junyiacademy.org/topics/junyi-english-grammar",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
   {
     id: "reading",
@@ -107,7 +107,7 @@ export const STARS = [
     color: "#5CE0B8",
     level: "A2",
     progress: 25,
-    url: "https://www.junyiacademy.org/topics/junyi-english-reading",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
   {
     id: "speaking",
@@ -116,7 +116,7 @@ export const STARS = [
     color: "#F07B6B",
     level: "B1",
     progress: 12,
-    url: "https://www.junyiacademy.org/topics/jutor#topic-page-anchor-jutor-speaking",
+    url: "https://www.junyiacademy.org/topics/jutor",
   },
 ] as const;
 
@@ -140,7 +140,7 @@ export const EXPEDITIONS = [
     time: "約 15 分鐘",
     reward: "+180 經驗值、發光星塵 ×1",
     difficulty: "簡單",
-    url: "https://www.junyiacademy.org/topics/junyi-english-vocab",
+    url: "https://www.junyiacademy.org/topics/a-j-vocab",
   },
   {
     id: 3,
@@ -150,7 +150,7 @@ export const EXPEDITIONS = [
     time: "約 15 分鐘",
     reward: "+220 經驗值、口說能量石 ×1",
     difficulty: "中等",
-    url: "https://www.junyiacademy.org/topics/junyi-english-context",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
   {
     id: 4,
@@ -160,7 +160,7 @@ export const EXPEDITIONS = [
     time: "約 20 分鐘",
     reward: "+300 經驗值、稀有羽飾 ×1",
     difficulty: "困難",
-    url: "https://www.junyiacademy.org/topics/junyi-english-grammar#topic-page-anchor-junyi-english-grammar-tense",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
   {
     id: 5,
@@ -170,7 +170,7 @@ export const EXPEDITIONS = [
     time: "約 25 分鐘",
     reward: "+360 經驗值、智慧頭環 ×1",
     difficulty: "困難",
-    url: "https://www.junyiacademy.org/topics/junyi-english-reading",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
 ] as const;
 
@@ -300,27 +300,27 @@ export const RESOURCE_LINKS = [
   },
   {
     category: "單字",
-    url: "https://www.junyiacademy.org/topics/junyi-english-vocab",
+    url: "https://www.junyiacademy.org/topics/a-j-vocab",
   },
   {
     category: "文法",
-    url: "https://www.junyiacademy.org/topics/junyi-english-grammar",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
   {
     category: "聽力",
-    url: "https://www.junyiacademy.org/topics/junyi-english-listening",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
   {
     category: "閱讀",
-    url: "https://www.junyiacademy.org/topics/junyi-english-reading",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
   {
     category: "寫作",
-    url: "https://www.junyiacademy.org/topics/junyi-english-writing",
+    url: "https://www.junyiacademy.org/topics/jutor",
   },
   {
     category: "生活情境應用",
-    url: "https://www.junyiacademy.org/topics/junyi-english-context",
+    url: "https://www.junyiacademy.org/topics/english-topic",
   },
   {
     category: "國小英文",
