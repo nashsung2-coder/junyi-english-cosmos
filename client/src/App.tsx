@@ -1,7 +1,8 @@
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
+import { Route, Switch, useLocation } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
@@ -37,6 +38,25 @@ function Router() {
   );
 }
 
+function AnimatedRouter() {
+  const [location] = useLocation();
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={location}
+        initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={reduceMotion ? undefined : { opacity: 0, y: -7 }}
+        transition={reduceMotion ? { duration: 0 } : { duration: 0.24, ease: [0.23, 1, 0.32, 1] }}
+      >
+        <Router />
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 // NOTE: About Theme
 // - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
 //   to keep consistent foreground/background color across components
@@ -51,7 +71,7 @@ function App() {
         <LearningProgressProvider>
           <TooltipProvider>
             <Toaster />
-            <Router />
+            <AnimatedRouter />
           </TooltipProvider>
         </LearningProgressProvider>
       </ThemeProvider>

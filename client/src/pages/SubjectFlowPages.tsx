@@ -1,9 +1,12 @@
+import { useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import { Link, useRoute } from "wouter";
 import { ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Coins, Compass, Gamepad2, Heart, LineChart, Play, Sparkles, Target, Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import PetArcade from "@/components/PetArcade";
 import { Button } from "@/components/ui/button";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
+import { PET_ACTIONS, type PetActionId } from "@/lib/petShop";
 import { SUBJECT_AREA_META, SUBJECT_MISSION_IDS, isSubjectArea, type SubjectAreaId } from "@/lib/subjectNavigation";
 import { SUBJECTS, getSubject, type SubjectId } from "@/lib/subjectUniverse";
 
@@ -27,10 +30,75 @@ const AREA_GUIDANCE: Record<SubjectAreaId, (subjectName: string) => string> = {
   teacher: (name) => `以${name}的任務完成率與正確率作為下一次學習引導的起點。`,
 };
 
+function CompanionHaven() {
+  const { state, interactWithPet } = useLearningProgress();
+  const [activeSubjectId, setActiveSubjectId] = useState<SubjectId>("english");
+  const [havenNote, setHavenNote] = useState("夥伴們剛結束巡航，正在暖光艙裡交換今天的新發現。");
+  const reduceMotion = useReducedMotion();
+  const activeSubject = getSubject(activeSubjectId);
+  const activePet = state.pets[activeSubjectId];
+
+  const chooseCompanion = (subjectId: SubjectId) => {
+    setActiveSubjectId(subjectId);
+    const subject = getSubject(subjectId);
+    setHavenNote(`${subject.pet.name} 靠近了你，準備一起分享一段安靜的星際時光。`);
+  };
+
+  const shareMoment = (actionId: PetActionId) => {
+    setHavenNote(interactWithPet(activeSubjectId, actionId));
+  };
+
+  return (
+    <section aria-labelledby="companion-haven-title" className="relative mt-8 overflow-hidden rounded-[2rem] border border-amber-100/10 bg-[radial-gradient(ellipse_72%_68%_at_50%_22%,rgba(255,203,131,.16),transparent_52%),linear-gradient(135deg,rgba(78,205,196,.08),rgba(255,183,101,.07)_48%,rgba(8,16,20,.7))] p-5 shadow-[0_24px_90px_rgba(0,0,0,.3)] sm:p-8">
+      <div className="pointer-events-none absolute -left-16 top-12 h-52 w-52 rounded-full bg-amber-200/10 blur-3xl" />
+      <div className="pointer-events-none absolute -right-20 bottom-0 h-60 w-60 rounded-full bg-teal-300/10 blur-3xl" />
+      <div className="relative flex flex-col gap-7 lg:flex-row lg:items-stretch">
+        <div className="max-w-md lg:w-[35%]">
+          <p className="text-xs font-bold tracking-[.18em] text-amber-100/80">COMPANION HARBOR</p>
+          <h2 id="companion-haven-title" className="mt-3 text-2xl font-bold text-white sm:text-3xl">夥伴們的暖光避風港</h2>
+          <p className="mt-3 text-sm leading-7 text-slate-300">這裡不急著出發。先和每一位學科夥伴打聲招呼、補充能量，再選擇今天想探索的航線。</p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            {PET_ACTIONS.map((action) => (
+              <Button key={action.id} type="button" variant="outline" size="sm" onClick={() => shareMoment(action.id)} className="border-white/12 bg-white/[.045] text-slate-100 hover:bg-white/[.1] hover:text-white">
+                <span className="mr-1.5">{action.emoji}</span>{action.label}
+              </Button>
+            ))}
+          </div>
+          <p aria-live="polite" className="mt-5 min-h-14 rounded-2xl border border-amber-100/10 bg-black/15 px-4 py-3 text-sm leading-6 text-amber-50/85">「{havenNote}」</p>
+        </div>
+
+        <div className="relative min-h-[292px] flex-1 overflow-hidden rounded-3xl border border-white/10 bg-[#071114]/75 p-4 sm:p-6">
+          <div className="pointer-events-none absolute inset-0 opacity-70 [background-image:radial-gradient(circle_at_15%_18%,rgba(255,231,181,.75)_0_1px,transparent_1.5px),radial-gradient(circle_at_72%_25%,rgba(121,235,225,.72)_0_1px,transparent_1.5px),radial-gradient(circle_at_40%_73%,rgba(255,194,123,.7)_0_1px,transparent_1.5px)] [background-size:86px_92px,118px_126px,96px_110px]" />
+          <motion.div animate={reduceMotion ? undefined : { y: [0, -4, 0] }} transition={{ duration: 4.8, repeat: Infinity, ease: "easeInOut" }} className="relative mx-auto grid min-h-[174px] max-w-sm place-items-center rounded-[2rem] border border-amber-100/15 bg-[radial-gradient(circle,rgba(255,217,151,.2),rgba(255,217,151,.04)_48%,transparent_69%)] text-center">
+            <div>
+              <span className="text-5xl drop-shadow-[0_0_18px_rgba(255,208,130,.35)]">{activeSubject.pet.emoji}</span>
+              <p className="mt-3 font-bold text-white">{activeSubject.pet.name} 的休憩角</p>
+              <p className="mt-1 text-xs text-slate-300">快樂 {activePet.happiness} · 能量 {activePet.energy}</p>
+            </div>
+          </motion.div>
+          <div className="relative mt-5 grid grid-cols-4 gap-2 sm:grid-cols-7">
+            {SUBJECTS.map((subject, index) => {
+              const pet = state.pets[subject.id];
+              const active = subject.id === activeSubjectId;
+              return (
+                <motion.button key={subject.id} type="button" aria-pressed={active} onClick={() => chooseCompanion(subject.id)} initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduceMotion ? 0 : index * 0.045, duration: 0.22 }} className={`rounded-2xl border px-2 py-2 text-center transition-[transform,background-color,border-color] duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-200 ${active ? "border-amber-100/50 bg-amber-100/12" : "border-white/8 bg-white/[.035] hover:bg-white/[.08]"}`}>
+                  <span className="block text-2xl">{subject.pet.emoji}</span><span className="mt-1 block truncate text-[10px] text-slate-300">{subject.pet.name}</span><span className="mt-0.5 block text-[9px]" style={{ color: subject.color }}>Lv.{pet.level}</span>
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div className="relative mt-6 flex flex-col justify-between gap-3 border-t border-white/8 pt-5 sm:flex-row sm:items-center"><p className="text-sm text-slate-300"><Heart className="mr-2 inline h-4 w-4 text-rose-300" />今天想和 <span className="font-semibold text-white">{activeSubject.pet.name}</span> 一起開啟哪段學習旅程？</p><Link href={`/subject/${activeSubject.id}/hall`} className="inline-flex items-center gap-2 text-sm font-semibold text-amber-100 transition-colors hover:text-white">前往{activeSubject.name}管理頁 <ArrowRight className="h-4 w-4" /></Link></div>
+    </section>
+  );
+}
+
 export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
   const meta = SUBJECT_AREA_META[area];
   const AreaIcon = AREA_ICONS[area];
   const { state } = useLearningProgress();
+  const isHarbor = area === "hall";
 
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_70%_50%_at_75%_0%,rgba(78,205,196,.13),transparent_68%),#061014] text-foreground">
@@ -39,15 +107,17 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
         <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] px-5 py-8 shadow-[0_20px_70px_rgba(0,0,0,.26)] sm:px-8 sm:py-10">
           <div className="pointer-events-none absolute -right-10 -top-14 h-52 w-52 rounded-full border border-accent/15" />
           <div className="relative max-w-2xl">
-            <p className="flex items-center gap-2 text-xs font-bold tracking-[.18em] text-accent"><AreaIcon className="h-4 w-4" />{meta.eyebrow}</p>
-            <h1 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">{meta.title}</h1>
-            <p className="mt-3 max-w-xl leading-7 text-slate-300">{meta.description}</p>
+            <p className="flex items-center gap-2 text-xs font-bold tracking-[.18em] text-accent"><AreaIcon className="h-4 w-4" />{isHarbor ? "WELCOME HOME" : meta.eyebrow}</p>
+            <h1 className="mt-4 text-3xl font-bold tracking-tight text-white sm:text-4xl">{isHarbor ? "回到夥伴們的星際避風港" : meta.title}</h1>
+            <p className="mt-3 max-w-xl leading-7 text-slate-300">{isHarbor ? "在這座暖光停泊站，七科夥伴正等著與你分享今天的發現；準備好後，再選一門學科起航。" : meta.description}</p>
           </div>
         </section>
 
+        {isHarbor && <CompanionHaven />}
+
         <section className="mt-8">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-            <div><h2 className="text-xl font-bold text-white">七科學習航線</h2><p className="mt-1 text-sm text-muted-foreground">選擇一科後，才會開啟相應的 {meta.managementLabel}。</p></div>
+            <div><h2 className="text-xl font-bold text-white">{isHarbor ? "選擇下一段學習航線" : "七科學習航線"}</h2><p className="mt-1 text-sm text-muted-foreground">選擇一科後，才會開啟相應的 {meta.managementLabel}。</p></div>
             <span className="rounded-full border border-accent/25 bg-accent/[.08] px-3 py-1.5 text-xs font-semibold text-accent">{state.starCoins} 星幣可用</span>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
