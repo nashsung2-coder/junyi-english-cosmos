@@ -34,7 +34,7 @@ export default function PracticePage() {
     return (
       <div className="min-h-screen bg-background text-foreground">
         <Navbar />
-        <main className="container py-24 text-center">
+        <main className="page-safe-top container pb-24 text-center">
           <CircleHelp className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
           <h1 className="text-2xl font-bold">找不到這條遠征航線</h1>
           <Link href="/game" className="mt-5 inline-flex text-accent hover:underline">回到遊戲模式</Link>
@@ -83,7 +83,7 @@ export default function PracticePage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <main className="container max-w-5xl py-8 md:py-12">
+      <main className="page-safe-top container max-w-5xl pb-8 md:pb-12">
         <div className="mb-7 flex items-center justify-between gap-4">
           <Link href="/game" className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
             <ArrowLeft className="h-4 w-4" /> 返回星辰冒險

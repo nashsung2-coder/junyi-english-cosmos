@@ -328,6 +328,11 @@
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
+
+  /* 固定導覽列為 68px；同時保留裝置瀏海安全區，供所有頁面主內容共用。 */
+  .page-safe-top {
+    padding-top: calc(68px + env(safe-area-inset-top) + 1.5rem);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -5,27 +5,30 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-import HallPage from "./pages/HallPage";
-import SpecialtyPage from "./pages/SpecialtyPage";
-import GamePage from "./pages/GamePage";
-import ParentPage from "./pages/ParentPage";
-import TeacherPage from "./pages/TeacherPage";
-import JourneyPage from "./pages/JourneyPage";
-import ButlerPage from "./pages/ButlerPage";
 import PracticePage from "./pages/PracticePage";
 import { LearningProgressProvider } from "./contexts/LearningProgressContext";
+import { SubjectManagementPage, SubjectSelectorPage } from "./pages/SubjectFlowPages";
+
+const HallEntryPage = () => <SubjectSelectorPage area="hall" />;
+const SpecialtyEntryPage = () => <SubjectSelectorPage area="specialty" />;
+const GameEntryPage = () => <SubjectSelectorPage area="game" />;
+const JourneyEntryPage = () => <SubjectSelectorPage area="journey" />;
+const ButlerEntryPage = () => <SubjectSelectorPage area="butler" />;
+const ParentEntryPage = () => <SubjectSelectorPage area="parent" />;
+const TeacherEntryPage = () => <SubjectSelectorPage area="teacher" />;
 function Router() {
   // make sure to consider if you need authentication for certain routes
   return (
     <Switch>
       <Route path={"/"} component={Home} />
-      <Route path={"/hall"} component={HallPage} />
-      <Route path={"/specialty"} component={SpecialtyPage} />
-      <Route path={"/game"} component={GamePage} />
-      <Route path={"/parent"} component={ParentPage} />
-      <Route path={"/teacher"} component={TeacherPage} />
-      <Route path={"/journey"} component={JourneyPage} />
-      <Route path={"/butler"} component={ButlerPage} />
+      <Route path={"/hall"} component={HallEntryPage} />
+      <Route path={"/specialty"} component={SpecialtyEntryPage} />
+      <Route path={"/game"} component={GameEntryPage} />
+      <Route path={"/parent"} component={ParentEntryPage} />
+      <Route path={"/teacher"} component={TeacherEntryPage} />
+      <Route path={"/journey"} component={JourneyEntryPage} />
+      <Route path={"/butler"} component={ButlerEntryPage} />
+      <Route path={"/subject/:subjectId/:area"} component={SubjectManagementPage} />
       <Route path={"/practice/:missionId"} component={PracticePage} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

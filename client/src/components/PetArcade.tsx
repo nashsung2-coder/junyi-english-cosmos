@@ -3,24 +3,26 @@ import { Coins, Gamepad2, Sparkles, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
 import { calculateArcadeReward } from "@/lib/learningProgress";
+import { getSubject, type SubjectId } from "@/lib/subjectUniverse";
 
 const CELLS = Array.from({ length: 9 }, (_, index) => index);
 const ROUNDS = 5;
 
-export default function PetArcade() {
+export default function PetArcade({ subjectId = "english" }: { subjectId?: SubjectId }) {
   const { grantBonusStarCoins, interactWithPet } = useLearningProgress();
+  const subject = getSubject(subjectId);
   const [active, setActive] = useState(false);
   const [target, setTarget] = useState(4);
   const [round, setRound] = useState(0);
   const [hits, setHits] = useState(0);
-  const [message, setMessage] = useState("點擊發亮的星球，陪狐狸貓完成一輪軌道追星。");
+  const [message, setMessage] = useState(`點擊發亮的星球，陪${subject.pet.name}完成一輪軌道追星。`);
 
   const start = () => {
     setActive(true);
     setRound(0);
     setHits(0);
     setTarget(Math.floor(Math.random() * CELLS.length));
-    setMessage("星塵已經就位，找到下一顆發亮的星球！");
+    setMessage(`${subject.pet.name}已經就位，找到下一顆發亮的星球！`);
   };
 
   const chooseCell = (index: number) => {
@@ -35,7 +37,7 @@ export default function PetArcade() {
     if (nextRound >= ROUNDS) {
       const reward = calculateArcadeReward(nextHits, ROUNDS);
       grantBonusStarCoins(reward);
-      const petMessage = interactWithPet("english", "play");
+      const petMessage = interactWithPet(subjectId, "play");
       setActive(false);
       setRound(nextRound);
       setHits(nextHits);
@@ -46,7 +48,7 @@ export default function PetArcade() {
     setRound(nextRound);
     setHits(nextHits);
     setTarget(Math.floor(Math.random() * CELLS.length));
-    setMessage("命中！狐狸貓正追向下一顆星。 ");
+    setMessage(`命中！${subject.pet.name}正追向下一顆星。`);
   };
 
   return (
@@ -55,8 +57,8 @@ export default function PetArcade() {
       <div className="relative grid gap-6 lg:grid-cols-[1fr_220px] lg:items-center">
         <div>
           <div className="flex items-center gap-2 text-xs font-bold tracking-[0.16em] text-amber-200"><Gamepad2 className="h-4 w-4" /> ARCADE · 立即試玩</div>
-          <h3 className="mt-3 text-xl font-bold text-white">狐狸貓的追星軌道</h3>
-          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">在五回合內點擊發亮星球。完成後會增加狐狸貓的快樂，並依命中表現獲得星幣。</p>
+          <h3 className="mt-3 text-xl font-bold text-white">{subject.pet.emoji} {subject.pet.name}的追星軌道</h3>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">在五回合內點擊發亮星球。完成後會增加{subject.pet.name}的快樂，並依命中表現獲得星幣。</p>
           <div className="mt-4 flex flex-wrap gap-3 text-xs">
             <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-slate-300"><Target className="mr-1 inline h-3.5 w-3.5 text-amber-200" />回合 {Math.min(round + (active ? 1 : 0), ROUNDS)}/{ROUNDS}</span>
             <span className="rounded-full border border-white/10 bg-white/[0.05] px-3 py-1.5 text-slate-300"><Sparkles className="mr-1 inline h-3.5 w-3.5 text-amber-200" />命中 {hits}</span>
