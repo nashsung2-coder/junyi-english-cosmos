@@ -29,4 +29,17 @@ describe("practice mission Junyi resources", () => {
     expect(getJunyiPracticeResource(4, "english").url).toBe("https://www.junyiacademy.org/topics/junyi-english-grammar-tense");
     expect(getJunyiPracticeResource(5, "english").url).toBe("https://www.junyiacademy.org/topics/eer");
   });
+
+  it("provides a second, answerable mission for each expanded cross-subject route", () => {
+    const expandedSubjects = ["math", "science", "social", "arts", "health"] as const;
+
+    expandedSubjects.forEach((subject) => {
+      const missions = PRACTICE_MISSIONS.filter((mission) => mission.subject === subject);
+
+      expect(missions).toHaveLength(2);
+      expect(missions.at(-1)).toMatchObject({ difficulty: "中等" });
+      expect(missions.at(-1)?.questions).toHaveLength(3);
+      expect(getJunyiPracticeResource(missions.at(-1)!.id, subject).url).toMatch(/^https:\/\/www\.junyiacademy\.org\/(topics|videos|v)\//);
+    });
+  });
 });

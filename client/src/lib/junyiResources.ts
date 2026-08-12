@@ -4,6 +4,8 @@ export type JunyiLearningResource = {
   title: string;
   description: string;
   url: string;
+  gradeBand?: string;
+  startingPoint?: string;
 };
 
 export type JunyiResourceLevel = "單元教材" | "主題課程" | "年段課程" | "學習工具";
@@ -43,6 +45,13 @@ export const JUNYI_SUBJECT_RESOURCES: Record<SubjectId, SubjectLearningResources
     extensions: [
       { title: "比例：比、連比例與正反比", description: "從比例式到正比、反比的均一國中數學單元，可直接選擇課程內容。", url: "https://www.junyiacademy.org/topics/g-mjnbl" },
       { title: "國中數學", description: "七至九年級的數學年段課程入口。", url: "https://www.junyiacademy.org/topics/math-juni" },
+      {
+        title: "國小一年級數學",
+        description: "均一版依 108 課綱與學扶基本學習內容編排，並提供多個教科書版本的對照入口。",
+        url: "https://www.junyiacademy.org/topics/math-1",
+        gradeBand: "國小一年級",
+        startingPoint: "可從均一版的「100 以內的數、認識錢幣、加法和減法」開始。",
+      },
     ],
   },
   science: {
@@ -51,6 +60,13 @@ export const JUNYI_SUBJECT_RESOURCES: Record<SubjectId, SubjectLearningResources
     extensions: [
       { title: "有趣的磁鐵", description: "均一國小自然的磁鐵與磁力觀念影片，適合接續自然觀測任務。", url: "https://www.junyiacademy.org/v/QWbyTXimEJU" },
       { title: "國中自然", description: "生物、理化與地球科學的國中年段課程。", url: "https://www.junyiacademy.org/topics/science-juni" },
+      {
+        title: "國小自然中年級",
+        description: "三、四年級自然課程入口，涵蓋植物、空氣與風、溶解、磁鐵與磁力、水、天氣與能源等主題。",
+        url: "https://www.junyiacademy.org/topics/ns-ele-mid",
+        gradeBand: "國小三至四年級",
+        startingPoint: "可從「磁鐵與磁力」接續目前的自然任務，或依年級由植物與空氣主題開始。",
+      },
     ],
   },
   social: {
@@ -59,6 +75,13 @@ export const JUNYI_SUBJECT_RESOURCES: Record<SubjectId, SubjectLearningResources
     extensions: [
       { title: "臺灣四大區域的特色與發展", description: "均一國小社會五年級影片，從北、中、南、東四區認識臺灣的人文與發展特色。", url: "https://www.junyiacademy.org/videos/EjhOP8udqmI?topic=junyi-society%2Fcoocele-t%2Fcoocele-t5" },
       { title: "國中公民", description: "家庭、社會與政治主題的公民學習入口。", url: "https://www.junyiacademy.org/topics/middle-school-civics" },
+      {
+        title: "國小社會",
+        description: "三至六年級社會課程入口，從家庭與校園、家鄉與行政，到臺灣地理與社會公共事務循序探索。",
+        url: "https://www.junyiacademy.org/topics/coocele-t",
+        gradeBand: "國小三至六年級",
+        startingPoint: "可依目前年級選擇：三年級家庭與校園、四年級家鄉、五年級臺灣地理、六年級社會與政府。",
+      },
     ],
   },
   arts: {
@@ -87,7 +110,7 @@ const UNIT_RESOURCE_TITLE = /比例|磁鐵|成語|臺灣四大區域|節奏|永�
  */
 export const getJunyiResourceLevel = (resource: JunyiLearningResource): JunyiResourceLevel => {
   if (UNIT_RESOURCE_TITLE.test(resource.title) || resource.url.includes("/videos/") || resource.url.includes("/v/")) return "單元教材";
-  if (resource.title.includes("國中") || resource.title.includes("國小") || resource.title.includes("高中")) return "年段課程";
+  if (resource.gradeBand || resource.title.includes("國中") || resource.title.includes("國小") || resource.title.includes("高中")) return "年段課程";
   if (resource.title.includes("Jutor")) return "學習工具";
   return "主題課程";
 };

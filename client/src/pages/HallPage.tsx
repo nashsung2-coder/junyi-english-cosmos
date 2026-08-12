@@ -9,6 +9,15 @@ import { PRACTICE_MISSIONS } from "@/lib/practiceData";
 import { PET_SHOP_ITEMS, PET_ACTIONS } from "@/lib/petShop";
 import { SUBJECTS, type SubjectId } from "@/lib/subjectUniverse";
 
+const COLLABORATION_ROUTE = {
+  id: "math-science-magnet-constellation",
+  title: "磁場羅盤同盟",
+  description: "圓周正在計算探測儀的比例，芽芽則發現磁鐵距離會改變力量。完成兩段任務，讓牠們一起校準星際羅盤。",
+  dialogue: "圓周：我算出座標的比例了！芽芽，你能用磁力找出最穩的方向嗎？",
+  missionIds: [107, 108],
+  reward: 80,
+} as const;
+
 /**
  * HallPage - 星辰啟航 (大廳)
  * 設計哲學:深空極簡主義
@@ -24,9 +33,13 @@ export default function HallPage() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<SubjectId>("english");
   const [petMessage, setPetMessage] = useState("星塵正和新朋友分享今天發現的單字。");
-  const { state, level, buyPetItem, usePetItem, interactWithPet } = useLearningProgress();
+  const { state, level, buyPetItem, usePetItem, interactWithPet, claimCollaborationReward } = useLearningProgress();
   const selectedPet = SUBJECTS.find((subject) => subject.id === selectedSubject)!;
   const selectedPetStatus = state.pets[selectedSubject];
+  const collaborationMissions = COLLABORATION_ROUTE.missionIds.map((missionId) => PRACTICE_MISSIONS.find((mission) => mission.id === missionId)!);
+  const completedCollaborationMissions = collaborationMissions.filter((mission) => state.completedMissionIds.includes(mission.id)).length;
+  const collaborationReady = completedCollaborationMissions === collaborationMissions.length;
+  const collaborationClaimed = state.claimedCollaborationIds.includes(COLLABORATION_ROUTE.id);
 
   const handlePetAction = (actionId: (typeof PET_ACTIONS)[number]["id"]) => {
     setPetMessage(interactWithPet(selectedSubject, actionId));
@@ -40,6 +53,14 @@ export default function HallPage() {
   const handleUseItem = (item: (typeof PET_SHOP_ITEMS)[number]) => {
     if (usePetItem(selectedSubject, item)) setPetMessage(`${selectedPet.pet.name} 使用了${item.name}，狀態變得更好了！`);
     else setPetMessage(`背包裡還沒有 ${item.name}，先到補給站兌換吧。`);
+  };
+
+  const handleClaimCollaborationReward = () => {
+    if (claimCollaborationReward(COLLABORATION_ROUTE.id, [...COLLABORATION_ROUTE.missionIds], COLLABORATION_ROUTE.reward)) {
+      setPetMessage(`圓周和芽芽完成了校準！你獲得 ${COLLABORATION_ROUTE.reward} 枚合作星幣，兩位夥伴正在討論下一次遠征。`);
+      return;
+    }
+    setPetMessage(collaborationClaimed ? "這份合作獎勵已經領取，新的星圖正在準備中。" : "先完成圓周與芽芽的兩段合作任務，再回來一起校準羅盤。");
   };
 
   const iconMap = {
@@ -186,6 +207,10 @@ export default function HallPage() {
 
       <section className="px-4 py-10">
         <div className="container max-w-6xl">
+          <article className="mb-5 overflow-hidden rounded-3xl border border-cyan-200/15 bg-[radial-gradient(ellipse_70%_120%_at_0%_0%,rgba(78,205,196,.13),transparent_60%),linear-gradient(120deg,rgba(18,32,59,.92),rgba(10,17,34,.92))] p-5 md:p-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"><div className="max-w-3xl"><p className="text-xs font-bold tracking-[.18em] text-cyan-200">CROSS-SUBJECT CONSTELLATION</p><div className="mt-3 flex items-center gap-3"><div className="flex -space-x-2 text-3xl" aria-label="數學夥伴圓周與自然夥伴芽芽"><span className="rounded-full border-2 border-slate-950 bg-slate-900 p-1">{SUBJECTS.find((subject) => subject.id === "math")?.pet.emoji}</span><span className="rounded-full border-2 border-slate-950 bg-slate-900 p-1">{SUBJECTS.find((subject) => subject.id === "science")?.pet.emoji}</span></div><h2 className="text-2xl font-bold text-white">{COLLABORATION_ROUTE.title}</h2></div><p className="mt-3 text-sm leading-6 text-slate-300">「{COLLABORATION_ROUTE.dialogue}」</p><p className="mt-2 text-sm leading-6 text-slate-400">{COLLABORATION_ROUTE.description}</p></div><div className="min-w-60 rounded-2xl border border-white/10 bg-black/20 p-4"><div className="flex items-center justify-between text-xs text-slate-300"><span>合作進度</span><span className="font-mono text-cyan-200">{completedCollaborationMissions}/{collaborationMissions.length}</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-teal-300 to-cyan-300 transition-[width] duration-300" style={{ width: `${(completedCollaborationMissions / collaborationMissions.length) * 100}%` }} /></div><Button type="button" onClick={handleClaimCollaborationReward} disabled={!collaborationReady || collaborationClaimed} className="tap-target mt-4 w-full bg-cyan-200 text-slate-950 hover:bg-cyan-100 disabled:bg-slate-700 disabled:text-slate-400"><Sparkles className="mr-1.5 h-4 w-4" />{collaborationClaimed ? "合作獎勵已領取" : `完成後領取 +${COLLABORATION_ROUTE.reward} 星幣`}</Button></div></div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">{collaborationMissions.map((mission) => <Link key={mission.id} href={`/practice/${mission.id}`} className="tap-target group rounded-2xl border border-white/10 bg-black/15 p-4 transition-[transform,background-color,border-color] duration-200 hover:-translate-y-0.5 hover:border-cyan-100/30 hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-200"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold" style={{ color: mission.accent }}>{state.completedMissionIds.includes(mission.id) ? "已完成航線" : "待校準航線"}</p><h3 className="mt-1 font-bold text-white">{mission.name}</h3><p className="mt-1 text-xs leading-5 text-slate-400">{mission.subtitle}</p></div><span className="text-sm text-cyan-100 transition-transform group-hover:translate-x-0.5">→</span></div></Link>)}</div>
+          </article>
           <div className="grid gap-5 lg:grid-cols-[1.2fr_.8fr]">
             <article className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#11182d]/75 p-5 md:p-7">
               <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full border border-dashed border-white/15" />

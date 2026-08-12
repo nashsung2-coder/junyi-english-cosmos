@@ -68,12 +68,31 @@ describe("junyi subject resources", () => {
     });
   });
 
+  it("provides verified grade-level starting routes for mathematics, science, and social studies", () => {
+    expect(getJunyiSubjectResources("math").extensions.at(-1)).toMatchObject({
+      title: "國小一年級數學",
+      url: "https://www.junyiacademy.org/topics/math-1",
+      gradeBand: "國小一年級",
+    });
+    expect(getJunyiSubjectResources("science").extensions.at(-1)).toMatchObject({
+      title: "國小自然中年級",
+      url: "https://www.junyiacademy.org/topics/ns-ele-mid",
+      gradeBand: "國小三至四年級",
+    });
+    expect(getJunyiSubjectResources("social").extensions.at(-1)).toMatchObject({
+      title: "國小社會",
+      url: "https://www.junyiacademy.org/topics/coocele-t",
+      gradeBand: "國小三至六年級",
+    });
+  });
+
   it("classifies verified resources so learners can distinguish units, grade routes, and tools", () => {
     const englishResources = getJunyiSubjectResources("english");
     const mathResources = getJunyiSubjectResources("math");
 
     expect(getJunyiResourceLevel(mathResources.extensions[0])).toBe("單元教材");
     expect(getJunyiResourceLevel(mathResources.extensions[1])).toBe("年段課程");
+    expect(getJunyiResourceLevel(mathResources.extensions[2])).toBe("年段課程");
     expect(getJunyiResourceLevel(englishResources.extensions[3])).toBe("學習工具");
     expect(getJunyiResourceLevel(englishResources.hub)).toBe("主題課程");
   });

@@ -7,6 +7,7 @@ import PetArcade from "@/components/PetArcade";
 import { Button } from "@/components/ui/button";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
 import { PET_ACTIONS, type PetActionId } from "@/lib/petShop";
+import { PRACTICE_MISSIONS } from "@/lib/practiceData";
 import { SUBJECT_AREA_META, SUBJECT_MISSION_IDS, isSubjectArea, type SubjectAreaId } from "@/lib/subjectNavigation";
 import { getJunyiResourceLevel, getJunyiSubjectResources } from "@/lib/junyiResources";
 import { SUBJECTS, getSubject, type SubjectId } from "@/lib/subjectUniverse";
@@ -47,6 +48,15 @@ const HARBOR_PORTALS = [
   { area: "parent" as const, title: "親子星港", eyebrow: "FAMILY RHYTHM", description: "把學習成果轉成一段容易開始、可以一起完成的共學節奏。", color: "#F7A8C7" },
   { area: "teacher" as const, title: "班級指揮艙", eyebrow: "TEACHING SIGNAL", description: "從任務完成率與表現訊號，看見下一次引導的起點。", color: "#A7C5FF" },
 ];
+
+const COLLABORATION_ROUTE = {
+  id: "math-science-magnet-constellation",
+  title: "磁場羅盤同盟",
+  dialogue: "圓周：我算出座標的比例了！芽芽，你能用磁力找出最穩的方向嗎？",
+  description: "完成數學與自然的兩段真實學習任務，幫兩位夥伴一起校準星際羅盤。",
+  missionIds: [107, 108],
+  reward: 80,
+} as const;
 
 function CompanionHaven() {
   const { state, interactWithPet } = useLearningProgress();
@@ -112,6 +122,21 @@ function CompanionHaven() {
   );
 }
 
+function CollaborationConstellation() {
+  const { state, claimCollaborationReward } = useLearningProgress();
+  const [notice, setNotice] = useState("");
+  const missions = COLLABORATION_ROUTE.missionIds.map((missionId) => PRACTICE_MISSIONS.find((mission) => mission.id === missionId)!);
+  const completedCount = missions.filter((mission) => state.completedMissionIds.includes(mission.id)).length;
+  const isReady = completedCount === missions.length;
+  const isClaimed = state.claimedCollaborationIds.includes(COLLABORATION_ROUTE.id);
+  const claimReward = () => {
+    const claimed = claimCollaborationReward(COLLABORATION_ROUTE.id, [...COLLABORATION_ROUTE.missionIds], COLLABORATION_ROUTE.reward);
+    setNotice(claimed ? `校準完成，已獲得 ${COLLABORATION_ROUTE.reward} 枚合作星幣。` : isClaimed ? "這份合作獎勵已經領取，下一張星圖正在準備中。" : "先完成兩段合作航線，再回來一起校準羅盤。");
+  };
+
+  return <section aria-labelledby="collaboration-title" className="mt-5 overflow-hidden rounded-[2rem] border border-cyan-100/15 bg-[radial-gradient(ellipse_70%_110%_at_0%_0%,rgba(78,205,196,.14),transparent_58%),linear-gradient(135deg,rgba(10,35,46,.82),rgba(8,16,28,.9))] p-5 sm:p-7"><div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between"><div className="max-w-3xl"><p className="text-xs font-bold tracking-[.18em] text-cyan-100">CROSS-SUBJECT CONSTELLATION</p><div className="mt-3 flex items-center gap-3"><div className="flex -space-x-2 text-3xl" aria-label="數學夥伴圓周與自然夥伴芽芽"><span className="rounded-full border-2 border-slate-950 bg-slate-900 p-1">{getSubject("math").pet.emoji}</span><span className="rounded-full border-2 border-slate-950 bg-slate-900 p-1">{getSubject("science").pet.emoji}</span></div><h2 id="collaboration-title" className="text-2xl font-bold text-white">{COLLABORATION_ROUTE.title}</h2></div><p className="mt-3 text-sm leading-6 text-cyan-50/90">「{COLLABORATION_ROUTE.dialogue}」</p><p className="mt-2 text-sm leading-6 text-slate-300">{COLLABORATION_ROUTE.description}</p></div><div className="min-w-60 rounded-2xl border border-white/10 bg-black/20 p-4"><div className="flex items-center justify-between text-xs text-slate-300"><span>合作進度</span><span className="font-mono text-cyan-100">{completedCount}/{missions.length}</span></div><div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full bg-gradient-to-r from-teal-300 to-cyan-200 transition-[width] duration-300" style={{ width: `${(completedCount / missions.length) * 100}%` }} /></div><Button type="button" disabled={!isReady || isClaimed} onClick={claimReward} className="tap-target mt-4 w-full bg-cyan-100 text-slate-950 hover:bg-cyan-50 disabled:bg-slate-700 disabled:text-slate-400"><Sparkles className="mr-1.5 h-4 w-4" />{isClaimed ? "合作獎勵已領取" : `完成後領取 +${COLLABORATION_ROUTE.reward} 星幣`}</Button></div></div><div className="mt-5 grid gap-3 sm:grid-cols-2">{missions.map((mission) => <Link key={mission.id} href={`/practice/${mission.id}`} className="tap-target group rounded-2xl border border-white/10 bg-black/15 p-4 transition-[transform,background-color,border-color] duration-200 hover:-translate-y-0.5 hover:border-cyan-100/30 hover:bg-white/[.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-100"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold" style={{ color: mission.accent }}>{state.completedMissionIds.includes(mission.id) ? "已完成航線" : "待校準航線"}</p><h3 className="mt-1 font-bold text-white">{mission.name}</h3><p className="mt-1 text-xs leading-5 text-slate-400">{mission.subtitle}</p></div><ArrowRight className="h-4 w-4 shrink-0 text-cyan-100 transition-transform group-hover:translate-x-1" /></div></Link>)}</div>{notice && <p aria-live="polite" className="mt-4 text-sm text-cyan-50">{notice}</p>}</section>;
+}
+
 export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
   const meta = SUBJECT_AREA_META[area];
   const AreaIcon = AREA_ICONS[area];
@@ -133,7 +158,7 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
 
         {isHarbor && <section className="mt-8" aria-labelledby="harbor-portals-title"><div className="mb-4 flex flex-wrap items-end justify-between gap-3"><div><p className="text-xs font-bold tracking-[.16em] text-amber-100/75">UNIVERSE GATEWAYS</p><h2 id="harbor-portals-title" className="mt-1 text-xl font-bold text-white">從避風港選擇今天的宇宙區域</h2></div><p className="max-w-md text-sm leading-6 text-slate-400">先選一個目的地，再依學科進入專屬管理頁；每條航線都會把成果帶回你的夥伴與星圖。</p></div><div className="grid gap-3 md:grid-cols-2">{HARBOR_PORTALS.map((portal) => { const PortalIcon = AREA_ICONS[portal.area]; return <Link key={portal.area} href={`/${portal.area}`} className="tap-target group relative overflow-hidden rounded-3xl border border-white/10 bg-white/[.028] p-5 transition-all duration-200 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100"><div className="absolute -right-8 -top-10 h-32 w-32 rounded-full border opacity-30" style={{ borderColor: portal.color }} /><div className="relative flex items-start justify-between gap-4"><span className="grid h-12 w-12 place-items-center rounded-2xl border border-white/10 bg-black/20"><PortalIcon className="h-5 w-5" style={{ color: portal.color }} /></span><span className="text-xs font-bold tracking-[.14em]" style={{ color: portal.color }}>{portal.eyebrow}</span></div><h3 className="relative mt-5 text-xl font-bold text-white">{portal.title}</h3><p className="relative mt-2 min-h-12 text-sm leading-6 text-slate-400">{portal.description}</p><span className="relative mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white">選科啟航 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span></Link>; })}</div></section>}
 
-        {isHarbor && <CompanionHaven />}
+        {isHarbor && <><CompanionHaven /><CollaborationConstellation /></>}
 
         <section className="mt-8">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
@@ -176,6 +201,7 @@ export function SubjectManagementPage() {
   const junyiResources = getJunyiSubjectResources(selectedSubjectId);
   const meta = SUBJECT_AREA_META[area];
   const missionId = SUBJECT_MISSION_IDS[subject.id];
+  const subjectMissions = PRACTICE_MISSIONS.filter((mission) => mission.subject === subject.id);
   const { state } = useLearningProgress();
   const progress = state.subjectProgress[subject.id];
   const pet = state.pets[subject.id];
@@ -219,10 +245,15 @@ export function SubjectManagementPage() {
           <aside className="rounded-3xl border border-white/10 bg-white/[.026] p-6"><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>COMPANION STATUS</p><h2 className="mt-3 text-xl font-bold text-white">{subject.pet.name}的補給站</h2><p className="mt-2 text-sm leading-6 text-slate-400">最喜歡的物品是「{subject.pet.favoriteItem}」。{companionFeedback}</p><div className="mt-5 space-y-3">{[["飽足度", pet.hunger], ["快樂度", pet.happiness], ["能量", pet.energy]].map(([label, value]) => <div key={label as string}><div className="mb-1 flex justify-between text-xs text-slate-400"><span>{label as string}</span><span>{value as number}/100</span></div><div className="h-2 overflow-hidden rounded-full bg-white/10"><div className="h-full rounded-full" style={{ width: `${value as number}%`, background: subject.color }} /></div></div>)}</div></aside>
         </section>
 
+        <section aria-labelledby="subject-mission-map-title" className="mt-6 overflow-hidden rounded-3xl border border-white/10 bg-white/[.026] p-6">
+          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p className="text-xs font-bold tracking-[.16em]" style={{ color: subject.color }}>MISSION MAP</p><h2 id="subject-mission-map-title" className="mt-2 text-xl font-bold text-white">選擇{subject.name}的下一段任務</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-400">每個任務都可逐題作答、取得即時解析與星幣獎勵；完成後會引導你前往對應的均一真實教材。</p></div><span className="rounded-full border border-white/10 bg-black/15 px-3 py-1.5 text-xs font-semibold text-slate-300">{subjectMissions.length} 段可作答任務</span></div>
+          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3">{subjectMissions.map((mission) => <Link key={mission.id} href={`/practice/${mission.id}`} className="tap-target group rounded-2xl border border-white/10 bg-black/15 p-4 transition-[transform,background-color,border-color] duration-200 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[.055] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/80"><div className="flex items-start justify-between gap-3"><span className="rounded-full border border-white/10 px-2 py-1 text-[10px] font-bold tracking-[.1em]" style={{ color: mission.accent, borderColor: `${mission.accent}55` }}>{mission.difficulty}</span><span className="text-xs text-slate-500">{mission.questions.length} 題 · {mission.estimate}</span></div><h3 className="mt-4 font-bold text-white">{mission.name}</h3><p className="mt-1 min-h-10 text-sm leading-6 text-slate-400">{mission.subtitle}</p><span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold" style={{ color: mission.accent }}>開始任務 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" /></span></Link>)}</div>
+        </section>
+
         <section aria-labelledby="junyi-learning-title" className="mt-6 overflow-hidden rounded-3xl border border-cyan-100/10 bg-[radial-gradient(ellipse_65%_105%_at_100%_0%,rgba(78,205,196,.12),transparent_62%),rgba(255,255,255,.026)] p-6">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-xs font-bold tracking-[.16em] text-teal-100/85">REAL JUNYI CONTENT</p><h2 id="junyi-learning-title" className="mt-2 text-xl font-bold text-white">接著在均一完成{subject.name}學習</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">宇宙任務會記錄你的答題與夥伴成長；下方入口則會開啟均一教育平台的對應公開教材，讓練習自然延伸成真實課程。</p></div><a href={junyiResources.hub.url} target="_blank" rel="noreferrer" className="tap-target inline-flex items-center justify-center gap-2 rounded-xl border border-teal-100/20 bg-teal-100/[.09] px-4 py-2 text-sm font-semibold text-teal-50 transition-colors hover:bg-teal-100/[.16]">查看{junyiResources.hub.title}<ExternalLink className="h-4 w-4" /></a></div>
           <div className="mt-5 grid gap-3 md:grid-cols-2">
-            {[junyiResources.mission, ...junyiResources.extensions].map((resource) => <a key={resource.url} href={resource.url} target="_blank" rel="noreferrer" className="tap-target group rounded-2xl border border-white/10 bg-black/15 p-4 transition-colors hover:border-teal-100/25 hover:bg-white/[.055]"><div className="flex items-start justify-between gap-3"><div><p className="font-semibold text-white">{resource.title}</p><p className="mt-1 text-sm leading-6 text-slate-400">{resource.description}</p></div><ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-teal-100/70 transition-transform group-hover:translate-x-0.5" /></div><div className="mt-3 flex flex-wrap items-center justify-between gap-2"><span className="rounded-full border border-teal-100/15 bg-teal-100/[.06] px-2 py-1 text-[10px] font-semibold tracking-[.08em] text-teal-50/85">均一教育平台 · {getJunyiResourceLevel(resource)}</span><span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-100">在均一開啟 <ArrowRight className="h-3.5 w-3.5" /></span></div></a>)}
+            {[junyiResources.mission, ...junyiResources.extensions].map((resource) => <a key={resource.url} href={resource.url} target="_blank" rel="noreferrer" className="tap-target group rounded-2xl border border-white/10 bg-black/15 p-4 transition-colors hover:border-teal-100/25 hover:bg-white/[.055]"><div className="flex items-start justify-between gap-3"><div><p className="font-semibold text-white">{resource.title}</p><p className="mt-1 text-sm leading-6 text-slate-400">{resource.description}</p></div><ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-teal-100/70 transition-transform group-hover:translate-x-0.5" /></div>{resource.gradeBand && <div className="mt-3 rounded-xl border border-cyan-100/10 bg-cyan-50/[.04] px-3 py-2.5"><p className="text-[10px] font-bold tracking-[.12em] text-cyan-100/80">VERIFIED GRADE START</p><p className="mt-1 text-xs font-semibold text-cyan-50">適合：{resource.gradeBand}</p><p className="mt-1 text-xs leading-5 text-slate-400">{resource.startingPoint}</p></div>}<div className="mt-3 flex flex-wrap items-center justify-between gap-2"><span className="rounded-full border border-teal-100/15 bg-teal-100/[.06] px-2 py-1 text-[10px] font-semibold tracking-[.08em] text-teal-50/85">均一教育平台 · {getJunyiResourceLevel(resource)}</span><span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-100">在均一開啟 <ArrowRight className="h-3.5 w-3.5" /></span></div></a>)}
           </div>
         </section>
 

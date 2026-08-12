@@ -20,6 +20,7 @@ export type LearningState = {
   dimensionPoints: Record<LearningDimensionId, number>;
   recentActivity: number[];
   adoptedSuggestionIds: number[];
+  claimedCollaborationIds: string[];
   subjectProgress: Record<SubjectId, { missions: number; questions: number; correct: number }>;
   pets: SubjectPetStatus;
   inventory: Record<string, number>;
@@ -42,6 +43,7 @@ type LearningProgressContextValue = {
   adoptDirections: (suggestionIds: number[]) => number;
   recordAnswer: (isCorrect: boolean) => void;
   grantBonusStarCoins: (amount: number) => void;
+  claimCollaborationReward: (collaborationId: string, requiredMissionIds: number[], reward: number) => boolean;
   missionCompleted: (missionId: number) => boolean;
   buyPetItem: (item: PetItem) => boolean;
   usePetItem: (subjectId: SubjectId, item: PetItem) => boolean;
@@ -69,6 +71,7 @@ export function createInitialLearningState(): LearningState {
     dimensionPoints: { listening: 18, speaking: 14, reading: 16, writing: 10, vocabulary: 28, grammar: 12, chinese: 10, math: 10, science: 10, social: 10, arts: 10, health: 10 },
     recentActivity: [0, 0, 1, 0, 2, 1, 0],
     adoptedSuggestionIds: [],
+    claimedCollaborationIds: [],
     subjectProgress: createSubjectProgress(),
     pets: createPetStatuses(),
     inventory: { "meteor-kibble": 1, "orbit-ball": 1 },
@@ -120,6 +123,23 @@ export function applyMissionCompletion(current: LearningState, result: MissionRe
           level: Math.max(current.pets[result.subject].level, 1 + Math.floor((subjectProgress.missions + 1) / 3)),
         },
       },
+    },
+  };
+}
+
+export function applyCollaborationReward(current: LearningState, collaborationId: string, requiredMissionIds: number[], reward: number) {
+  const isReady = requiredMissionIds.every((missionId) => current.completedMissionIds.includes(missionId));
+  const safeReward = Math.max(0, Math.floor(reward));
+  const alreadyClaimed = current.claimedCollaborationIds.includes(collaborationId);
+
+  if (!isReady || alreadyClaimed || safeReward === 0) return { claimed: false, nextState: current };
+
+  return {
+    claimed: true,
+    nextState: {
+      ...current,
+      starCoins: current.starCoins + safeReward,
+      claimedCollaborationIds: [...current.claimedCollaborationIds, collaborationId],
     },
   };
 }
@@ -182,6 +202,13 @@ export function LearningProgressProvider({ children }: { children: ReactNode }) 
     setState((current) => ({ ...current, starCoins: current.starCoins + safeAmount }));
   };
 
+  const claimCollaborationReward = (collaborationId: string, requiredMissionIds: number[], reward: number) => {
+    const result = applyCollaborationReward(state, collaborationId, requiredMissionIds, reward);
+    if (!result.claimed) return false;
+    setState(result.nextState);
+    return true;
+  };
+
   const buyPetItem = (item: PetItem) => {
     if (state.starCoins < item.cost) return false;
     setState((current) => ({
@@ -222,6 +249,7 @@ export function LearningProgressProvider({ children }: { children: ReactNode }) 
       adoptDirections,
       recordAnswer,
       grantBonusStarCoins,
+      claimCollaborationReward,
       missionCompleted: (missionId) => state.completedMissionIds.includes(missionId),
       buyPetItem,
       usePetItem,
