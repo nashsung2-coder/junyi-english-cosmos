@@ -8,6 +8,7 @@ import { getLearningStage, getSubjectsForStage, LEARNING_STAGES, type LearningSt
 
 type FirstHarborWelcomeProps = {
   onStageSelect: (stageId: LearningStageId) => void;
+  replayNonce?: number;
 };
 
 const STAGE_ICONS = {
@@ -23,12 +24,13 @@ function getTrackLabels(subject: SubjectDefinition) {
 }
 
 /** Full-screen first-visit welcome. The visitor chooses a stage before entering its real subject routes. */
-export default function FirstHarborWelcome({ onStageSelect }: FirstHarborWelcomeProps) {
+export default function FirstHarborWelcome({ onStageSelect, replayNonce = 0 }: FirstHarborWelcomeProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedStageId, setSelectedStageId] = useState<LearningStageId | null>(null);
   const reduceMotion = useReducedMotion();
   const dialogRef = useRef<HTMLDivElement>(null);
   const dismissButtonRef = useRef<HTMLButtonElement>(null);
+  const lastReplayNonce = useRef(replayNonce);
 
   useEffect(() => {
     const storedStage = getHarborLearningStage(window.localStorage);
@@ -43,6 +45,13 @@ export default function FirstHarborWelcome({ onStageSelect }: FirstHarborWelcome
     }
     if (previewWelcome || claimFirstHarborWelcome(window.localStorage)) setIsOpen(true);
   }, [onStageSelect]);
+
+  useEffect(() => {
+    if (replayNonce === 0 || replayNonce === lastReplayNonce.current) return;
+    lastReplayNonce.current = replayNonce;
+    setSelectedStageId(null);
+    setIsOpen(true);
+  }, [replayNonce]);
 
   useEffect(() => {
     if (!isOpen) return;

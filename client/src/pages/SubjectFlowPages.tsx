@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Link, useRoute } from "wouter";
 import { ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Coins, Compass, ExternalLink, Gamepad2, Heart, LineChart, Play, Sparkles, Target, Users } from "lucide-react";
@@ -11,6 +11,7 @@ import { PET_ACTIONS, type PetActionId } from "@/lib/petShop";
 import { PRACTICE_MISSIONS } from "@/lib/practiceData";
 import { SUBJECT_AREA_META, SUBJECT_MISSION_IDS, isSubjectArea, type SubjectAreaId } from "@/lib/subjectNavigation";
 import { getJunyiCourseTrack, getJunyiResourceLevel, getJunyiSubjectResources } from "@/lib/junyiResources";
+import { getPreferredHarborLearningStage, saveHarborLearningStage } from "@/lib/harborWelcome";
 import { LEARNING_STAGES, SUBJECTS, getLearningStage, getSubject, getSubjectsForStage, type LearningStageId, type SubjectId } from "@/lib/subjectUniverse";
 
 const AREA_ICONS: Record<SubjectAreaId, typeof Compass> = {
@@ -143,14 +144,19 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
   const AreaIcon = AREA_ICONS[area];
   const { state } = useLearningProgress();
   const isHarbor = area === "hall";
-  const [selectedStageId, setSelectedStageId] = useState<LearningStageId>("elementary");
+  const [selectedStageId, setSelectedStageId] = useState<LearningStageId>(() => getPreferredHarborLearningStage(typeof window === "undefined" ? null : window.localStorage));
+  const [welcomeReplayNonce, setWelcomeReplayNonce] = useState(0);
+  const chooseHarborStage = useCallback((stageId: LearningStageId) => {
+    saveHarborLearningStage(typeof window === "undefined" ? null : window.localStorage, stageId);
+    setSelectedStageId(stageId);
+  }, []);
   const selectedStage = getLearningStage(selectedStageId);
   const stageSubjects = getSubjectsForStage(selectedStageId);
 
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_70%_50%_at_75%_0%,rgba(78,205,196,.13),transparent_68%),#061014] text-foreground">
       <Navbar />
-      {isHarbor && <FirstHarborWelcome onStageSelect={setSelectedStageId} />}
+      {isHarbor && <FirstHarborWelcome onStageSelect={chooseHarborStage} replayNonce={welcomeReplayNonce} />}
       <main className="page-safe-top container max-w-6xl pb-14">
         <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] px-5 py-8 shadow-[0_20px_70px_rgba(0,0,0,.26)] sm:px-8 sm:py-10">
           <div className="pointer-events-none absolute -right-10 -top-14 h-52 w-52 rounded-full border border-accent/15" />
@@ -168,12 +174,12 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
         <section className="mt-8">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
             <div><p className="text-xs font-bold tracking-[.16em] text-amber-100/75">LEARNING STAGE</p><h2 className="mt-1 text-xl font-bold text-white">先選學段，再選擇下一段學習航線</h2><p className="mt-1 text-sm text-muted-foreground">國小與國中延續既有學科探索；高中以物理、化學、生物與地球科學規劃必修／選修路徑。</p></div>
-            <span className="rounded-full border border-accent/25 bg-accent/[.08] px-3 py-1.5 text-xs font-semibold text-accent">{state.starCoins} 星幣可用</span>
+            <div className="flex flex-wrap items-center gap-2"><span className="rounded-full border border-accent/25 bg-accent/[.08] px-3 py-1.5 text-xs font-semibold text-accent">{state.starCoins} 星幣可用</span>{isHarbor && <Button type="button" variant="outline" size="sm" onClick={() => setWelcomeReplayNonce((nonce) => nonce + 1)} className="tap-target border-white/15 bg-white/[.035] text-slate-100 hover:bg-white/[.1] hover:text-white"><Sparkles className="mr-1.5 h-3.5 w-3.5 text-teal-200" />重新查看迎賓</Button>}</div>
           </div>
           <div className="mb-5 grid gap-3 md:grid-cols-3" role="tablist" aria-label="選擇學習學段">
             {LEARNING_STAGES.map((stage) => {
               const selected = stage.id === selectedStageId;
-              return <button key={stage.id} type="button" role="tab" aria-selected={selected} onClick={() => setSelectedStageId(stage.id)} className={`tap-target rounded-2xl border p-4 text-left transition-[transform,background-color,border-color] duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${selected ? "bg-white/[.095]" : "border-white/10 bg-black/15 hover:bg-white/[.055]"}`} style={selected ? { borderColor: `${stage.color}88`, boxShadow: `inset 3px 0 0 ${stage.color}` } : undefined}>
+              return <button key={stage.id} type="button" role="tab" aria-selected={selected} onClick={() => chooseHarborStage(stage.id)} className={`tap-target rounded-2xl border p-4 text-left transition-[transform,background-color,border-color] duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${selected ? "bg-white/[.095]" : "border-white/10 bg-black/15 hover:bg-white/[.055]"}`} style={selected ? { borderColor: `${stage.color}88`, boxShadow: `inset 3px 0 0 ${stage.color}` } : undefined}>
                 <span className="text-[10px] font-bold tracking-[.16em]" style={{ color: stage.color }}>{stage.shortName}</span><span className="mt-2 block font-bold text-white">{stage.name}</span><span className="mt-1 block min-h-10 text-xs leading-5 text-slate-400">{stage.description}</span>
               </button>;
             })}

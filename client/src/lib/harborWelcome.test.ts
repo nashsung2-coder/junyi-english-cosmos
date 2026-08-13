@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   claimFirstHarborWelcome,
+  DEFAULT_HARBOR_LEARNING_STAGE,
   getHarborLearningStage,
+  getPreferredHarborLearningStage,
   HARBOR_LEARNING_STAGE_STORAGE_KEY,
   HARBOR_WELCOME_STORAGE_KEY,
   HARBOR_WELCOME_STORAGE_VALUE,
@@ -38,5 +40,16 @@ describe("claimFirstHarborWelcome", () => {
     expect(storage.getItem(HARBOR_LEARNING_STAGE_STORAGE_KEY)).toBe("senior");
     expect(getHarborLearningStage(storage)).toBe("senior");
     expect(claimFirstHarborWelcome(storage)).toBe(true);
+  });
+
+  it("uses the saved stage for later harbor visits and a safe default when storage has no valid stage", () => {
+    const storage = createMemoryStorage();
+
+    expect(getPreferredHarborLearningStage(storage)).toBe(DEFAULT_HARBOR_LEARNING_STAGE);
+    storage.setItem(HARBOR_LEARNING_STAGE_STORAGE_KEY, "invalid-stage");
+    expect(getPreferredHarborLearningStage(storage)).toBe(DEFAULT_HARBOR_LEARNING_STAGE);
+    saveHarborLearningStage(storage, "junior");
+    expect(getPreferredHarborLearningStage(storage)).toBe("junior");
+    expect(getPreferredHarborLearningStage(null)).toBe(DEFAULT_HARBOR_LEARNING_STAGE);
   });
 });

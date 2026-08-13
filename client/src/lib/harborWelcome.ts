@@ -3,6 +3,7 @@ import type { LearningStageId } from "./subjectUniverse";
 export const HARBOR_WELCOME_STORAGE_KEY = "junyi-cosmos-harbor-welcome-v1";
 export const HARBOR_WELCOME_STORAGE_VALUE = "seen";
 export const HARBOR_LEARNING_STAGE_STORAGE_KEY = "junyi-cosmos-learning-stage-v1";
+export const DEFAULT_HARBOR_LEARNING_STAGE: LearningStageId = "elementary";
 
 export type StorageAdapter = Pick<Storage, "getItem" | "setItem">;
 
@@ -33,6 +34,11 @@ export function getHarborLearningStage(storage: StorageAdapter | null | undefine
   } catch {
     return null;
   }
+}
+
+/** Returns the saved stage when available, otherwise the calm elementary-harbor starting point. */
+export function getPreferredHarborLearningStage(storage: StorageAdapter | null | undefined): LearningStageId {
+  return getHarborLearningStage(storage) ?? DEFAULT_HARBOR_LEARNING_STAGE;
 }
 
 export function saveHarborLearningStage(storage: StorageAdapter | null | undefined, stageId: LearningStageId) {
