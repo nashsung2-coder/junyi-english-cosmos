@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { Link, useRoute } from "wouter";
 import { ArrowLeft, ArrowRight, BookOpenCheck, BrainCircuit, Coins, Compass, ExternalLink, Gamepad2, Heart, LineChart, Play, Sparkles, Target, Users } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import FirstHarborWelcome from "@/components/FirstHarborWelcome";
 import PetArcade from "@/components/PetArcade";
 import { Button } from "@/components/ui/button";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
@@ -149,6 +150,7 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_70%_50%_at_75%_0%,rgba(78,205,196,.13),transparent_68%),#061014] text-foreground">
       <Navbar />
+      {isHarbor && <FirstHarborWelcome />}
       <main className="page-safe-top container max-w-6xl pb-14">
         <section className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.025] px-5 py-8 shadow-[0_20px_70px_rgba(0,0,0,.26)] sm:px-8 sm:py-10">
           <div className="pointer-events-none absolute -right-10 -top-14 h-52 w-52 rounded-full border border-accent/15" />
