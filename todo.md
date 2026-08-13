@@ -146,4 +146,4 @@
 - [x] 封存學段優先迎賓 checkpoint 並同步至 GitHub main，保留提交與作者證據（GitHub main：f25e087；作者 nashsung <nashsung2@gmail.com>）
 - [x] 讓大廳學段切換與首次迎賓選擇雙向同步，跨次造訪保留一致的學段偏好
 - [x] 提供不清除學習進度的迎賓手動重播控制，讓使用者能重新查看學段與學科航線
-- [ ] 為學段偏好同步與迎賓重播控制補齊單元測試、桌機／手機畫面驗證、建置與 GitHub 同步
+- [x] 為學段偏好同步與迎賓重播控制補齊單元測試、桌機／手機畫面驗證、建置與 GitHub 同步（35 項測試、正式建置、GitHub main：40d7a19；作者 nashsung <nashsung2@gmail.com>）
