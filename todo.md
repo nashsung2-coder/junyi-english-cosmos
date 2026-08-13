@@ -147,3 +147,7 @@
 - [x] 讓大廳學段切換與首次迎賓選擇雙向同步，跨次造訪保留一致的學段偏好
 - [x] 提供不清除學習進度的迎賓手動重播控制，讓使用者能重新查看學段與學科航線
 - [x] 為學段偏好同步與迎賓重播控制補齊單元測試、桌機／手機畫面驗證、建置與 GitHub 同步（35 項測試、正式建置、GitHub main：40d7a19；作者 nashsung <nashsung2@gmail.com>）
+- [ ] 釐清使用者可見的 GitHub、預覽與 Cloudflare Pages 版本是否一致，說明最新內容的可存取入口與必要發布步驟
+- [ ] 確認 Cloudflare Pages 公開網址在使用者發布後載入最新學段同步與迎賓重播版本
+- [x] 新增 `wrangler.jsonc`，明確宣告 `junyi-english-cosmos` Pages 專案與 `dist/public` 靜態輸出目錄
+- [ ] 在 Cloudflare 建置設定移除錯誤的 `npx wrangler deploy`（Workers）命令，改用 Pages Git integration 的自動部署流程，確保推送 main 即更新 junyi-english-cosmos.pages.dev
