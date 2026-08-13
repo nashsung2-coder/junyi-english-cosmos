@@ -9,8 +9,8 @@ import { useLearningProgress } from "@/contexts/LearningProgressContext";
 import { PET_ACTIONS, type PetActionId } from "@/lib/petShop";
 import { PRACTICE_MISSIONS } from "@/lib/practiceData";
 import { SUBJECT_AREA_META, SUBJECT_MISSION_IDS, isSubjectArea, type SubjectAreaId } from "@/lib/subjectNavigation";
-import { getJunyiResourceLevel, getJunyiSubjectResources } from "@/lib/junyiResources";
-import { SUBJECTS, getSubject, type SubjectId } from "@/lib/subjectUniverse";
+import { getJunyiCourseTrack, getJunyiResourceLevel, getJunyiSubjectResources } from "@/lib/junyiResources";
+import { LEARNING_STAGES, SUBJECTS, getLearningStage, getSubject, getSubjectsForStage, type LearningStageId, type SubjectId } from "@/lib/subjectUniverse";
 
 const AREA_ICONS: Record<SubjectAreaId, typeof Compass> = {
   hall: Compass,
@@ -84,7 +84,7 @@ function CompanionHaven() {
         <div className="max-w-md lg:w-[35%]">
           <p className="text-xs font-bold tracking-[.18em] text-amber-100/80">COMPANION HARBOR</p>
           <h2 id="companion-haven-title" className="mt-3 text-2xl font-bold text-white sm:text-3xl">夥伴們的暖光避風港</h2>
-          <p className="mt-3 text-sm leading-7 text-slate-300">這裡不急著出發。先和每一位學科夥伴打聲招呼、補充能量，再選擇今天想探索的航線。</p>
+          <p className="mt-3 text-sm leading-7 text-slate-300">這裡不急著出發。先和跨學段的夥伴打聲招呼、補充能量，再選擇今天想探索的航線。</p>
           <div className="mt-5 flex flex-wrap gap-2">
             {PET_ACTIONS.map((action) => (
               <Button key={action.id} type="button" variant="outline" size="sm" onClick={() => shareMoment(action.id)} className="tap-target border-white/12 bg-white/[.045] text-slate-100 hover:bg-white/[.1] hover:text-white">
@@ -142,6 +142,9 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
   const AreaIcon = AREA_ICONS[area];
   const { state } = useLearningProgress();
   const isHarbor = area === "hall";
+  const [selectedStageId, setSelectedStageId] = useState<LearningStageId>("elementary");
+  const selectedStage = getLearningStage(selectedStageId);
+  const stageSubjects = getSubjectsForStage(selectedStageId);
 
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_70%_50%_at_75%_0%,rgba(78,205,196,.13),transparent_68%),#061014] text-foreground">
@@ -162,11 +165,20 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
 
         <section className="mt-8">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-            <div><h2 className="text-xl font-bold text-white">{isHarbor ? "選擇下一段學習航線" : "七科學習航線"}</h2><p className="mt-1 text-sm text-muted-foreground">選擇一科後，才會開啟相應的 {meta.managementLabel}。</p></div>
+            <div><p className="text-xs font-bold tracking-[.16em] text-amber-100/75">LEARNING STAGE</p><h2 className="mt-1 text-xl font-bold text-white">先選學段，再選擇下一段學習航線</h2><p className="mt-1 text-sm text-muted-foreground">國小與國中延續既有學科探索；高中以物理、化學、生物與地球科學規劃必修／選修路徑。</p></div>
             <span className="rounded-full border border-accent/25 bg-accent/[.08] px-3 py-1.5 text-xs font-semibold text-accent">{state.starCoins} 星幣可用</span>
           </div>
+          <div className="mb-5 grid gap-3 md:grid-cols-3" role="tablist" aria-label="選擇學習學段">
+            {LEARNING_STAGES.map((stage) => {
+              const selected = stage.id === selectedStageId;
+              return <button key={stage.id} type="button" role="tab" aria-selected={selected} onClick={() => setSelectedStageId(stage.id)} className={`tap-target rounded-2xl border p-4 text-left transition-[transform,background-color,border-color] duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${selected ? "bg-white/[.095]" : "border-white/10 bg-black/15 hover:bg-white/[.055]"}`} style={selected ? { borderColor: `${stage.color}88`, boxShadow: `inset 3px 0 0 ${stage.color}` } : undefined}>
+                <span className="text-[10px] font-bold tracking-[.16em]" style={{ color: stage.color }}>{stage.shortName}</span><span className="mt-2 block font-bold text-white">{stage.name}</span><span className="mt-1 block min-h-10 text-xs leading-5 text-slate-400">{stage.description}</span>
+              </button>;
+            })}
+          </div>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2"><div><h3 className="font-bold text-white">{selectedStage.name} · {stageSubjects.length} 條學科航線</h3><p className="mt-1 text-sm text-slate-400">{selectedStage.description}</p></div>{selectedStageId === "senior" && <span className="rounded-full border border-amber-200/20 bg-amber-100/[.07] px-3 py-1.5 text-xs font-semibold text-amber-100">必修打底 · 選修加深加廣</span>}</div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {SUBJECTS.map((subject) => {
+            {stageSubjects.map((subject) => {
               const progress = state.subjectProgress[subject.id];
               const pet = state.pets[subject.id];
               return (
@@ -175,6 +187,7 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
                   <div className="flex items-start justify-between gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-black/15 text-2xl">{subject.pet.emoji}</span><span className="rounded-full border border-white/10 px-2 py-1 text-[10px] text-slate-400">Lv.{pet.level}</span></div>
                   <h3 className="mt-5 font-bold text-white">{subject.name} <span className="font-normal text-slate-400">· {subject.pet.name}</span></h3>
                   <p className="mt-1 min-h-10 text-xs leading-5 text-slate-400">{subject.tagline}</p>
+                  {subject.courseTracks && <div className="mt-3 flex flex-wrap gap-1.5">{subject.courseTracks.map((track) => <span key={track} className="rounded-full border border-white/10 bg-black/15 px-2 py-1 text-[10px] font-semibold" style={{ color: track === "required" ? "#F8C46B" : "#C4B5FD" }}>{track === "required" ? "必修" : "選修"}</span>)}</div>}
                   <div className="mt-4 flex items-center justify-between text-xs text-slate-300"><span>{progress.missions} 次任務</span><span className="inline-flex items-center gap-1 font-semibold" style={{ color: subject.color }}>進入管理 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span></div>
                 </Link>
               );
@@ -253,7 +266,10 @@ export function SubjectManagementPage() {
         <section aria-labelledby="junyi-learning-title" className="mt-6 overflow-hidden rounded-3xl border border-cyan-100/10 bg-[radial-gradient(ellipse_65%_105%_at_100%_0%,rgba(78,205,196,.12),transparent_62%),rgba(255,255,255,.026)] p-6">
           <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p className="text-xs font-bold tracking-[.16em] text-teal-100/85">REAL JUNYI CONTENT</p><h2 id="junyi-learning-title" className="mt-2 text-xl font-bold text-white">接著在均一完成{subject.name}學習</h2><p className="mt-2 max-w-2xl text-sm leading-6 text-slate-300">宇宙任務會記錄你的答題與夥伴成長；下方入口則會開啟均一教育平台的對應公開教材，讓練習自然延伸成真實課程。</p></div><a href={junyiResources.hub.url} target="_blank" rel="noreferrer" className="tap-target inline-flex items-center justify-center gap-2 rounded-xl border border-teal-100/20 bg-teal-100/[.09] px-4 py-2 text-sm font-semibold text-teal-50 transition-colors hover:bg-teal-100/[.16]">查看{junyiResources.hub.title}<ExternalLink className="h-4 w-4" /></a></div>
           <div className="mt-5 grid gap-3 md:grid-cols-2">
-            {[junyiResources.mission, ...junyiResources.extensions].map((resource) => <a key={resource.url} href={resource.url} target="_blank" rel="noreferrer" className="tap-target group rounded-2xl border border-white/10 bg-black/15 p-4 transition-colors hover:border-teal-100/25 hover:bg-white/[.055]"><div className="flex items-start justify-between gap-3"><div><p className="font-semibold text-white">{resource.title}</p><p className="mt-1 text-sm leading-6 text-slate-400">{resource.description}</p></div><ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-teal-100/70 transition-transform group-hover:translate-x-0.5" /></div>{resource.gradeBand && <div className="mt-3 rounded-xl border border-cyan-100/10 bg-cyan-50/[.04] px-3 py-2.5"><p className="text-[10px] font-bold tracking-[.12em] text-cyan-100/80">VERIFIED GRADE START</p><p className="mt-1 text-xs font-semibold text-cyan-50">適合：{resource.gradeBand}</p><p className="mt-1 text-xs leading-5 text-slate-400">{resource.startingPoint}</p></div>}<div className="mt-3 flex flex-wrap items-center justify-between gap-2"><span className="rounded-full border border-teal-100/15 bg-teal-100/[.06] px-2 py-1 text-[10px] font-semibold tracking-[.08em] text-teal-50/85">均一教育平台 · {getJunyiResourceLevel(resource)}</span><span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-100">在均一開啟 <ArrowRight className="h-3.5 w-3.5" /></span></div></a>)}
+            {[junyiResources.mission, ...junyiResources.extensions].map((resource) => {
+              const courseTrack = getJunyiCourseTrack(resource);
+              return <a key={resource.url} href={resource.url} target="_blank" rel="noreferrer" className="tap-target group rounded-2xl border border-white/10 bg-black/15 p-4 transition-colors hover:border-teal-100/25 hover:bg-white/[.055]"><div className="flex items-start justify-between gap-3"><div><p className="font-semibold text-white">{resource.title}</p><p className="mt-1 text-sm leading-6 text-slate-400">{resource.description}</p></div><ExternalLink className="mt-0.5 h-4 w-4 shrink-0 text-teal-100/70 transition-transform group-hover:translate-x-0.5" /></div>{resource.gradeBand && <div className="mt-3 rounded-xl border border-cyan-100/10 bg-cyan-50/[.04] px-3 py-2.5"><p className="text-[10px] font-bold tracking-[.12em] text-cyan-100/80">VERIFIED GRADE START</p><p className="mt-1 text-xs font-semibold text-cyan-50">適合：{resource.gradeBand}</p><p className="mt-1 text-xs leading-5 text-slate-400">{resource.startingPoint}</p></div>}<div className="mt-3 flex flex-wrap items-center justify-between gap-2"><div className="flex flex-wrap gap-1.5"><span className="rounded-full border border-teal-100/15 bg-teal-100/[.06] px-2 py-1 text-[10px] font-semibold tracking-[.08em] text-teal-50/85">均一教育平台 · {getJunyiResourceLevel(resource)}</span>{courseTrack && <span className={`rounded-full border px-2 py-1 text-[10px] font-semibold tracking-[.08em] ${courseTrack === "必修" ? "border-amber-200/25 bg-amber-100/[.08] text-amber-100" : "border-violet-200/25 bg-violet-100/[.08] text-violet-100"}`}>{courseTrack}</span>}</div><span className="inline-flex items-center gap-1 text-xs font-semibold text-teal-100">在均一開啟 <ArrowRight className="h-3.5 w-3.5" /></span></div></a>;
+            })}
           </div>
         </section>
 

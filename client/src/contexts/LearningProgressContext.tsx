@@ -68,7 +68,7 @@ export function createInitialLearningState(): LearningState {
     bestCorrectStreak: 0,
     completedMissionIds: [],
     missionScores: {},
-    dimensionPoints: { listening: 18, speaking: 14, reading: 16, writing: 10, vocabulary: 28, grammar: 12, chinese: 10, math: 10, science: 10, social: 10, arts: 10, health: 10 },
+    dimensionPoints: { listening: 18, speaking: 14, reading: 16, writing: 10, vocabulary: 28, grammar: 12, chinese: 10, math: 10, science: 10, social: 10, arts: 10, health: 10, physics: 10, chemistry: 10, biology: 10, earthScience: 10 },
     recentActivity: [0, 0, 1, 0, 2, 1, 0],
     adoptedSuggestionIds: [],
     claimedCollaborationIds: [],
@@ -150,7 +150,14 @@ function loadInitialState(): LearningState {
   try {
     const stored = window.localStorage.getItem(STORAGE_KEY);
     if (!stored) return initialState;
-    return { ...initialState, ...JSON.parse(stored) } as LearningState;
+    const persisted = JSON.parse(stored) as Partial<LearningState>;
+    return {
+      ...initialState,
+      ...persisted,
+      dimensionPoints: { ...initialState.dimensionPoints, ...persisted.dimensionPoints },
+      subjectProgress: { ...initialState.subjectProgress, ...persisted.subjectProgress },
+      pets: { ...initialState.pets, ...persisted.pets },
+    } as LearningState;
   } catch {
     return initialState;
   }

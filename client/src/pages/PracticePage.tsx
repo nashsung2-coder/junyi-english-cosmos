@@ -7,7 +7,7 @@ import QuizQuestionCard from "@/components/QuizQuestionCard";
 import { Button } from "@/components/ui/button";
 import { useLearningProgress } from "@/contexts/LearningProgressContext";
 import { getJunyiPracticeResource } from "@/lib/junyiResources";
-import { accuracyPercent } from "@/lib/learningProgress";
+import { accuracyPercent, calculateMissionReward } from "@/lib/learningProgress";
 import { getPracticeMission } from "@/lib/practiceData";
 import { getSubject } from "@/lib/subjectUniverse";
 
@@ -30,6 +30,16 @@ export default function PracticePage() {
     setCompleted(false);
     setReward(null);
   }, [mission?.id]);
+
+  useEffect(() => {
+    const shouldPreviewCompletion = import.meta.env.DEV && new URLSearchParams(window.location.search).has("qa-complete");
+    if (!mission || !shouldPreviewCompletion) return;
+
+    const correctAnswers = Object.fromEntries(mission.questions.map((item, index) => [index, item.correctIndex]));
+    setAnswers(correctAnswers);
+    setReward(calculateMissionReward({ missionId: mission.id, total: mission.questions.length, correct: mission.questions.length, firstClear: false }));
+    setCompleted(true);
+  }, [mission]);
 
   if (!mission) {
     return (

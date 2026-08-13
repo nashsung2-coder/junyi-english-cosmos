@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { getJunyiResourceLevel, getJunyiSubjectResources, JUNYI_SUBJECT_RESOURCES } from "./junyiResources";
+import { getJunyiPracticeResource, getJunyiResourceLevel, getJunyiSubjectResources, JUNYI_SUBJECT_RESOURCES } from "./junyiResources";
+import { SUBJECTS } from "./subjectUniverse";
 
 describe("junyi subject resources", () => {
-  it("provides a verified Junyi hub and mission resource for every subject", () => {
-    expect(Object.keys(JUNYI_SUBJECT_RESOURCES)).toHaveLength(7);
+  it("provides a verified Junyi hub and mission resource for every learning-stage subject", () => {
+    expect(Object.keys(JUNYI_SUBJECT_RESOURCES)).toHaveLength(SUBJECTS.length);
+    expect(SUBJECTS).toHaveLength(11);
 
     Object.values(JUNYI_SUBJECT_RESOURCES).forEach((resources) => {
       expect(resources.hub.url).toMatch(/^https:\/\/www\.junyiacademy\.org\/topics\//);
@@ -95,5 +97,46 @@ describe("junyi subject resources", () => {
     expect(getJunyiResourceLevel(mathResources.extensions[2])).toBe("年段課程");
     expect(getJunyiResourceLevel(englishResources.extensions[3])).toBe("學習工具");
     expect(getJunyiResourceLevel(englishResources.hub)).toBe("主題課程");
+  });
+
+  it("keeps high-school science routes separated into required and elective paths", () => {
+    expect(getJunyiSubjectResources("physics").mission).toMatchObject({
+      title: "物理（全）",
+      url: "https://www.junyiacademy.org/topics/main-seni-phy",
+      courseTrack: "必修",
+    });
+    expect(getJunyiSubjectResources("physics").extensions[0]).toMatchObject({ courseTrack: "選修" });
+    expect(getJunyiSubjectResources("chemistry").mission).toMatchObject({
+      title: "化學（全）",
+      url: "https://www.junyiacademy.org/topics/main-seni-cm",
+      courseTrack: "必修",
+    });
+    expect(getJunyiSubjectResources("biology").mission).toMatchObject({
+      title: "高一生物",
+      url: "https://www.junyiacademy.org/topics/01",
+      courseTrack: "必修",
+    });
+    expect(getJunyiSubjectResources("biology").extensions[0]).toMatchObject({
+      title: "選修生物二：環境刺激的反應",
+      url: "https://www.junyiacademy.org/topics/tfgcoocs-biology-11-section4",
+      courseTrack: "選修",
+    });
+    expect(getJunyiSubjectResources("earth-science").mission).toMatchObject({
+      title: "高一地科",
+      url: "https://www.junyiacademy.org/topics/main-seni-se-1",
+      courseTrack: "必修",
+    });
+    expect(getJunyiSubjectResources("earth-science").extensions[0]).toMatchObject({
+      title: "地科總整：天文與宇宙",
+      url: "https://www.junyiacademy.org/topics/tfgcoocs-geoscience",
+      courseTrack: "延伸",
+    });
+  });
+
+  it("returns the verified required start after every high-school mission", () => {
+    expect(getJunyiPracticeResource(201, "physics")).toMatchObject({ title: "物理（全）", courseTrack: "必修" });
+    expect(getJunyiPracticeResource(202, "chemistry")).toMatchObject({ title: "化學（全）", courseTrack: "必修" });
+    expect(getJunyiPracticeResource(203, "biology")).toMatchObject({ title: "高一生物", courseTrack: "必修" });
+    expect(getJunyiPracticeResource(204, "earth-science")).toMatchObject({ title: "高一地科", courseTrack: "必修" });
   });
 });

@@ -1,6 +1,6 @@
 import type { SubjectId } from "@/lib/subjectUniverse";
 
-export type LearningDimensionId = "listening" | "speaking" | "reading" | "writing" | "vocabulary" | "grammar" | "chinese" | "math" | "science" | "social" | "arts" | "health";
+export type LearningDimensionId = "listening" | "speaking" | "reading" | "writing" | "vocabulary" | "grammar" | "chinese" | "math" | "science" | "social" | "arts" | "health" | "physics" | "chemistry" | "biology" | "earthScience";
 
 export type PracticeQuestion = {
   prompt: string;
@@ -19,6 +19,8 @@ export type PracticeMission = {
   dimension: LearningDimensionId;
   accent: string;
   estimate: string;
+  stage?: "elementary" | "junior" | "senior";
+  courseTrack?: "required" | "elective";
   questions: PracticeQuestion[];
 };
 
@@ -266,6 +268,74 @@ export const PRACTICE_MISSIONS: PracticeMission[] = [
       { prompt: "午餐取餐時，哪一種做法較能減少食物浪費？", choices: ["先取自己吃得完的份量", "每樣都拿很多再丟掉", "只拿甜點", "把飯菜混在桌上"], correctIndex: 0, explanation: "先評估食量並取適量，能減少剩食，也讓飲食安排更負責任。" },
       { prompt: "規劃一餐時，加入不同種類食材的主要用意是什麼？", choices: ["讓營養來源更豐富", "讓餐盤更重", "讓用餐更慢", "讓食物只剩一種顏色"], correctIndex: 0, explanation: "不同食材提供不同營養來源；多樣選擇有助於建立均衡的飲食習慣。" },
       { prompt: "準備點心前，先查看家中現有食材，最能幫助做到什麼？", choices: ["減少重複購買與食物放到過期", "讓食物自動變多", "不需要保存食材", "不用閱讀任何標示"], correctIndex: 0, explanation: "先盤點現有食材能幫助妥善使用，減少不必要購買與浪費。" },
+    ],
+  },
+  {
+    id: 201,
+    subject: "physics",
+    name: "力與運動校準",
+    subtitle: "高中物理必修：用受力與速度變化建立系統觀點",
+    difficulty: "高中必修",
+    dimension: "physics",
+    accent: "#78C7FF",
+    estimate: "約 5 分鐘",
+    stage: "senior",
+    courseTrack: "required",
+    questions: [
+      { prompt: "物體若保持等速度直線運動，合力最可能是多少？", choices: ["0", "一定向前", "一定向上", "持續增加"], correctIndex: 0, explanation: "等速度直線運動表示速度沒有改變，因此依牛頓第一定律，物體所受合力為 0。" },
+      { prompt: "若同方向的兩個力分別為 3 N 與 5 N，合力大小為何？", choices: ["2 N", "8 N", "15 N", "0 N"], correctIndex: 1, explanation: "同方向的力可直接相加，所以合力是 3 + 5 = 8 N。" },
+      { prompt: "下列何者最能描述加速度？", choices: ["速度改變的快慢與方向", "物體的體積", "物體的顏色", "路程一定等於時間"], correctIndex: 0, explanation: "加速度描述速度隨時間的改變，包含快慢與方向的變化。" },
+    ],
+  },
+  {
+    id: 202,
+    subject: "chemistry",
+    name: "粒子變化觀測",
+    subtitle: "高中化學必修：從原子、分子與反應讀懂物質變化",
+    difficulty: "高中必修",
+    dimension: "chemistry",
+    accent: "#FF9B7A",
+    estimate: "約 5 分鐘",
+    stage: "senior",
+    courseTrack: "required",
+    questions: [
+      { prompt: "化學反應前後，下列哪一項在封閉系統中應遵守守恆？", choices: ["總質量", "容器顏色", "反應時間", "氣泡大小"], correctIndex: 0, explanation: "封閉系統中原子重新排列，但原子總數與總質量保持不變。" },
+      { prompt: "原子序主要用來表示原子核內的哪一種粒子數？", choices: ["質子", "中子加電子", "分子", "離子"], correctIndex: 0, explanation: "原子序等於質子數，這也是元素身分的判準。" },
+      { prompt: "冰融化成水時，最合適的描述是什麼？", choices: ["物理變化", "產生新元素", "核反應", "一定燃燒"], correctIndex: 0, explanation: "融化只改變物質狀態，水分子的組成並未改變，因此是物理變化。" },
+    ],
+  },
+  {
+    id: 203,
+    subject: "biology",
+    name: "生命系統觀察",
+    subtitle: "高中生物必修：從細胞功能到生態系的層次連結",
+    difficulty: "高中必修",
+    dimension: "biology",
+    accent: "#8EE6A4",
+    estimate: "約 5 分鐘",
+    stage: "senior",
+    courseTrack: "required",
+    questions: [
+      { prompt: "細胞膜最重要的功能之一是什麼？", choices: ["調節物質進出", "製造岩石", "決定行星軌道", "只負責發光"], correctIndex: 0, explanation: "細胞膜具有選擇性通透性，協助細胞維持內部環境。" },
+      { prompt: "在食物網中，植物通常扮演什麼角色？", choices: ["生產者", "分解者", "消費者", "寄生者"], correctIndex: 0, explanation: "植物可透過光合作用製造有機物，因此通常是生產者。" },
+      { prompt: "族群大小接近環境容納量時，最可能出現哪種情況？", choices: ["資源限制使成長趨緩", "所有資源無限增加", "所有個體立刻消失", "不再有任何交互作用"], correctIndex: 0, explanation: "當資源、空間等限制變明顯，族群成長速率通常會趨緩。" },
+    ],
+  },
+  {
+    id: 204,
+    subject: "earth-science",
+    name: "地球系統巡測",
+    subtitle: "高中地科必修：連結大氣、海洋、岩石圈與星空觀測",
+    difficulty: "高中必修",
+    dimension: "earthScience",
+    accent: "#B6A6FF",
+    estimate: "約 5 分鐘",
+    stage: "senior",
+    courseTrack: "required",
+    questions: [
+      { prompt: "造成晝夜交替的主要原因是什麼？", choices: ["地球自轉", "月球自轉", "地球公轉一圈", "雲層移動"], correctIndex: 0, explanation: "地球自轉使不同地區輪流面向太陽，形成晝夜交替。" },
+      { prompt: "下列哪一項屬於水循環中的過程？", choices: ["蒸發", "核融合", "礦物結晶一定停止", "聲音傳播"], correctIndex: 0, explanation: "水受熱可由液態轉為水氣，這個過程稱為蒸發。" },
+      { prompt: "板塊邊界附近常見地震與火山，最能支持哪個觀點？", choices: ["地球岩石圈由板塊組成並會相互運動", "地表從不改變", "所有地震由天氣造成", "海洋與陸地沒有關係"], correctIndex: 0, explanation: "地震與火山分布和板塊邊界密切相關，是板塊運動的重要證據。" },
     ],
   },
 ];

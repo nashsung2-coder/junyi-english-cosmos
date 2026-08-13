@@ -11,6 +11,10 @@ export const SUBJECT_MISSION_IDS: Record<SubjectId, number> = {
   social: 104,
   arts: 105,
   health: 106,
+  physics: 201,
+  chemistry: 202,
+  biology: 203,
+  "earth-science": 204,
 };
 
 export const SUBJECT_AREA_META: Record<SubjectAreaId, { eyebrow: string; title: string; description: string; managementLabel: string }> = {

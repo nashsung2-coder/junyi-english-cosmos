@@ -6,6 +6,7 @@ export type JunyiLearningResource = {
   url: string;
   gradeBand?: string;
   startingPoint?: string;
+  courseTrack?: "必修" | "選修" | "延伸";
 };
 
 export type JunyiResourceLevel = "單元教材" | "主題課程" | "年段課程" | "學習工具";
@@ -99,6 +100,26 @@ export const JUNYI_SUBJECT_RESOURCES: Record<SubjectId, SubjectLearningResources
       { title: "永續食代新素養", description: "均一六單元飲食課程，從均衡營養、減少浪費到友善環境的生活行動。", url: "https://www.junyiacademy.org/topics/v1283-new-topic-24" },
     ],
   },
+  physics: {
+    hub: { title: "高中自然：物理", description: "均一高中自然總覽中的物理課程入口，含必修與選修物理。", url: "https://www.junyiacademy.org/topics/science-high", gradeBand: "高中", startingPoint: "先從物理（全）建立必修概念，再依興趣前往選修物理 I 至 V。" },
+    mission: { title: "物理（全）", description: "均一高中物理的必修全冊課程入口，涵蓋高中物理核心概念。", url: "https://www.junyiacademy.org/topics/main-seni-phy", gradeBand: "高中", courseTrack: "必修" },
+    extensions: [{ title: "選修物理 I 至 V", description: "均一高中物理頁列出的加深加廣選修路徑，可依目前學校課程選擇對應冊次。", url: "https://www.junyiacademy.org/topics/main-seni-phy", gradeBand: "高中", courseTrack: "選修" }],
+  },
+  chemistry: {
+    hub: { title: "高中自然：化學", description: "均一高中自然總覽中的化學課程入口，含必修與選修化學。", url: "https://www.junyiacademy.org/topics/science-high", gradeBand: "高中", startingPoint: "先完成化學（全）的必修概念，再依需求探索選修化學 1 至 5。" },
+    mission: { title: "化學（全）", description: "均一高中化學的必修全冊課程入口，含物質組成、構造與反應、溶液與反應。", url: "https://www.junyiacademy.org/topics/main-seni-cm", gradeBand: "高中", courseTrack: "必修" },
+    extensions: [{ title: "選修化學 1 至 5", description: "均一高中化學總覽列出的加深加廣路徑，包含物質鑑定、鍵結、平衡、電化學與有機化合物。", url: "https://www.junyiacademy.org/topics/main-seni-cm", gradeBand: "高中", courseTrack: "選修" }],
+  },
+  biology: {
+    hub: { title: "高中生物", description: "均一高中生物公開總覽，含高一生物與歷代課程。", url: "https://www.junyiacademy.org/topics/junyi-biology", gradeBand: "高中", startingPoint: "由高一生物建立細胞、遺傳、生態與生命系統的核心概念。" },
+    mission: { title: "高一生物", description: "均一高中生物的必修起點，從細胞構造、生殖與遺傳展開。", url: "https://www.junyiacademy.org/topics/01", gradeBand: "高中", courseTrack: "必修" },
+    extensions: [{ title: "選修生物二：環境刺激的反應", description: "已驗證的高中選修生物二主題，從刺激感受、神經傳導到生物體的反應深化探索。", url: "https://www.junyiacademy.org/topics/tfgcoocs-biology-11-section4", gradeBand: "高中", courseTrack: "選修" }],
+  },
+  "earth-science": {
+    hub: { title: "高中地科", description: "均一高中地球科學的公開總覽，提供高一地科與延伸內容入口。", url: "https://www.junyiacademy.org/topics/main-seni-se", gradeBand: "高中", startingPoint: "由高一地科串連地球系統、天文、海洋與大氣的核心概念。" },
+    mission: { title: "高一地科", description: "均一高中地球科學的必修起點，從地質、大氣、天文與海洋展開。", url: "https://www.junyiacademy.org/topics/main-seni-se-1", gradeBand: "高中", courseTrack: "必修" },
+    extensions: [{ title: "地科總整：天文與宇宙", description: "已驗證的高中地科進階總整，延伸天文學、恆星演化與宇宙學；來源未明列選修，故保守標示為延伸。", url: "https://www.junyiacademy.org/topics/tfgcoocs-geoscience", gradeBand: "高中", courseTrack: "延伸" }],
+  },
 };
 
 export const getJunyiSubjectResources = (subjectId: SubjectId) => JUNYI_SUBJECT_RESOURCES[subjectId];
@@ -115,9 +136,12 @@ export const getJunyiResourceLevel = (resource: JunyiLearningResource): JunyiRes
   return "主題課程";
 };
 
+export const getJunyiCourseTrack = (resource: JunyiLearningResource) => resource.courseTrack;
+
 export const getJunyiPracticeResource = (missionId: number, subjectId: SubjectId): JunyiLearningResource => {
   const resource = getJunyiSubjectResources(subjectId);
 
+  if (["physics", "chemistry", "biology", "earth-science"].includes(subjectId)) return resource.mission;
   if (subjectId !== "english") return resource.extensions[0] ?? resource.mission;
   if (missionId === 2) return resource.extensions[0] ?? resource.mission;
   if (missionId === 3) return resource.extensions[3] ?? resource.mission;
