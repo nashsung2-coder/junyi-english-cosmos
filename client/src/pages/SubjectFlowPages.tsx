@@ -12,7 +12,7 @@ import { PRACTICE_MISSIONS } from "@/lib/practiceData";
 import { SUBJECT_AREA_META, SUBJECT_MISSION_IDS, isSubjectArea, type SubjectAreaId } from "@/lib/subjectNavigation";
 import { getJunyiCourseTrack, getJunyiResourceLevel, getJunyiSubjectResources } from "@/lib/junyiResources";
 import { getPreferredHarborLearningStage, saveHarborLearningStage } from "@/lib/harborWelcome";
-import { LEARNING_STAGES, SUBJECTS, getLearningStage, getSubject, getSubjectsForStage, type LearningStageId, type SubjectId } from "@/lib/subjectUniverse";
+import { LEARNING_STAGES, SENIOR_SUBJECT_STREAMS, SUBJECTS, getLearningStage, getSubject, getSubjectsForSeniorStream, getSubjectsForStage, type LearningStageId, type SubjectDefinition, type SubjectId } from "@/lib/subjectUniverse";
 
 const AREA_ICONS: Record<SubjectAreaId, typeof Compass> = {
   hall: Compass,
@@ -152,6 +152,20 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
   }, []);
   const selectedStage = getLearningStage(selectedStageId);
   const stageSubjects = getSubjectsForStage(selectedStageId);
+  const renderSubjectCard = (subject: SubjectDefinition) => {
+    const progress = state.subjectProgress[subject.id];
+    const pet = state.pets[subject.id];
+    return (
+      <Link key={subject.id} href={`/subject/${subject.id}/${area}`} className="tap-target group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[.026] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[.055] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+        <div className="absolute inset-x-0 top-0 h-0.5 opacity-80" style={{ background: subject.color }} />
+        <div className="flex items-start justify-between gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-black/15 text-2xl">{subject.pet.emoji}</span><span className="rounded-full border border-white/10 px-2 py-1 text-[10px] text-slate-400">Lv.{pet.level}</span></div>
+        <h3 className="mt-5 font-bold text-white">{subject.name} <span className="font-normal text-slate-400">· {subject.pet.name}</span></h3>
+        <p className="mt-1 min-h-10 text-xs leading-5 text-slate-400">{subject.tagline}</p>
+        {subject.courseTracks && <div className="mt-3 flex flex-wrap gap-1.5">{subject.courseTracks.map((track) => <span key={track} className="rounded-full border border-white/10 bg-black/15 px-2 py-1 text-[10px] font-semibold" style={{ color: track === "required" ? "#F8C46B" : "#C4B5FD" }}>{track === "required" ? "必修" : "選修"}</span>)}</div>}
+        <div className="mt-4 flex items-center justify-between text-xs text-slate-300"><span>{progress.missions} 次任務</span><span className="inline-flex items-center gap-1 font-semibold" style={{ color: subject.color }}>進入管理 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span></div>
+      </Link>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_70%_50%_at_75%_0%,rgba(78,205,196,.13),transparent_68%),#061014] text-foreground">
@@ -173,7 +187,7 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
 
         <section className="mt-8">
           <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
-            <div><p className="text-xs font-bold tracking-[.16em] text-amber-100/75">LEARNING STAGE</p><h2 className="mt-1 text-xl font-bold text-white">先選學段，再選擇下一段學習航線</h2><p className="mt-1 text-sm text-muted-foreground">國小與國中延續既有學科探索；高中以物理、化學、生物與地球科學規劃必修／選修路徑。</p></div>
+            <div><p className="text-xs font-bold tracking-[.16em] text-amber-100/75">LEARNING STAGE</p><h2 className="mt-1 text-xl font-bold text-white">先選學段，再選擇下一段學習航線</h2><p className="mt-1 text-sm text-muted-foreground">國小與國中延續既有學科探索；高中先分文科與理科，理科再依必修／選修規劃加深加廣路徑。</p></div>
             <div className="flex flex-wrap items-center gap-2"><span className="rounded-full border border-accent/25 bg-accent/[.08] px-3 py-1.5 text-xs font-semibold text-accent">{state.starCoins} 星幣可用</span>{isHarbor && <Button type="button" variant="outline" size="sm" onClick={() => setWelcomeReplayNonce((nonce) => nonce + 1)} className="tap-target border-white/15 bg-white/[.035] text-slate-100 hover:bg-white/[.1] hover:text-white"><Sparkles className="mr-1.5 h-3.5 w-3.5 text-teal-200" />重新查看迎賓</Button>}</div>
           </div>
           <div className="mb-5 grid gap-3 md:grid-cols-3" role="tablist" aria-label="選擇學習學段">
@@ -184,23 +198,15 @@ export function SubjectSelectorPage({ area }: { area: SubjectAreaId }) {
               </button>;
             })}
           </div>
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-2"><div><h3 className="font-bold text-white">{selectedStage.name} · {stageSubjects.length} 條學科航線</h3><p className="mt-1 text-sm text-slate-400">{selectedStage.description}</p></div>{selectedStageId === "senior" && <span className="rounded-full border border-amber-200/20 bg-amber-100/[.07] px-3 py-1.5 text-xs font-semibold text-amber-100">必修打底 · 選修加深加廣</span>}</div>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {stageSubjects.map((subject) => {
-              const progress = state.subjectProgress[subject.id];
-              const pet = state.pets[subject.id];
-              return (
-                <Link key={subject.id} href={`/subject/${subject.id}/${area}`} className="tap-target group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[.026] p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-white/20 hover:bg-white/[.055] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent">
-                  <div className="absolute inset-x-0 top-0 h-0.5 opacity-80" style={{ background: subject.color }} />
-                  <div className="flex items-start justify-between gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-black/15 text-2xl">{subject.pet.emoji}</span><span className="rounded-full border border-white/10 px-2 py-1 text-[10px] text-slate-400">Lv.{pet.level}</span></div>
-                  <h3 className="mt-5 font-bold text-white">{subject.name} <span className="font-normal text-slate-400">· {subject.pet.name}</span></h3>
-                  <p className="mt-1 min-h-10 text-xs leading-5 text-slate-400">{subject.tagline}</p>
-                  {subject.courseTracks && <div className="mt-3 flex flex-wrap gap-1.5">{subject.courseTracks.map((track) => <span key={track} className="rounded-full border border-white/10 bg-black/15 px-2 py-1 text-[10px] font-semibold" style={{ color: track === "required" ? "#F8C46B" : "#C4B5FD" }}>{track === "required" ? "必修" : "選修"}</span>)}</div>}
-                  <div className="mt-4 flex items-center justify-between text-xs text-slate-300"><span>{progress.missions} 次任務</span><span className="inline-flex items-center gap-1 font-semibold" style={{ color: subject.color }}>進入管理 <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span></div>
-                </Link>
-              );
-            })}
-          </div>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-2"><div><h3 className="font-bold text-white">{selectedStage.name} · {stageSubjects.length} 條學科航線</h3><p className="mt-1 text-sm text-slate-400">{selectedStage.description}</p></div>{selectedStageId === "senior" && <span className="rounded-full border border-amber-200/20 bg-amber-100/[.07] px-3 py-1.5 text-xs font-semibold text-amber-100">文科探索 · 理科必修與選修</span>}</div>
+          {selectedStageId === "senior" ? (
+            <div className="grid gap-5 lg:grid-cols-2">
+              {SENIOR_SUBJECT_STREAMS.map((stream) => {
+                const streamSubjects = getSubjectsForSeniorStream(stream.id);
+                return <section key={stream.id} aria-labelledby={`senior-stream-${stream.id}`} className="rounded-3xl border border-white/10 bg-black/15 p-4 sm:p-5"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-[10px] font-bold tracking-[.16em]" style={{ color: stream.color }}>{stream.shortName}</p><h4 id={`senior-stream-${stream.id}`} className="mt-2 text-lg font-bold text-white">高中{stream.name}航線</h4><p className="mt-1 max-w-md text-xs leading-5 text-slate-400">{stream.description}</p></div><span className="rounded-full border px-2.5 py-1 text-[10px] font-semibold" style={{ color: stream.color, borderColor: `${stream.color}55`, backgroundColor: `${stream.color}12` }}>{stream.emphasis}</span></div><div className="mt-4 grid gap-3 sm:grid-cols-2">{streamSubjects.map(renderSubjectCard)}</div></section>;
+              })}
+            </div>
+          ) : <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{stageSubjects.map(renderSubjectCard)}</div>}
         </section>
       </main>
     </div>

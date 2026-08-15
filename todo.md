@@ -151,10 +151,13 @@
 - [x] 確認 Cloudflare Pages 公開網址在使用者發布後載入最新學段同步與迎賓重播版本
 - [x] 新增 `wrangler.jsonc`，明確宣告 `junyi-english-cosmos` Pages 專案與 `dist/public` 靜態輸出目錄
 - [x] 在 Cloudflare 建置設定移除錯誤的 `npx wrangler deploy`（Workers）命令，改用 Pages Git integration 的自動部署流程，確保推送 main 即更新 junyi-english-cosmos.pages.dev
-- [ ] 更新 Cloudflare 建置環境的 `CLOUDFLARE_API_TOKEN` 為具 `Account > Cloudflare Pages > Edit` 權限的部署權杖，重新執行 Pages 部署並驗證公開站
+- [x] 更新 Cloudflare 建置環境的 `CLOUDFLARE_API_TOKEN` 為具 `Account > Cloudflare Pages > Edit` 權限的部署權杖，重新執行 Pages 部署並驗證公開站（已改用 Pages 原生 Git integration，不再需要此部署權杖）
 - [ ] 撤銷對話中已外洩的 Cloudflare API Token 與 R2 S3 存取憑證，改用最小權限的 Pages 部署 Token，且不在對話中傳送密鑰
-- [ ] 在 Cloudflare Worker 的 Settings → Builds → API token 更換已離職使用者的失效 Build token，重新觸發建置後再驗證 Pages 公開網址
-- [ ] 確認 Worker Builds 的 API token 欄位已實際改綁目前有效的 Build token 並儲存，避免重試仍使用被刪除或已輪替的舊權杖
-- [ ] 在 Cloudflare Worker Builds 建立新的有效 Build token；既有 junyi-cosmos、junyi-english-cosmos、cool-english-cosmos 三枚均已驗證失效，建立後需綁定並重試建置
+- [x] 在 Cloudflare Worker 的 Settings → Builds → API token 更換已離職使用者的失效 Build token，重新觸發建置後再驗證 Pages 公開網址（不適用：公開站已遷移至 Pages 原生 Git integration）
+- [x] 確認 Worker Builds 的 API token 欄位已實際改綁目前有效的 Build token 並儲存，避免重試仍使用被刪除或已輪替的舊權杖（不適用：公開站已遷移至 Pages 原生 Git integration）
+- [x] 在 Cloudflare Worker Builds 建立新的有效 Build token；既有 junyi-cosmos、junyi-english-cosmos、cool-english-cosmos 三枚均已驗證失效，建立後需綁定並重試建置（不適用：公開站已遷移至 Pages 原生 Git integration）
 - [x] 將 junyi-english-cosmos Pages 專案直接連接 GitHub 的 nashsung2-coder/junyi-english-cosmos main，設定 pnpm run build 與 dist/public，避開失效的 junyi-cosmos Worker Builds
 - [x] 驗證 Pages 原生 Git integration 成功建置後，公開網址載入最新學段同步與迎賓重播版本
+- [x] 將高中學段由單一自然科航線改為文科與理科分流，並讓物理、化學、生物、地球科學明確歸入理科
+- [x] 為文科航線建立可進入的國文、英文、社會學科入口，並保留理科必修／選修／進階教材標示
+- [ ] 補齊高中分流資料與選科介面的測試、桌機／手機驗證、建置、GitHub 同步及 Pages 自動部署確認

@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, BookOpen, Compass, GraduationCap, Sparkles, Tele
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { claimFirstHarborWelcome, getHarborLearningStage, saveHarborLearningStage } from "@/lib/harborWelcome";
-import { getLearningStage, getSubjectsForStage, LEARNING_STAGES, type LearningStageId, type SubjectDefinition } from "@/lib/subjectUniverse";
+import { getLearningStage, getSubjectsForSeniorStream, getSubjectsForStage, LEARNING_STAGES, SENIOR_SUBJECT_STREAMS, type LearningStageId, type SubjectDefinition } from "@/lib/subjectUniverse";
 
 type FirstHarborWelcomeProps = {
   onStageSelect: (stageId: LearningStageId) => void;
@@ -18,6 +18,7 @@ const STAGE_ICONS = {
 };
 
 function getTrackLabels(subject: SubjectDefinition) {
+  if (subject.seniorStream === "humanities") return ["文科核心"];
   if (subject.id === "biology" || subject.id === "earth-science") return ["必修", "進階延伸"];
   if (subject.courseTracks?.includes("elective")) return ["必修", "選修"];
   return ["共同學科"];
@@ -85,6 +86,7 @@ export default function FirstHarborWelcome({ onStageSelect, replayNonce = 0 }: F
 
   const selectedStage = useMemo(() => selectedStageId ? getLearningStage(selectedStageId) : null, [selectedStageId]);
   const stageSubjects = useMemo(() => selectedStageId ? getSubjectsForStage(selectedStageId) : [], [selectedStageId]);
+  const renderSubjectCard = (subject: SubjectDefinition, index: number) => <motion.div key={subject.id} initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduceMotion ? 0 : index * 0.055, duration: 0.25, ease: [0.23, 1, 0.32, 1] }}><Link href={`/subject/${subject.id}/hall`} onClick={() => chooseSubject(selectedStage!.id)} className="tap-target group relative block h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[.028] p-5 transition-[transform,background-color,border-color] duration-200 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[.065] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><div className="absolute inset-x-0 top-0 h-0.5" style={{ background: subject.color }} /><div className="flex items-start justify-between gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-black/15 text-2xl">{subject.pet.emoji}</span><span className="text-xs font-bold tracking-[.14em]" style={{ color: subject.color }}>{subject.shortName}</span></div><h3 className="mt-5 font-bold text-white">{subject.name}<span className="font-normal text-slate-400"> · {subject.pet.name}</span></h3><p className="mt-1 min-h-10 text-xs leading-5 text-slate-400">{subject.tagline}</p>{selectedStageId === "senior" && <div className="mt-3 flex flex-wrap gap-1.5">{getTrackLabels(subject).map((label) => <span key={label} className="rounded-full border border-white/10 bg-black/15 px-2 py-1 text-[10px] font-semibold" style={{ color: label === "必修" ? "#F8C46B" : label === "選修" ? "#C4B5FD" : label === "文科核心" ? "#F59DDA" : "#9CE7D2" }}>{label}</span>)}</div>}<span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white">選科啟航 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span></Link></motion.div>;
   const dismiss = () => setIsOpen(false);
   const chooseStage = (stageId: LearningStageId) => {
     saveHarborLearningStage(window.localStorage, stageId);
@@ -124,7 +126,7 @@ export default function FirstHarborWelcome({ onStageSelect, replayNonce = 0 }: F
                 <div>
                   <p className="flex items-center gap-2 text-xs font-bold tracking-[.22em] text-teal-200"><Sparkles className="h-4 w-4" />WELCOME HOME</p>
                   <h1 id="first-harbor-welcome-title" className="mt-4 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-5xl">先選擇你的學習學段</h1>
-                  <p id="first-harbor-welcome-description" className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">選完後會看見對應的學科航線；國小與國中共用七科探索，高中則從自然科的必修、選修與進階延伸起航。</p>
+                  <p id="first-harbor-welcome-description" className="mt-4 max-w-2xl text-sm leading-7 text-slate-300 sm:text-base">選完後會看見對應的學科航線；國小與國中共用七科探索，高中先分為文科與理科，理科再依必修、選修與進階延伸起航。</p>
                 </div>
                 <Button ref={dismissButtonRef} type="button" variant="ghost" onClick={dismiss} className="tap-target shrink-0 text-slate-300 hover:bg-white/10 hover:text-white" aria-label="略過首次迎賓動畫"><X className="h-5 w-5" /></Button>
               </div>
@@ -146,10 +148,8 @@ export default function FirstHarborWelcome({ onStageSelect, replayNonce = 0 }: F
                 </div>
               ) : (
                 <div className="relative mt-9">
-                  <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><button type="button" onClick={() => setSelectedStageId(null)} className="tap-target inline-flex items-center gap-1.5 text-xs font-semibold text-slate-300 transition-colors hover:text-white"><ArrowLeft className="h-3.5 w-3.5" />更換學段</button><p className="mt-4 text-xs font-bold tracking-[.18em]" style={{ color: selectedStage.color }}>STEP 02 · {selectedStage.shortName}</p><h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">{selectedStage.name}的學科航線</h2></div><p className="max-w-md text-sm leading-6 text-slate-400">{selectedStageId === "senior" ? "高中自然科依每科真實教材顯示必修、選修或進階延伸。" : "國小與國中共用七科核心入口，先挑一科進入專屬管理頁。"}</p></div>
-                  <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                    {stageSubjects.map((subject, index) => <motion.div key={subject.id} initial={reduceMotion ? false : { opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: reduceMotion ? 0 : index * 0.055, duration: 0.25, ease: [0.23, 1, 0.32, 1] }}><Link href={`/subject/${subject.id}/hall`} onClick={() => chooseSubject(selectedStage.id)} className="tap-target group relative block h-full overflow-hidden rounded-3xl border border-white/10 bg-white/[.028] p-5 transition-[transform,background-color,border-color] duration-200 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[.065] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"><div className="absolute inset-x-0 top-0 h-0.5" style={{ background: subject.color }} /><div className="flex items-start justify-between gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl border border-white/10 bg-black/15 text-2xl">{subject.pet.emoji}</span><span className="text-xs font-bold tracking-[.14em]" style={{ color: subject.color }}>{subject.shortName}</span></div><h3 className="mt-5 font-bold text-white">{subject.name}<span className="font-normal text-slate-400"> · {subject.pet.name}</span></h3><p className="mt-1 min-h-10 text-xs leading-5 text-slate-400">{subject.tagline}</p>{selectedStageId === "senior" && <div className="mt-3 flex flex-wrap gap-1.5">{getTrackLabels(subject).map((label) => <span key={label} className="rounded-full border border-white/10 bg-black/15 px-2 py-1 text-[10px] font-semibold" style={{ color: label === "必修" ? "#F8C46B" : label === "選修" ? "#C4B5FD" : "#9CE7D2" }}>{label}</span>)}</div>}<span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white">選科啟航 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" /></span></Link></motion.div>)}
-                  </div>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><button type="button" onClick={() => setSelectedStageId(null)} className="tap-target inline-flex items-center gap-1.5 text-xs font-semibold text-slate-300 transition-colors hover:text-white"><ArrowLeft className="h-3.5 w-3.5" />更換學段</button><p className="mt-4 text-xs font-bold tracking-[.18em]" style={{ color: selectedStage.color }}>STEP 02 · {selectedStage.shortName}</p><h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">{selectedStage.name}的學科航線</h2></div><p className="max-w-md text-sm leading-6 text-slate-400">{selectedStageId === "senior" ? "高中先分文科與理科；理科依每科真實教材顯示必修、選修或進階延伸。" : "國小與國中共用七科核心入口，先挑一科進入專屬管理頁。"}</p></div>
+                  {selectedStageId === "senior" ? <div className="mt-5 grid gap-4 lg:grid-cols-2">{SENIOR_SUBJECT_STREAMS.map((stream, streamIndex) => <section key={stream.id} className="rounded-3xl border border-white/10 bg-black/15 p-4"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="text-[10px] font-bold tracking-[.16em]" style={{ color: stream.color }}>{stream.shortName}</p><h3 className="mt-2 font-bold text-white">高中{stream.name}航線</h3><p className="mt-1 text-xs leading-5 text-slate-400">{stream.description}</p></div><span className="rounded-full border px-2 py-1 text-[10px] font-semibold" style={{ color: stream.color, borderColor: `${stream.color}55` }}>{stream.emphasis}</span></div><div className="mt-4 grid gap-3 sm:grid-cols-2">{getSubjectsForSeniorStream(stream.id).map((subject, index) => renderSubjectCard(subject, streamIndex * 4 + index))}</div></section>)}</div> : <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">{stageSubjects.map(renderSubjectCard)}</div>}
                 </div>
               )}
 
