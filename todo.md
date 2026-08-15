@@ -147,7 +147,14 @@
 - [x] 讓大廳學段切換與首次迎賓選擇雙向同步，跨次造訪保留一致的學段偏好
 - [x] 提供不清除學習進度的迎賓手動重播控制，讓使用者能重新查看學段與學科航線
 - [x] 為學段偏好同步與迎賓重播控制補齊單元測試、桌機／手機畫面驗證、建置與 GitHub 同步（35 項測試、正式建置、GitHub main：40d7a19；作者 nashsung <nashsung2@gmail.com>）
-- [ ] 釐清使用者可見的 GitHub、預覽與 Cloudflare Pages 版本是否一致，說明最新內容的可存取入口與必要發布步驟
-- [ ] 確認 Cloudflare Pages 公開網址在使用者發布後載入最新學段同步與迎賓重播版本
+- [x] 釐清使用者可見的 GitHub、預覽與 Cloudflare Pages 版本是否一致，說明最新內容的可存取入口與必要發布步驟
+- [x] 確認 Cloudflare Pages 公開網址在使用者發布後載入最新學段同步與迎賓重播版本
 - [x] 新增 `wrangler.jsonc`，明確宣告 `junyi-english-cosmos` Pages 專案與 `dist/public` 靜態輸出目錄
-- [ ] 在 Cloudflare 建置設定移除錯誤的 `npx wrangler deploy`（Workers）命令，改用 Pages Git integration 的自動部署流程，確保推送 main 即更新 junyi-english-cosmos.pages.dev
+- [x] 在 Cloudflare 建置設定移除錯誤的 `npx wrangler deploy`（Workers）命令，改用 Pages Git integration 的自動部署流程，確保推送 main 即更新 junyi-english-cosmos.pages.dev
+- [ ] 更新 Cloudflare 建置環境的 `CLOUDFLARE_API_TOKEN` 為具 `Account > Cloudflare Pages > Edit` 權限的部署權杖，重新執行 Pages 部署並驗證公開站
+- [ ] 撤銷對話中已外洩的 Cloudflare API Token 與 R2 S3 存取憑證，改用最小權限的 Pages 部署 Token，且不在對話中傳送密鑰
+- [ ] 在 Cloudflare Worker 的 Settings → Builds → API token 更換已離職使用者的失效 Build token，重新觸發建置後再驗證 Pages 公開網址
+- [ ] 確認 Worker Builds 的 API token 欄位已實際改綁目前有效的 Build token 並儲存，避免重試仍使用被刪除或已輪替的舊權杖
+- [ ] 在 Cloudflare Worker Builds 建立新的有效 Build token；既有 junyi-cosmos、junyi-english-cosmos、cool-english-cosmos 三枚均已驗證失效，建立後需綁定並重試建置
+- [x] 將 junyi-english-cosmos Pages 專案直接連接 GitHub 的 nashsung2-coder/junyi-english-cosmos main，設定 pnpm run build 與 dist/public，避開失效的 junyi-cosmos Worker Builds
+- [x] 驗證 Pages 原生 Git integration 成功建置後，公開網址載入最新學段同步與迎賓重播版本
